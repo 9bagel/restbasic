@@ -40,7 +40,7 @@ class GiftCertificateDAOImplTest {
 
     List<GiftCertificate> actual = certificateDAO.getAll(criteria);
 
-    assertThat(actual).extracting("id").containsExactly(new Long[] {1L, 2L, 3L});
+    assertThat(actual).extracting("id").containsExactly(1L, 2L, 3L);
   }
 
   @Test
@@ -51,7 +51,7 @@ class GiftCertificateDAOImplTest {
 
     List<GiftCertificate> actual = certificateDAO.getAll(criteria);
 
-    assertThat(actual).extracting("id").containsExactly(new Long[] {3L, 2L, 1L});
+    assertThat(actual).extracting("id").containsExactly(3L, 2L, 1L);
   }
 
   @Test
