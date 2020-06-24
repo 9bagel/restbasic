@@ -30,9 +30,9 @@ public class GiftCertificateRestController {
 
   /**
    * Returns a single Certificate instance for a given certificate id. See {@link #getAll(String,
-   * String, String)} to return a list of certificates and determine individual {@code
-   * id}
-   * Path [GET /api/certificates/{id}]
+   * String, String)} to return a list of certificates and determine individual {@code id} Path [GET
+   * /api/certificates/{id}]
+   *
    * @param id an id of a certificate
    */
   @GetMapping("/certificates/{id}")
@@ -46,8 +46,8 @@ public class GiftCertificateRestController {
   }
 
   /**
-   * Returns a list of Certificates
-   * Path [GET /api/certificates/]
+   * Returns a list of Certificates Path [GET /api/certificates/]
+   *
    * @param tagName (not required) name of tag that Certificate should have
    * @param sortBy (not required) name of sorting field including sorting order
    * @param find (not required) search phrase that certificate should have
@@ -66,8 +66,8 @@ public class GiftCertificateRestController {
   }
 
   /**
-   * Create a certificate
-   * Path [POST /api/certificates/]
+   * Create a certificate Path [POST /api/certificates/]
+   *
    * @param certificateDTO a certificate object in json format
    */
   @PostMapping("/certificates")
@@ -83,8 +83,9 @@ public class GiftCertificateRestController {
   }
 
   /**
-   * Updates a specific certificate by given certificate id. Should contain JSON body.
-   * Path [PUT /api/certificates/{id}]
+   * Updates a specific certificate by given certificate id. Should contain JSON body. Path [PUT
+   * /api/certificates/{id}]
+   *
    * @param certificateDTO certificate object in JSON format
    * @param id certificate id
    */
@@ -102,8 +103,9 @@ public class GiftCertificateRestController {
   }
 
   /**
-   * Deletes a single certificate for a specific certificate id.
-   * Path [DELETE /api/certificates/{id}]
+   * Deletes a single certificate for a specific certificate id. Path [DELETE
+   * /api/certificates/{id}]
+   *
    * @param id certificate id
    */
   @DeleteMapping("/certificates/{id}")
