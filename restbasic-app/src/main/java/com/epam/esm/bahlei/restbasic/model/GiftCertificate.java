@@ -3,7 +3,7 @@ package com.epam.esm.bahlei.restbasic.model;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Component
@@ -13,8 +13,8 @@ public class GiftCertificate {
   private String description;
   private BigDecimal price;
   private List<Tag> tags;
-  private LocalDateTime createdAt;
-  private LocalDateTime modifiedAt;
+  private OffsetDateTime createdAt;
+  private OffsetDateTime modifiedAt;
   private int duration;
 
   public GiftCertificate() {}
@@ -24,8 +24,8 @@ public class GiftCertificate {
       String name,
       String description,
       BigDecimal price,
-      LocalDateTime createdAt,
-      LocalDateTime modifiedAt,
+      OffsetDateTime createdAt,
+      OffsetDateTime modifiedAt,
       int duration) {
     this.id = id;
     this.name = name;
@@ -68,19 +68,19 @@ public class GiftCertificate {
     this.price = price;
   }
 
-  public LocalDateTime getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
+  public void setCreatedAt(OffsetDateTime createdAt) {
     this.createdAt = createdAt;
   }
 
-  public LocalDateTime getModifiedAt() {
+  public OffsetDateTime getModifiedAt() {
     return modifiedAt;
   }
 
-  public void setModifiedAt(LocalDateTime modifiedAt) {
+  public void setModifiedAt(OffsetDateTime modifiedAt) {
     this.modifiedAt = modifiedAt;
   }
 

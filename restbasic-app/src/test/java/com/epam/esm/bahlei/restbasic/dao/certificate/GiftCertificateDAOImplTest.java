@@ -15,13 +15,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Collections.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,8 +83,8 @@ class GiftCertificateDAOImplTest {
             "certificate1",
             "desc",
             BigDecimal.valueOf(10),
-            LocalDateTime.now(),
-            LocalDateTime.now(),
+            OffsetDateTime.now(),
+            OffsetDateTime.now(),
             5);
     List<Tag> tags = new ArrayList<>();
     tags.add(new Tag(1, "books"));
@@ -99,8 +97,8 @@ class GiftCertificateDAOImplTest {
             "certificate2",
             "desc",
             BigDecimal.valueOf(10),
-            LocalDateTime.now(),
-            LocalDateTime.now(),
+            OffsetDateTime.now(),
+            OffsetDateTime.now(),
             5);
     certificate2.setTags(singletonList(new Tag(3, "news")));
 
@@ -110,8 +108,8 @@ class GiftCertificateDAOImplTest {
             "certificate3",
             "desc",
             BigDecimal.valueOf(10),
-            LocalDateTime.now(),
-            LocalDateTime.now(),
+            OffsetDateTime.now(),
+            OffsetDateTime.now(),
             5);
 
     certificates.add(certificate1);
@@ -137,8 +135,8 @@ class GiftCertificateDAOImplTest {
         "certificate1",
         "desc",
         BigDecimal.valueOf(10),
-        LocalDateTime.now(),
-        LocalDateTime.now(),
+        OffsetDateTime.now(),
+        OffsetDateTime.now(),
         5);
   }
 

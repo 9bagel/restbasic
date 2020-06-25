@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/")
 public class GiftCertificateRestController {
 
   private final GiftCertificateService giftCertificateService;
