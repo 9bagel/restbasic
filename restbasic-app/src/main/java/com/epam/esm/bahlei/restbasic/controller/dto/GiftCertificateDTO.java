@@ -15,7 +15,7 @@ public class GiftCertificateDTO {
   public String name;
   public String description;
   public BigDecimal price;
-  public int duration;
+  public Integer duration;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   public LocalDateTime createdAt;

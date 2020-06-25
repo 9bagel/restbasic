@@ -15,7 +15,7 @@ public class GiftCertificate {
   private List<Tag> tags;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
-  private int duration;
+  private Integer duration;
 
   public GiftCertificate() {}
 
@@ -84,11 +84,11 @@ public class GiftCertificate {
     this.modifiedAt = modifiedAt;
   }
 
-  public int getDuration() {
+  public Integer getDuration() {
     return duration;
   }
 
-  public void setDuration(int duration) {
+  public void setDuration(Integer duration) {
     this.duration = duration;
   }
 

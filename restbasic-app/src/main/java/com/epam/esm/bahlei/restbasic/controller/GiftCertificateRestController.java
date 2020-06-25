@@ -94,12 +94,35 @@ public class GiftCertificateRestController {
       @RequestBody GiftCertificateDTO certificateDTO, @PathVariable long id) {
 
     certificateDTO.id = id;
-    if (!giftCertificateService.get(id).isPresent()) {
+    Optional<GiftCertificate> certificateOptional = giftCertificateService.get(id);
+    if (!certificateOptional.isPresent()) {
       return notFound().build();
     }
 
-    giftCertificateService.update(toCertificate(certificateDTO));
+    GiftCertificate certificate = certificateOptional.get();
+    mergeNewValues(certificateDTO, certificate);
+
+    giftCertificateService.update(certificate);
     return noContent().build();
+  }
+
+  private void mergeNewValues(GiftCertificateDTO dto, GiftCertificate to) {
+    GiftCertificate from = toCertificate(dto);
+    if (from.getPrice() != null) {
+      to.setPrice(from.getPrice());
+    }
+    if (from.getDescription() != null && !from.getDescription().trim().isEmpty()) {
+      to.setDescription(from.getDescription());
+    }
+    if (from.getName() != null && !from.getName().trim().isEmpty()) {
+      to.setName(from.getName());
+    }
+    if (from.getDuration() != null) {
+      to.setDuration(from.getDuration());
+    }
+    if (from.getTags() != null) {
+      to.setTags(from.getTags());
+    }
   }
 
   /**
