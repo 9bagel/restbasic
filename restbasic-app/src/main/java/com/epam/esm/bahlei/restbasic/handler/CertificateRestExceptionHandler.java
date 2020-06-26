@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,14 @@ public class CertificateRestExceptionHandler {
 
     return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
   }
+
+  @ExceptionHandler
+  public ResponseEntity<ErrorResponse> handleException(HttpMediaTypeNotSupportedException exc) {
+    ErrorResponse error = new ErrorResponse(exc.getMessage());
+
+    return new ResponseEntity<>(error, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+  }
+
   @ExceptionHandler
   public ResponseEntity<ErrorResponse> handleException(HttpRequestMethodNotSupportedException exc) {
     ErrorResponse error = new ErrorResponse(exc.getMessage());
@@ -48,12 +57,14 @@ public class CertificateRestExceptionHandler {
 
     return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
   }
+
   @ExceptionHandler
   public ResponseEntity<ErrorResponse> handleException(DataAccessException exc) {
     ErrorResponse error = new ErrorResponse("Wrong parameters");
 
     return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
   }
+
   @ExceptionHandler
   public ResponseEntity<ErrorResponse> handleException(MethodArgumentTypeMismatchException exc) {
     ErrorResponse error = new ErrorResponse("Wrong parameter value");

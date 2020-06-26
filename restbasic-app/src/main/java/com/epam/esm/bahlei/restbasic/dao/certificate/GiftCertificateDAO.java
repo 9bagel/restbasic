@@ -17,4 +17,6 @@ public interface GiftCertificateDAO {
   void delete(long id);
 
   void update(GiftCertificate giftCertificate);
+
+  Optional<GiftCertificate> getByName(String tagName);
 }

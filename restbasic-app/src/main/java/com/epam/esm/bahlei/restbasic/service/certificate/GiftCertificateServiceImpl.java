@@ -62,7 +62,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
   @Transactional
   @Override
   public void save(GiftCertificate giftCertificate) {
-    List<String> errors = certificateValidator.validate(giftCertificate);
+    List<String> errors = certificateValidator.validateForSave(giftCertificate);
 
     if (!errors.isEmpty()) {
       throw new ValidationException(errors);
@@ -81,7 +81,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
   @Transactional
   @Override
   public void update(GiftCertificate giftCertificate) {
-    List<String> errors = certificateValidator.validate(giftCertificate);
+    List<String> errors = certificateValidator.validateForUpdate(giftCertificate);
 
     if (!errors.isEmpty()) {
       throw new ValidationException(errors);

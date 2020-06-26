@@ -1,5 +1,6 @@
 package com.epam.esm.bahlei.restbasic.service.validator;
 
+import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import org.springframework.stereotype.Component;
 
@@ -9,13 +10,16 @@ import java.util.List;
 
 @Component
 public class CertificateValidator {
+  private final GiftCertificateDAO certificateDAO;
 
-  public CertificateValidator() {}
+  public CertificateValidator(GiftCertificateDAO certificateDAO) {
+    this.certificateDAO = certificateDAO;
+  }
 
-  public List<String> validate(GiftCertificate certificate) {
+  public List<String> validateForSave(GiftCertificate certificate) {
     List<String> errors = new ArrayList<>();
 
-    validateName(certificate.getName(), errors);
+    validateNameForSave(certificate.getName(), errors);
     validateDescription(certificate.getDescription(), errors);
     validatePrice(certificate.getPrice(), errors);
     validateDuration(certificate.getDuration(), errors);
@@ -23,22 +27,57 @@ public class CertificateValidator {
     return errors;
   }
 
-  private void validateName(String name, List<String> errorMessages) {
+  public List<String> validateForUpdate(GiftCertificate certificate) {
+    List<String> errors = new ArrayList<>();
+
+    validateNameForUpdate(certificate.getName(), errors);
+    validateDescription(certificate.getDescription(), errors);
+    validatePrice(certificate.getPrice(), errors);
+    validateDuration(certificate.getDuration(), errors);
+
+    return errors;
+  }
+
+  private void validateNameForUpdate(String name, List<String> errorMessages) {
     if (name == null || name.trim().isEmpty()) {
       errorMessages.add("Certificate name should not be empty");
+      return;
+    }
+    if (name.length() > 255) {
+      errorMessages.add("Length of the certificate name cannot be more than 255.");
+    }
+  }
+
+  private void validateNameForSave(String name, List<String> errorMessages) {
+    if (name == null || name.trim().isEmpty()) {
+      errorMessages.add("Certificate name should not be empty");
+      return;
+    }
+    if (name.length() > 255) {
+      errorMessages.add("Length of the certificate name cannot be more than 255.");
+      return;
+    }
+    if (certificateDAO.getByName(name).isPresent()) {
+      errorMessages.add(String.format("Certificate with name %s already exists.", name));
     }
   }
 
   private void validateDescription(String description, List<String> errorMessages) {
     if (description == null || description.trim().isEmpty()) {
       errorMessages.add("Certificate description should not be empty");
+      return;
+    }
+    if (description.length() > 255) {
+      errorMessages.add("Length of the description cannot be more than 255.");
     }
   }
 
   private void validatePrice(BigDecimal price, List<String> errorMessages) {
     if (price == null) {
       errorMessages.add("Price can't be null.");
-    } else if (price.compareTo(BigDecimal.ZERO) < 0) {
+      return;
+    }
+    if (price.compareTo(BigDecimal.ZERO) < 0) {
       errorMessages.add("Price can't be negative.");
     }
   }

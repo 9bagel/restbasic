@@ -27,6 +27,11 @@ public class TagValidator {
   private void validateName(String tagName, List<String> errorMessages) {
     if (tagName == null || tagName.trim().isEmpty()) {
       errorMessages.add("Tag name should not be empty.");
+      return;
+    }
+    if (tagName.length() > 255) {
+      errorMessages.add("Length of the tag name cannot be more than 255.");
+      return;
     }
     if (tagDAO.getByName(tagName).isPresent()) {
       errorMessages.add(String.format("Tag with name %s already exists.", tagName));
