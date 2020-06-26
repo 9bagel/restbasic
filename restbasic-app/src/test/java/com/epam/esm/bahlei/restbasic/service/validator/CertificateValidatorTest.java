@@ -41,6 +41,16 @@ class CertificateValidatorTest {
   }
 
   @Test
+  void validate_TooLongName_Error() {
+    GiftCertificate certificate = getValidCertificate();
+    certificate.setName(
+        "Long nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong nameLong name");
+
+    List<String> errors = validator.validateForSave(certificate);
+    assertThat(errors).containsOnly("Length of the certificate name cannot be more than 255.");
+  }
+
+  @Test
   void validate_NullDescription_Error() {
     GiftCertificate certificate = getValidCertificate();
     certificate.setDescription(null);
@@ -58,6 +68,14 @@ class CertificateValidatorTest {
     List<String> errors = validator.validateForSave(certificate);
 
     assertThat(errors).containsOnly("Certificate description should not be empty");
+  }
+
+  @Test
+  void validate_TooLongDescription_Error() {
+    GiftCertificate certificate = getValidCertificate();
+    certificate.setDescription("Long descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong description");
+    List<String> errors = validator.validateForSave(certificate);
+    assertThat(errors).containsOnly("Length of the description cannot be more than 255.");
   }
 
   @Test
