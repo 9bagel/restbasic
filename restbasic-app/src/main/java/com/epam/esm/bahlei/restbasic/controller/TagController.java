@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.ResponseEntity.*;
 
 @RestController
 @RequestMapping("/api")
@@ -25,33 +26,30 @@ public class TagController {
     this.tagService = tagService;
   }
   /**
-   * Returns a single Tag instance for a given id. See {@link #getAll()} to return a list of
-   * tags and determine individual {@code id} Path [GET /api/certificates/{id}]
-   * Path [GET /api/tags/{id}]
+   * Returns a single Tag instance for a given id. See {@link #getAll()} to return a list of tags
+   * and determine individual {@code id} Path [GET /api/certificates/{id}] Path [GET /api/tags/{id}]
+   *
    * @param id an id of a tag
    */
   @GetMapping("/tags/{id}")
   public ResponseEntity<?> getTag(@PathVariable long id) {
     Optional<Tag> optional = tagService.get(id);
     if (!optional.isPresent()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      return status(HttpStatus.NOT_FOUND).build();
     }
 
-    return ResponseEntity.ok(toTagDTO(optional.get()));
+    return ok(toTagDTO(optional.get()));
   }
 
-  /**
-   * Returns a list of Tags
-   * Path [GET /api/tags/]
-   */
+  /** Returns a list of Tags Path [GET /api/tags/] */
   @GetMapping("/tags")
   public ResponseEntity<?> getAll() {
-    return ResponseEntity.ok(tagService.getAll().stream().map(this::toTagDTO).collect(toList()));
+    return ok(tagService.getAll().stream().map(this::toTagDTO).collect(toList()));
   }
 
   /**
-   * Create a tag
-   * Path [POST /api/tags/]
+   * Create a tag Path [POST /api/tags/]
+   *
    * @param tagDTO a Tag object in JSON formaat
    */
   @PostMapping("/tags")
@@ -61,22 +59,21 @@ public class TagController {
 
     tagService.save(tag);
 
-    return ResponseEntity.created(
-            URI.create(httpServletRequest.getRequestURL().append(tag.getId()).toString()))
+    return created(URI.create(httpServletRequest.getRequestURL().append(tag.getId()).toString()))
         .build();
   }
   /**
-   * Deletes a single tag for a specific id.
-   * Path [DELETE /api/tags/{id}]
+   * Deletes a single tag for a specific id. Path [DELETE /api/tags/{id}]
+   *
    * @param id tag id
    */
   @DeleteMapping("/tags/{id}")
   public ResponseEntity<ErrorResponse> deleteTag(@PathVariable long id) {
     if (!tagService.get(id).isPresent()) {
-      return ResponseEntity.notFound().build();
+      return notFound().build();
     }
     tagService.delete(id);
-    return ResponseEntity.noContent().build();
+    return noContent().build();
   }
 
   private TagDTO toTagDTO(Tag tag) {

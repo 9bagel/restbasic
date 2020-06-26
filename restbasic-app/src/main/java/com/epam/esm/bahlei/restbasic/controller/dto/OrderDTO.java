@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderDTO {
-    private long id;
-    private BigDecimal cost;
-    private LocalDateTime purchaseDate;
-    private List<GiftCertificate> certificates;
+    public long id;
+    public BigDecimal cost;
+    public LocalDateTime purchaseDate;
+    public List<GiftCertificate> certificates;
 }
