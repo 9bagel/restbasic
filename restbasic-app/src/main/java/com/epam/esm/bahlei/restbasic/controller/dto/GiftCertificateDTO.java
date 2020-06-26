@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Component
@@ -17,11 +18,11 @@ public class GiftCertificateDTO {
   public BigDecimal price;
   public Integer duration;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  public LocalDateTime createdAt;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:Z")
+  public OffsetDateTime createdAt;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  public LocalDateTime modifiedAt;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:Z")
+  public OffsetDateTime modifiedAt;
 
   public List<Tag> tags;
 

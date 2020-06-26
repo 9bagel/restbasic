@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +56,7 @@ class GiftCertificateServiceImplTest {
   @Test
   void update_InvalidCertificate_Error() {
     GiftCertificate certificate = getValidCertificate();
-    when(validator.validate(certificate)).thenReturn(singletonList("error"));
+    when(validator.validateForUpdate(certificate)).thenReturn(singletonList("error"));
 
     assertThrows(ValidationException.class, () -> certificateService.update(certificate));
   }
@@ -64,7 +64,7 @@ class GiftCertificateServiceImplTest {
   @Test
   void update_ValidCertificate_OK() {
     GiftCertificate certificate = getValidCertificate();
-    when(validator.validate(certificate)).thenReturn(emptyList());
+    when(validator.validateForUpdate(certificate)).thenReturn(emptyList());
 
     assertThatCode(() -> certificateService.update(certificate)).doesNotThrowAnyException();
   }
@@ -72,7 +72,7 @@ class GiftCertificateServiceImplTest {
   @Test
   void save_InvalidCertificate_Error() {
     GiftCertificate certificate = getValidCertificate();
-    when(validator.validate(certificate)).thenReturn(singletonList("error"));
+    when(validator.validateForSave(certificate)).thenReturn(singletonList("error"));
 
     assertThrows(ValidationException.class, () -> certificateService.save(certificate));
   }
@@ -80,7 +80,7 @@ class GiftCertificateServiceImplTest {
   @Test
   void save_ValidCertificate_OK() {
     GiftCertificate certificate = getValidCertificate();
-    when(validator.validate(certificate)).thenReturn(emptyList());
+    when(validator.validateForSave(certificate)).thenReturn(emptyList());
 
     assertThatCode(() -> certificateService.save(certificate)).doesNotThrowAnyException();
   }
@@ -92,8 +92,8 @@ class GiftCertificateServiceImplTest {
     giftCertificate.setPrice(BigDecimal.valueOf(100));
     giftCertificate.setDuration(10);
     giftCertificate.setName("certificate");
-    giftCertificate.setCreatedAt(LocalDateTime.now());
-    giftCertificate.setModifiedAt(LocalDateTime.now());
+    giftCertificate.setCreatedAt(OffsetDateTime.now());
+    giftCertificate.setModifiedAt(OffsetDateTime.now());
     giftCertificate.setTags(getValidTags());
 
     return giftCertificate;

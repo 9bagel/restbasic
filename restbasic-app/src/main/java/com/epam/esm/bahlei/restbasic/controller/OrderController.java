@@ -12,12 +12,9 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api")
 public class OrderController {
-    @PostMapping("/orders")
-    public ResponseEntity<?> createOrder(
-            @RequestBody OrderDTO orderDTO) {
+  @PostMapping("/orders")
+  public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO) {
 
-        return ResponseEntity.created(
-                URI.create("/"))
-                .build();
-    }
+    return ResponseEntity.created(URI.create("/test2")).build();
+  }
 }

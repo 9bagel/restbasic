@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +31,10 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
 
     giftCertificate.setId(resultSet.getLong("id"));
     giftCertificate.setName(resultSet.getString("name"));
-    giftCertificate.setCreatedAt(resultSet.getTimestamp("created_at").toLocalDateTime());
-    giftCertificate.setModifiedAt(resultSet.getTimestamp("updated_at").toLocalDateTime());
+    giftCertificate.setCreatedAt(
+        resultSet.getTimestamp("created_at").toInstant().atOffset(ZoneOffset.UTC));
+    giftCertificate.setModifiedAt(
+        resultSet.getTimestamp("updated_at").toInstant().atOffset(ZoneOffset.UTC));
     giftCertificate.setDuration(resultSet.getInt("duration"));
     giftCertificate.setPrice(resultSet.getBigDecimal("price"));
     giftCertificate.setDescription(resultSet.getString("description"));
@@ -108,5 +111,18 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
         Timestamp.valueOf(LocalDateTime.now()),
         certificate.getDuration(),
         certificate.getId());
+  }
+
+  @Override
+  public Optional<GiftCertificate> getByName(String name) {
+    String sql =
+        "SELECT id, name, description, price, created_at, updated_at, duration "
+            + "FROM certificates WHERE name = ?";
+    try {
+      return Optional.ofNullable(
+          jdbcTemplate.queryForObject(sql, new Object[] {name}, this::toCertificate));
+    } catch (EmptyResultDataAccessException ex) {
+      return Optional.empty();
+    }
   }
 }
