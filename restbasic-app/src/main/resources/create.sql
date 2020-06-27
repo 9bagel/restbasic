@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS certificate_tags(
 	CREATE TABLE IF NOT EXISTS orders(
 	id bigserial PRIMARY KEY,
 	cost decimal NOT NULL,
-	purchaseDate timestamp NOT NULL);
+	purchase_Date timestamp with time zone NOT NULL);
 
 	CREATE TABLE IF NOT EXISTS ordered_certificates(
 	id bigserial PRIMARY KEY,

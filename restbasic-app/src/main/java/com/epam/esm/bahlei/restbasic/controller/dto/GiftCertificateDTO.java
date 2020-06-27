@@ -18,10 +18,10 @@ public class GiftCertificateDTO {
   public BigDecimal price;
   public Integer duration;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:Z")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:X")
   public OffsetDateTime createdAt;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:Z")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:X")
   public OffsetDateTime modifiedAt;
 
   public List<Tag> tags;

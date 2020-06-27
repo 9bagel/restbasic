@@ -40,9 +40,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     if (!optional.isPresent()) {
       return Optional.empty();
     }
-    GiftCertificate giftCertificate = optional.get();
-    List<Tag> tags = tagDAO.getCertificateTags(giftCertificateId);
-    giftCertificate.setTags(tags);
+    setCertificateTags(optional.get());
     return optional;
   }
 

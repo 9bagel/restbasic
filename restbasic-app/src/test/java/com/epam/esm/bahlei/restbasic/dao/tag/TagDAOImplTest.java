@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestAppConfig.class)
 @Transactional
-class UserDAOImplTest {
+class TagDAOImplTest {
   @Autowired private TagDAO tagDAO;
   @Autowired private GiftCertificateDAO certificateDAO;
 
