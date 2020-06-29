@@ -15,4 +15,10 @@ public interface OrderDAO {
   List<Order> getAll();
 
   Optional<Order> get(long id);
+
+  List<Order> getUserOrders(long userId);
+
+  void saveUserOrder(long userId, long orderId);
+
+    Optional<Order> getUserOrderDetails(long userId, long orderId);
 }

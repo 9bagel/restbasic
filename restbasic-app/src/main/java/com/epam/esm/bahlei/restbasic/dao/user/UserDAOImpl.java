@@ -1,5 +1,6 @@
 package com.epam.esm.bahlei.restbasic.dao.user;
 
+import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;

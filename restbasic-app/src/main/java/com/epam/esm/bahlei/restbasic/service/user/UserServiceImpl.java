@@ -1,6 +1,8 @@
 package com.epam.esm.bahlei.restbasic.service.user;
 
+import com.epam.esm.bahlei.restbasic.dao.order.OrderDAO;
 import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
+import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,15 +14,19 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
   private final UserDAO userDAO;
+  private final OrderDAO orderDAO;
 
   @Autowired
-  public UserServiceImpl(UserDAO userDAO) {
+  public UserServiceImpl(UserDAO userDAO, OrderDAO orderDAO) {
     this.userDAO = userDAO;
+    this.orderDAO = orderDAO;
   }
 
   @Override
   public List<User> getAll() {
-    return userDAO.getAll();
+    List<User> users = userDAO.getAll();
+
+    return users;
   }
 
   @Override

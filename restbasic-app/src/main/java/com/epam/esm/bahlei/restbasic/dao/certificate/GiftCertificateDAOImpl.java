@@ -130,7 +130,8 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
   public List<GiftCertificate> getOrderedCertificates(long id) {
     String sql =
             "SELECT c.id, c.name, c.description, c.price, c.created_at, c.updated_at, c.duration " +
-                    "FROM certificates c JOIN ordered_certificates ON c.id = ordered_certificates.certificate_id "
+                    "FROM certificates c " +
+                    "JOIN ordered_certificates ON c.id = ordered_certificates.certificate_id "
                     + "WHERE ordered_certificates.order_id = ?";
 
     return jdbcTemplate.query(sql, new Object[] {id}, this::toCertificate);

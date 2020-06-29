@@ -71,6 +71,32 @@ public class OrderDAOImpl implements OrderDAO {
   }
 
   @Override
+  public void saveUserOrder(long userId, long orderId) {
+    String sql = "INSERT INTO user_orders(user_id, order_id) VALUES(?, ?)";
+
+    jdbcTemplate.update(sql, userId, orderId);
+  }
+
+  @Override
+  public List<Order> getUserOrders(long userId) {
+    String sql = "SELECT o.id, o.cost, o.purchase_date FROM orders o " +
+            "JOIN user_orders ON o.id = user_orders.order_id WHERE user_orders.user_id = ?";
+
+    return jdbcTemplate.query(sql, new Object[] {userId}, this::toOrder);
+  }
+
+  @Override
+  public Optional<Order> getUserOrderDetails(long userId, long orderId) {
+    String sql = "SELECT o.id, o.cost, o.purchase_date " +
+            "FROM orders o " +
+            "JOIN user_orders " +
+            "ON o.id = user_orders.order_id " +
+            "WHERE user_orders.user_id = ? " +
+            "AND user_orders.order_id = ?";
+    return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[] {userId, orderId}, this::toOrder));
+  }
+
+  @Override
   public void saveOrderedCertificates(List<GiftCertificate> certificates, long orderId) {
     String sql = "INSERT INTO ordered_certificates (certificate_id, order_id) VALUES (?, ?)";
 

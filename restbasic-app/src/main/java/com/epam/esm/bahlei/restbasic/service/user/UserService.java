@@ -1,5 +1,6 @@
 package com.epam.esm.bahlei.restbasic.service.user;
 
+import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.User;
 
 import java.util.List;

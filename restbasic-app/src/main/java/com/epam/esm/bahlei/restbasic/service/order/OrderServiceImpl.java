@@ -3,6 +3,7 @@ package com.epam.esm.bahlei.restbasic.service.order;
 import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.dao.order.OrderDAO;
 import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
+import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Tag;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,19 +27,21 @@ public class OrderServiceImpl implements OrderService {
   private final GiftCertificateDAO certificateDAO;
   private final OrderValidator validator;
   private final TagDAO tagDAO;
+  private final UserDAO userDAO;
 
   @Autowired
   public OrderServiceImpl(OrderDAO orderDAO, GiftCertificateDAO certificateDAO,
-                          OrderValidator validator, TagDAO tagDAO) {
+                          OrderValidator validator, TagDAO tagDAO, UserDAO userDAO) {
     this.orderDAO = orderDAO;
     this.certificateDAO = certificateDAO;
     this.validator = validator;
     this.tagDAO = tagDAO;
+    this.userDAO = userDAO;
   }
 
   @Override
   @Transactional
-  public void save(Order order) {
+  public void save(Order order, long userId) {
     List<String> errors = validator.validate(order);
     if (!errors.isEmpty()) {
       throw new ValidationException(errors);
@@ -50,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
 
     orderDAO.save(order);
     orderDAO.saveOrderedCertificates(order.getCertificates(), order.getId());
+    orderDAO.saveUserOrder(userId, order.getId());
   }
 
   private BigDecimal calculateCost(List<GiftCertificate> certificates) {
@@ -74,8 +79,25 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public Optional<Order> get(long id) {
-    Optional<Order> order = orderDAO.get(id);
+  public List<Order> getUserOrders(long userId) {
+    List<Order> userOrders = orderDAO.getUserOrders(userId);
+    userOrders.forEach(this::setOrderedCertificates);
+    return userOrders;
+  }
+
+  @Override
+  public Optional<Order> get(long orderId, long userId) {
+    List<String> errors = new ArrayList<>();
+    if (!orderDAO.get(orderId).isPresent()){
+      errors.add("There is no order with id " + orderId);
+    }
+    if(!userDAO.get(userId).isPresent()){
+      errors.add("There is no user with id " + userId);
+    }
+    if (!errors.isEmpty()) {
+      throw new ValidationException(errors);
+    }
+    Optional<Order> order = orderDAO.getUserOrderDetails(userId, orderId);
     order.ifPresent(this::setOrderedCertificates);
     return order;
   }
