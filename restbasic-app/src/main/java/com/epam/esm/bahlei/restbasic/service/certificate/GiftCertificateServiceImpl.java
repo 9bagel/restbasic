@@ -2,6 +2,7 @@ package com.epam.esm.bahlei.restbasic.service.certificate;
 
 import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
+import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
@@ -21,15 +22,18 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
   private final GiftCertificateDAO giftCertificateDAO;
   private final TagDAO tagDAO;
+  private final UserDAO userDAO;
   private final CertificateValidator certificateValidator;
 
   @Autowired
   public GiftCertificateServiceImpl(
       GiftCertificateDAO giftCertificateDAO,
       TagDAO tagDAO,
+      UserDAO userDAO,
       CertificateValidator certificateValidator) {
     this.giftCertificateDAO = giftCertificateDAO;
     this.tagDAO = tagDAO;
+    this.userDAO = userDAO;
     this.certificateValidator = certificateValidator;
   }
 
@@ -55,6 +59,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
   private void setCertificateTags(GiftCertificate giftCertificate) {
     List<Tag> tags = tagDAO.getCertificateTags(giftCertificate.getId());
     giftCertificate.setTags(tags);
+  }
+
+  @Override
+  public Optional<GiftCertificate> getFavouriteUserCertificate(long userId) {
+    if (!userDAO.get(userId).isPresent()) {
+      return Optional.empty();
+    }
+    Optional<GiftCertificate> optional = giftCertificateDAO.getFavouriteUserCertificate(userId);
+    if (!optional.isPresent()) {
+      return Optional.empty();
+    }
+    setCertificateTags(optional.get());
+    return optional;
   }
 
   @Transactional

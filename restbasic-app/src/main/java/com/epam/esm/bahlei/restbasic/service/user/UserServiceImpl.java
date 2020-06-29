@@ -1,8 +1,8 @@
 package com.epam.esm.bahlei.restbasic.service.user;
 
-import com.epam.esm.bahlei.restbasic.dao.order.OrderDAO;
+import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
-import com.epam.esm.bahlei.restbasic.model.Order;
+import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +14,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
   private final UserDAO userDAO;
-  private final OrderDAO orderDAO;
+  private final GiftCertificateDAO certificateDAO;
 
   @Autowired
-  public UserServiceImpl(UserDAO userDAO, OrderDAO orderDAO) {
+  public UserServiceImpl(UserDAO userDAO, GiftCertificateDAO certificateDAO) {
     this.userDAO = userDAO;
-    this.orderDAO = orderDAO;
+    this.certificateDAO = certificateDAO;
   }
 
   @Override

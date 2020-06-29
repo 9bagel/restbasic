@@ -17,4 +17,6 @@ public interface GiftCertificateService {
   void delete(long giftCertificateId);
 
   void update(GiftCertificate giftCertificate);
+
+  Optional<GiftCertificate> getFavouriteUserCertificate(long userId);
 }

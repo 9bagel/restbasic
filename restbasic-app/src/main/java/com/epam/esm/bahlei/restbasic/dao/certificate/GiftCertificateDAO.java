@@ -21,4 +21,6 @@ public interface GiftCertificateDAO {
   Optional<GiftCertificate> getByName(String tagName);
 
   List<GiftCertificate> getOrderedCertificates(long id);
+
+  Optional<GiftCertificate> getFavouriteUserCertificate(long userId);
 }

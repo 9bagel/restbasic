@@ -129,11 +129,28 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
   @Override
   public List<GiftCertificate> getOrderedCertificates(long id) {
     String sql =
-            "SELECT c.id, c.name, c.description, c.price, c.created_at, c.updated_at, c.duration " +
-                    "FROM certificates c " +
-                    "JOIN ordered_certificates ON c.id = ordered_certificates.certificate_id "
-                    + "WHERE ordered_certificates.order_id = ?";
+        "SELECT c.id, c.name, c.description, c.price, c.created_at, c.updated_at, c.duration "
+            + "FROM certificates c "
+            + "JOIN ordered_certificates ON c.id = ordered_certificates.certificate_id "
+            + "WHERE ordered_certificates.order_id = ?";
 
     return jdbcTemplate.query(sql, new Object[] {id}, this::toCertificate);
+  }
+
+  @Override
+  public Optional<GiftCertificate> getFavouriteUserCertificate(long userId) {
+    String sql =
+        "SELECT c.id, c.name, c.description, c.price, c.created_at, c.updated_at, c.duration, "
+            + "COUNT(c.id) AS \"count\" "
+            + "FROM certificates c "
+            + "JOIN ordered_certificates oc ON c.id = oc.certificate_id "
+            + "JOIN user_orders uo ON oc.order_id = uo.order_id "
+            + "WHERE uo.user_id = ? "
+            + "GROUP BY c.id "
+            + "ORDER BY \"count\" DESC "
+            + "LIMIT 1";
+
+    return Optional.ofNullable(
+        jdbcTemplate.queryForObject(sql, new Object[] {userId}, this::toCertificate));
   }
 }

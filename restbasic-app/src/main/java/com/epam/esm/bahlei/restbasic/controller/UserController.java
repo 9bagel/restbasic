@@ -2,8 +2,10 @@ package com.epam.esm.bahlei.restbasic.controller;
 
 import com.epam.esm.bahlei.restbasic.controller.dto.OrderDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.UserDTO;
+import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.User;
+import com.epam.esm.bahlei.restbasic.service.certificate.GiftCertificateService;
 import com.epam.esm.bahlei.restbasic.service.order.OrderService;
 import com.epam.esm.bahlei.restbasic.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +25,16 @@ import static org.springframework.http.ResponseEntity.*;
 public class UserController {
   private final UserService userService;
   private final OrderService orderService;
+  private final GiftCertificateService certificateService;
 
   @Autowired
-  public UserController(UserService userService, OrderService orderService) {
+  public UserController(
+      UserService userService,
+      OrderService orderService,
+      GiftCertificateService certificateService) {
     this.userService = userService;
     this.orderService = orderService;
+    this.certificateService = certificateService;
   }
 
   @PostMapping("/")
@@ -62,6 +69,15 @@ public class UserController {
     return ok(orderService.getUserOrders(userId));
   }
 
+  @GetMapping("/{userId}/orders/favourite_certificate")
+  public ResponseEntity<?> getFavouriteCertificate(@PathVariable long userId) {
+    Optional<GiftCertificate> optional = certificateService.getFavouriteUserCertificate(userId);
+    if (!optional.isPresent()) {
+      return status(HttpStatus.NOT_FOUND).build();
+    }
+    return ok(optional.get());
+  }
+
   @GetMapping("/{userId}/orders/{orderId}")
   public ResponseEntity<?> getOrder(@PathVariable long userId, @PathVariable long orderId) {
     Optional<Order> optional = orderService.get(orderId, userId);
@@ -73,14 +89,16 @@ public class UserController {
   }
 
   @PostMapping("/{userId}/orders")
-  public ResponseEntity<?> createOrder(@PathVariable long userId,
-          @RequestBody OrderDTO orderDTO, HttpServletRequest httpServletRequest) {
+  public ResponseEntity<?> createOrder(
+      @PathVariable long userId,
+      @RequestBody OrderDTO orderDTO,
+      HttpServletRequest httpServletRequest) {
     Order order = toOrder(orderDTO);
 
     orderService.save(order, userId);
 
     return created(URI.create(httpServletRequest.getRequestURL().append(order.getId()).toString()))
-            .build();
+        .build();
   }
 
   private UserDTO toUserDTO(User user) {
@@ -95,6 +113,7 @@ public class UserController {
     user.setSecondName(userDTO.secondName);
     return user;
   }
+
   private Order toOrder(OrderDTO orderDTO) {
     Order order = new Order();
     order.setId(orderDTO.id);
