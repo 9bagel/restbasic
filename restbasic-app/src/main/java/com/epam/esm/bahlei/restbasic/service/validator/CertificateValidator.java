@@ -39,26 +39,23 @@ public class CertificateValidator {
   }
 
   private void validateNameForUpdate(String name, List<String> errorMessages) {
-    if (name == null || name.trim().isEmpty()) {
-      errorMessages.add("Certificate name should not be empty");
-      return;
-    }
-    if (name.length() > 255) {
-      errorMessages.add("Length of the certificate name cannot be more than 255.");
-    }
+    validateName(name, errorMessages);
   }
 
   private void validateNameForSave(String name, List<String> errorMessages) {
+    validateName(name, errorMessages);
+    if (certificateDAO.getByName(name).isPresent()) {
+      errorMessages.add(String.format("Certificate with name %s already exists.", name));
+    }
+  }
+
+  private void validateName(String name, List<String> errorMessages) {
     if (name == null || name.trim().isEmpty()) {
       errorMessages.add("Certificate name should not be empty");
       return;
     }
     if (name.length() > 255) {
       errorMessages.add("Length of the certificate name cannot be more than 255.");
-      return;
-    }
-    if (certificateDAO.getByName(name).isPresent()) {
-      errorMessages.add(String.format("Certificate with name %s already exists.", name));
     }
   }
 

@@ -93,6 +93,18 @@ public class CertificateController {
   @PutMapping("/certificates/{id}")
   public ResponseEntity<?> updateCertificate(
       @RequestBody GiftCertificateDTO certificateDTO, @PathVariable long id) {
+    certificateDTO.id = id;
+    if (!giftCertificateService.get(id).isPresent()) {
+      return notFound().build();
+    }
+
+    giftCertificateService.update(toCertificate(certificateDTO));
+    return noContent().build();
+  }
+
+  @PatchMapping("/certificates/{id}")
+  public ResponseEntity<?> patchCertificate(
+      @RequestBody GiftCertificateDTO certificateDTO, @PathVariable long id) {
 
     certificateDTO.id = id;
     Optional<GiftCertificate> certificateOptional = giftCertificateService.get(id);
@@ -103,7 +115,7 @@ public class CertificateController {
     GiftCertificate certificate = certificateOptional.get();
     mergeNewValues(certificateDTO, certificate);
 
-    giftCertificateService.update(certificate);
+    giftCertificateService.patch(certificate);
     return noContent().build();
   }
 

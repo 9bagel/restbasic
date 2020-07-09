@@ -105,6 +105,18 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     giftCertificateDAO.update(giftCertificate);
   }
 
+  @Transactional
+  @Override
+  public void patch(GiftCertificate giftCertificate) {
+    List<String> errors = certificateValidator.validateForUpdate(giftCertificate);
+
+    if (!errors.isEmpty()) {
+      throw new ValidationException(errors);
+    }
+    saveCertificateTags(giftCertificate);
+    giftCertificateDAO.update(giftCertificate);
+  }
+
   private void saveCertificateTags(GiftCertificate giftCertificate) {
     List<Tag> tags = giftCertificate.getTags();
 
