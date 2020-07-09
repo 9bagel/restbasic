@@ -35,10 +35,10 @@ public class TagDAOImpl implements TagDAO {
   }
 
   @Override
-  public List<Tag> getAll() {
-    String sql = "SELECT id, name FROM tags";
+  public List<Tag> getAll(int limit, int offset) {
+    String sql = "SELECT id, name FROM tags LIMIT ? OFFSET ? ";
 
-    return jdbcTemplate.query(sql, this::toTag);
+    return jdbcTemplate.query(sql, new Object[] {limit, offset}, this::toTag);
   }
 
   @Override
@@ -79,7 +79,8 @@ public class TagDAOImpl implements TagDAO {
   public Optional<Tag> getByName(String tagName) {
     String sql = "SELECT id, name FROM tags WHERE name = ?";
     try {
-      return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[] {tagName}, this::toTag));
+      return Optional.ofNullable(
+          jdbcTemplate.queryForObject(sql, new Object[] {tagName}, this::toTag));
     } catch (EmptyResultDataAccessException ex) {
       return Optional.empty();
     }

@@ -2,6 +2,8 @@ package com.epam.esm.bahlei.restbasic.controller;
 
 import com.epam.esm.bahlei.restbasic.controller.dto.OrderDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.UserDTO;
+import com.epam.esm.bahlei.restbasic.controller.refdto.OrderRefDTO;
+import com.epam.esm.bahlei.restbasic.controller.refdto.UserRefDTO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.User;
@@ -15,13 +17,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
-@RequestMapping("/api/users/")
+@RequestMapping("/api/users")
 public class UserController {
   private final UserService userService;
   private final OrderService orderService;
@@ -49,24 +52,28 @@ public class UserController {
   }
 
   @GetMapping("/")
-  public ResponseEntity<?> getAll() {
+  public ResponseEntity<?> getAll(
+      @RequestParam(required = false, defaultValue = "1") int page,
+      @RequestParam(required = false, defaultValue = "10") int size) {
 
-    return ok(userService.getAll().stream().map(this::toUserDTO).collect(toList()));
+    return ok(userService.getAll(page, size).stream().map(this::toUserRefDTO).collect(toList()));
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<?> getUser(@PathVariable long id) {
-    Optional<User> optional = userService.get(id);
+  @GetMapping("/{userId}")
+  public ResponseEntity<?> getUser(@PathVariable long userId) {
+    Optional<User> optional = userService.get(userId);
     if (!optional.isPresent()) {
       return status(HttpStatus.NOT_FOUND).build();
     }
 
-    return ok(toUserDTO(optional.get()));
+    return ok(toUserRefDTO(optional.get()));
   }
 
   @GetMapping("/{userId}/orders")
   public ResponseEntity<?> getUserOrders(@PathVariable long userId) {
-    return ok(orderService.getUserOrders(userId));
+    List<Order> userOrders = orderService.getUserOrders(userId);
+    List<OrderRefDTO> orderRefDTOS = userOrders.stream().map(this::toOrderRefDTO).collect(toList());
+    return ok(orderRefDTOS);
   }
 
   @GetMapping("/{userId}/orders/favourite_certificate")
@@ -106,6 +113,11 @@ public class UserController {
     return new UserDTO(user);
   }
 
+  private UserRefDTO toUserRefDTO(User user) {
+
+    return new UserRefDTO(user);
+  }
+
   private User toUser(UserDTO userDTO) {
     User user = new User();
     user.setId(userDTO.id);
@@ -121,5 +133,9 @@ public class UserController {
     order.setPurchaseDate(orderDTO.purchaseDate);
     order.setCertificates(orderDTO.certificates);
     return order;
+  }
+
+  private OrderRefDTO toOrderRefDTO(Order order) {
+    return new OrderRefDTO(order);
   }
 }

@@ -1,6 +1,7 @@
 package com.epam.esm.bahlei.restbasic.controller;
 
 import com.epam.esm.bahlei.restbasic.config.exception.response.ErrorResponse;
+import com.epam.esm.bahlei.restbasic.controller.criteria.CriteriaParser;
 import com.epam.esm.bahlei.restbasic.controller.dto.GiftCertificateDTO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.service.certificate.GiftCertificateService;
@@ -18,13 +19,13 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
-@RequestMapping("/api/")
-public class GiftCertificateRestController {
+@RequestMapping("/api")
+public class CertificateController {
 
   private final GiftCertificateService giftCertificateService;
 
   @Autowired
-  public GiftCertificateRestController(GiftCertificateService giftCertificateService) {
+  public CertificateController(GiftCertificateService giftCertificateService) {
     this.giftCertificateService = giftCertificateService;
   }
 

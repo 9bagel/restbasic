@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +29,12 @@ public class OrderServiceImpl implements OrderService {
   private final UserDAO userDAO;
 
   @Autowired
-  public OrderServiceImpl(OrderDAO orderDAO, GiftCertificateDAO certificateDAO,
-                          OrderValidator validator, TagDAO tagDAO, UserDAO userDAO) {
+  public OrderServiceImpl(
+      OrderDAO orderDAO,
+      GiftCertificateDAO certificateDAO,
+      OrderValidator validator,
+      TagDAO tagDAO,
+      UserDAO userDAO) {
     this.orderDAO = orderDAO;
     this.certificateDAO = certificateDAO;
     this.validator = validator;
@@ -86,14 +89,19 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
+  public Optional<Order> get(long orderId) {
+    List<String> errors = validator.validate(orderId);
+    if (!errors.isEmpty()) {
+      throw new ValidationException(errors);
+    }
+    Optional<Order> order = orderDAO.getOrder(orderId);
+    order.ifPresent(this::setOrderedCertificates);
+    return order;
+  }
+
+  @Override
   public Optional<Order> get(long orderId, long userId) {
-    List<String> errors = new ArrayList<>();
-    if (!orderDAO.get(orderId).isPresent()){
-      errors.add("There is no order with id " + orderId);
-    }
-    if(!userDAO.get(userId).isPresent()){
-      errors.add("There is no user with id " + userId);
-    }
+    List<String> errors = validator.validate(orderId, userId);
     if (!errors.isEmpty()) {
       throw new ValidationException(errors);
     }

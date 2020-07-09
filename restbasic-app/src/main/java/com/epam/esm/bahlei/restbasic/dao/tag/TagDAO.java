@@ -9,7 +9,7 @@ public interface TagDAO {
 
   Optional<Tag> get(long tagId);
 
-  List<Tag> getAll();
+  List<Tag> getAll(int limit, int offset);
 
   void save(Tag tag);
 

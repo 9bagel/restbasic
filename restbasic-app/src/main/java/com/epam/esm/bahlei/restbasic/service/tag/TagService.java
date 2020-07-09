@@ -9,7 +9,7 @@ public interface TagService {
 
   Optional<Tag> get(long tagId);
 
-  List<Tag> getAll();
+  List<Tag> getAll(int page, int size);
 
   void save(Tag tag);
 

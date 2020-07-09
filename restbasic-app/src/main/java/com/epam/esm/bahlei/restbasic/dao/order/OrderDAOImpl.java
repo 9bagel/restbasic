@@ -64,7 +64,7 @@ public class OrderDAOImpl implements OrderDAO {
     String sql = "SELECT id, cost, purchase_date FROM orders WHERE id = ?";
     try {
       return Optional.ofNullable(
-              jdbcTemplate.queryForObject(sql, new Object[] {id}, this::toOrder));
+          jdbcTemplate.queryForObject(sql, new Object[] {id}, this::toOrder));
     } catch (EmptyResultDataAccessException ex) {
       return Optional.empty();
     }
@@ -79,21 +79,31 @@ public class OrderDAOImpl implements OrderDAO {
 
   @Override
   public List<Order> getUserOrders(long userId) {
-    String sql = "SELECT o.id, o.cost, o.purchase_date FROM orders o " +
-            "JOIN user_orders ON o.id = user_orders.order_id WHERE user_orders.user_id = ?";
+    String sql =
+        "SELECT o.id, o.cost, o.purchase_date FROM orders o "
+            + "JOIN user_orders ON o.id = user_orders.order_id WHERE user_orders.user_id = ?";
 
     return jdbcTemplate.query(sql, new Object[] {userId}, this::toOrder);
   }
 
   @Override
   public Optional<Order> getUserOrderDetails(long userId, long orderId) {
-    String sql = "SELECT o.id, o.cost, o.purchase_date " +
-            "FROM orders o " +
-            "JOIN user_orders " +
-            "ON o.id = user_orders.order_id " +
-            "WHERE user_orders.user_id = ? " +
-            "AND user_orders.order_id = ?";
-    return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[] {userId, orderId}, this::toOrder));
+    String sql =
+        "SELECT o.id, o.cost, o.purchase_date "
+            + "FROM orders o "
+            + "JOIN user_orders "
+            + "ON o.id = user_orders.order_id "
+            + "WHERE user_orders.user_id = ? "
+            + "AND user_orders.order_id = ?";
+    return Optional.ofNullable(
+        jdbcTemplate.queryForObject(sql, new Object[] {userId, orderId}, this::toOrder));
+  }
+
+  @Override
+  public Optional<Order> getOrder(long orderId) {
+    String sql = "SELECT o.id, o.cost, o.purchase_date " + "FROM orders o " + "WHERE o.id = ?";
+    return Optional.ofNullable(
+        jdbcTemplate.queryForObject(sql, new Object[] {orderId}, this::toOrder));
   }
 
   @Override
@@ -102,5 +112,4 @@ public class OrderDAOImpl implements OrderDAO {
 
     certificates.forEach(certificate -> jdbcTemplate.update(sql, certificate.getId(), orderId));
   }
-
 }

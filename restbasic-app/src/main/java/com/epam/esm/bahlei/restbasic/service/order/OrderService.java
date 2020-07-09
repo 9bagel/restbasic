@@ -14,4 +14,6 @@ public interface OrderService {
   Optional<Order> get(long orderId, long userId);
 
   List<Order> getUserOrders(long userId);
+
+    Optional<Order> get(long orderId);
 }

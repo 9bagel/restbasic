@@ -21,4 +21,6 @@ public interface OrderDAO {
   void saveUserOrder(long userId, long orderId);
 
     Optional<Order> getUserOrderDetails(long userId, long orderId);
+
+    Optional<Order> getOrder(long orderId);
 }

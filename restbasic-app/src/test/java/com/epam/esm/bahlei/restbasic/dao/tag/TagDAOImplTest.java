@@ -76,8 +76,9 @@ class TagDAOImplTest {
   void getAll_OK() {
     List<Tag> expected = Arrays.asList(new Tag("books"), new Tag("tools"), new Tag("news"));
     expected.forEach(tag -> tagDAO.save(tag));
-
-    List<Tag> actual = tagDAO.getAll();
+    int limit = 3;
+    int offset = 0;
+    List<Tag> actual = tagDAO.getAll(limit, offset);
 
     assertThat(actual).extracting("name").containsExactly("books", "tools", "news");
   }

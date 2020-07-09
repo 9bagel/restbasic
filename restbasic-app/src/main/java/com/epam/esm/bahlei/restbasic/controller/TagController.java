@@ -26,7 +26,7 @@ public class TagController {
     this.tagService = tagService;
   }
   /**
-   * Returns a single Tag instance for a given id. See {@link #getAll()} to return a list of tags
+   * Returns a single Tag instance for a given id. See {@link #getAll(int, int)} to return a list of tags
    * and determine individual {@code id} Path [GET /api/certificates/{id}] Path [GET /api/tags/{id}]
    *
    * @param id an id of a tag
@@ -43,8 +43,10 @@ public class TagController {
 
   /** Returns a list of Tags Path [GET /api/tags/] */
   @GetMapping("/tags")
-  public ResponseEntity<?> getAll() {
-    return ok(tagService.getAll().stream().map(this::toTagDTO).collect(toList()));
+  public ResponseEntity<?> getAll(
+      @RequestParam(required = false, defaultValue = "1") int page,
+      @RequestParam(required = false, defaultValue = "10") int size) {
+    return ok(tagService.getAll(page, size).stream().map(this::toTagDTO).collect(toList()));
   }
 
   /**

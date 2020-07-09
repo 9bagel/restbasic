@@ -1,4 +1,4 @@
-package com.epam.esm.bahlei.restbasic.controller;
+package com.epam.esm.bahlei.restbasic.controller.criteria;
 
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import com.epam.esm.bahlei.restbasic.service.supplies.SortColumn;
@@ -18,9 +18,7 @@ public class CriteriaParser {
       List<String> columnNames = asList(sortBy.split(","));
 
       columnNames.forEach(
-          columnName -> {
-            sortColumns.add(parseSortColumn(columnName));
-          });
+          columnName -> sortColumns.add(parseSortColumn(columnName)));
     }
     return new Criteria(sortColumns, tagName, findPhrase);
   }
