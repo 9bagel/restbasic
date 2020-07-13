@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface OrderService {
 
-  void save(Order order, long userId);
+  void save(Order order);
 
   List<Order> getAll();
 

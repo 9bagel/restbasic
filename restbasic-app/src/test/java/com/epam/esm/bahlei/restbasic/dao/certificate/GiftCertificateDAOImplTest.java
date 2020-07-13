@@ -34,7 +34,7 @@ class GiftCertificateDAOImplTest {
   @Test
   @Sql("/sql/certificate/data.sql")
   void getAll_NoCriteria_OK() {
-    Criteria criteria = new Criteria(emptyList(), "", "");
+    Criteria criteria = new Criteria(emptyList(), emptyList(), "");
 
     List<GiftCertificate> actual = certificateDAO.getAll(criteria);
 
@@ -45,7 +45,7 @@ class GiftCertificateDAOImplTest {
   @Sql("/sql/certificate/data.sql")
   void getAll_SortColumn_OK() {
     SortColumn sortColumn = new SortColumn("name", SortOrder.DESC);
-    Criteria criteria = new Criteria(singletonList(sortColumn), "", "");
+    Criteria criteria = new Criteria(singletonList(sortColumn), emptyList(), "");
 
     List<GiftCertificate> actual = certificateDAO.getAll(criteria);
 
@@ -57,7 +57,7 @@ class GiftCertificateDAOImplTest {
   @Sql("/sql/tag/data.sql")
   @Sql("/sql/certificatetag/data.sql")
   void getAll_TagName_OK() {
-    Criteria criteria = new Criteria(emptyList(), "books", "");
+    Criteria criteria = new Criteria(emptyList(), singletonList("books"), "");
 
     List<GiftCertificate> actual = certificateDAO.getAll(criteria);
 
@@ -67,7 +67,7 @@ class GiftCertificateDAOImplTest {
   @Test
   @Sql("/sql/certificate/data.sql")
   void getAll_FindPhrase_OK() {
-    Criteria criteria = new Criteria(emptyList(), "", "test");
+    Criteria criteria = new Criteria(emptyList(), emptyList(), "test");
 
     List<GiftCertificate> actual = certificateDAO.getAll(criteria);
 

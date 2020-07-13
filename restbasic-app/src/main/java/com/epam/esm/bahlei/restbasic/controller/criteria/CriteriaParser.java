@@ -11,7 +11,7 @@ import static java.util.Arrays.asList;
 
 public class CriteriaParser {
 
-  public Criteria parse(String tagName, String sortBy, String findPhrase) {
+  public Criteria parse(List<String> tagNames, String sortBy, String findPhrase) {
     List<SortColumn> sortColumns = new ArrayList<>();
 
     if (sortBy != null) {
@@ -20,7 +20,7 @@ public class CriteriaParser {
       columnNames.forEach(
           columnName -> sortColumns.add(parseSortColumn(columnName)));
     }
-    return new Criteria(sortColumns, tagName, findPhrase);
+    return new Criteria(sortColumns, tagNames, findPhrase);
   }
 
   private SortColumn parseSortColumn(String columnName) {

@@ -100,9 +100,9 @@ public class UserController {
       @PathVariable long userId,
       @RequestBody OrderDTO orderDTO,
       HttpServletRequest httpServletRequest) {
-    Order order = toOrder(orderDTO);
+    Order order = toOrder(orderDTO, userId);
 
-    orderService.save(order, userId);
+    orderService.save(order);
 
     return created(URI.create(httpServletRequest.getRequestURL().append(order.getId()).toString()))
         .build();
@@ -126,12 +126,13 @@ public class UserController {
     return user;
   }
 
-  private Order toOrder(OrderDTO orderDTO) {
+  private Order toOrder(OrderDTO orderDTO, long userId) {
     Order order = new Order();
     order.setId(orderDTO.id);
     order.setCost(orderDTO.cost);
     order.setPurchaseDate(orderDTO.purchaseDate);
     order.setCertificates(orderDTO.certificates);
+    order.setUserId(userId);
     return order;
   }
 

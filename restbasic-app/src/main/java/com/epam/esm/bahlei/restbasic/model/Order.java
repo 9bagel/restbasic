@@ -6,9 +6,18 @@ import java.util.List;
 
 public class Order {
   private long id;
+  private long userId;
   private BigDecimal cost;
   private OffsetDateTime purchaseDate;
   private List<GiftCertificate> certificates;
+
+  public long getUserId() {
+    return userId;
+  }
+
+  public void setUserId(long userId) {
+    this.userId = userId;
+  }
 
   public long getId() {
     return id;

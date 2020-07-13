@@ -9,21 +9,23 @@ public class CriteriaToSQL {
     StringBuilder sql = new StringBuilder();
     List<SortColumn> sortColumns = criteria.sortColumns;
 
-    buildFilterSql(criteria.tagName, sql);
+    buildFilterSql(criteria.tagNames, sql);
     buildSearchSql(criteria.findPhrase, sql);
     buildSortingSql(sortColumns, sql);
 
     return sql.toString();
   }
 
-  private static void buildFilterSql(String tagName, StringBuilder sql) {
-    if (tagName == null || tagName.isEmpty()) {
+  private static void buildFilterSql(List<String> tagNames, StringBuilder sql) {
+    if (tagNames == null || tagNames.isEmpty()) {
       return;
     }
+    StringJoiner joiner = new StringJoiner("AND t.name = ");
+    tagNames.forEach(joiner::add);
     String filterSql =
         "JOIN certificate_tags ct ON c.id = ct.certificate_id "
-            + "JOIN tags t ON t.id = ct.tag_id WHERE t.name LIKE '"
-            + tagName
+            + "JOIN tags t ON t.id = ct.tag_id WHERE t.name = '"
+            + joiner.toString()
             + "' ";
     sql.append(filterSql);
   }
@@ -44,9 +46,8 @@ public class CriteriaToSQL {
       return;
     }
     StringJoiner joiner = new StringJoiner(", ");
-    for (SortColumn column : sortColumns) {
-      joiner.add(column.columnName + " " + column.sortOrder);
-    }
+    sortColumns.forEach(
+        sortColumn -> joiner.add(sortColumn.columnName + " " + sortColumn.sortOrder));
 
     sql.append("ORDER BY ").append(joiner.toString());
   }

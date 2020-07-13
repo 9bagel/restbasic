@@ -2,7 +2,6 @@ package com.epam.esm.bahlei.restbasic.service.validator;
 
 import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.dao.order.OrderDAO;
-import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +16,13 @@ public class OrderValidator {
 
   private final GiftCertificateDAO certificateDAO;
   private final OrderDAO orderDAO;
-  private final UserDAO userDAO;
   private final UserValidator userValidator;
 
   @Autowired
   public OrderValidator(
-      GiftCertificateDAO certificateDAO,
-      OrderDAO orderDAO,
-      UserDAO userDAO,
-      UserValidator userValidator) {
+      GiftCertificateDAO certificateDAO, OrderDAO orderDAO, UserValidator userValidator) {
     this.certificateDAO = certificateDAO;
     this.orderDAO = orderDAO;
-    this.userDAO = userDAO;
     this.userValidator = userValidator;
   }
 
@@ -36,6 +30,7 @@ public class OrderValidator {
     List<String> errors = new ArrayList<>();
     validateCost(order.getCost(), errors);
     validateCertificates(order.getCertificates(), errors);
+    errors.addAll(userValidator.validate(order.getUserId()));
     return errors;
   }
 

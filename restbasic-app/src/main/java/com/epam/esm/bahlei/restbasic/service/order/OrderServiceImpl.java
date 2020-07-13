@@ -44,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional
-  public void save(Order order, long userId) {
+  public void save(Order order) {
     List<String> errors = validator.validate(order);
     if (!errors.isEmpty()) {
       throw new ValidationException(errors);
@@ -57,7 +57,6 @@ public class OrderServiceImpl implements OrderService {
 
     orderDAO.save(order);
     orderDAO.saveOrderedCertificates(order.getCertificates(), order.getId());
-    orderDAO.saveUserOrder(userId, order.getId());
   }
 
   private BigDecimal calculateCost(List<GiftCertificate> certificates) {
@@ -94,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
     if (!errors.isEmpty()) {
       throw new ValidationException(errors);
     }
-    Optional<Order> order = orderDAO.getOrder(orderId);
+    Optional<Order> order = orderDAO.get(orderId);
     order.ifPresent(this::setOrderedCertificates);
     return order;
   }

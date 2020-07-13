@@ -7,18 +7,17 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 public class OrderRefDTO {
-    public long id;
-    public BigDecimal cost;
+  public long id;
+  public BigDecimal cost;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:X")
-    public OffsetDateTime purchaseDate;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:X")
+  public OffsetDateTime purchaseDate;
 
-    public OrderRefDTO(Order order) {
-        this.id = order.getId();
-        this.cost = order.getCost();
-        this.purchaseDate = order.getPurchaseDate();
-    }
+  public OrderRefDTO(Order order) {
+    this.id = order.getId();
+    this.cost = order.getCost();
+    this.purchaseDate = order.getPurchaseDate();
+  }
 
-    public OrderRefDTO() {
-    }
+  public OrderRefDTO() {}
 }

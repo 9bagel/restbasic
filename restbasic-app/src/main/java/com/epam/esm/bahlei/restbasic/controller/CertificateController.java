@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
@@ -55,7 +56,7 @@ public class CertificateController {
    */
   @GetMapping("/certificates")
   public ResponseEntity<?> getAll(
-      @RequestParam(required = false) String tagName,
+      @RequestParam(required = false) List<String> tagName,
       @RequestParam(required = false) String sortBy,
       @RequestParam(required = false) String find) {
     Criteria criteria = new CriteriaParser().parse(tagName, sortBy, find);

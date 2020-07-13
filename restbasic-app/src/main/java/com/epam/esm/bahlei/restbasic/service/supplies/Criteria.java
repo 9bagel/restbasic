@@ -5,13 +5,13 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class Criteria {
-  public final String tagName;
+  public final List<String> tagNames;
   public final String findPhrase;
   public final List<SortColumn> sortColumns;
 
-  public Criteria(List<SortColumn> sortColumns, String tagName, String findPhrase) {
+  public Criteria(List<SortColumn> sortColumns, List<String> tagNames, String findPhrase) {
     this.sortColumns = ImmutableList.copyOf(sortColumns);
-    this.tagName = tagName;
+    this.tagNames = tagNames;
     this.findPhrase = findPhrase;
   }
 }
