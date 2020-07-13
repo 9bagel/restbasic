@@ -20,13 +20,16 @@ public class CriteriaToSQL {
     if (tagNames == null || tagNames.isEmpty()) {
       return;
     }
-    StringJoiner joiner = new StringJoiner("AND t.name = ");
-    tagNames.forEach(joiner::add);
+    StringJoiner joiner = new StringJoiner(", ");
+    tagNames.forEach(tagName -> joiner.add("'" + tagName + "' "));
     String filterSql =
         "JOIN certificate_tags ct ON c.id = ct.certificate_id "
-            + "JOIN tags t ON t.id = ct.tag_id WHERE t.name = '"
+            + "JOIN tags t ON t.id = ct.tag_id WHERE t.name IN("
             + joiner.toString()
-            + "' ";
+            + ")"
+            + "GROUP BY (c.id) "
+            + "HAVING COUNT(c.id) >="
+            + tagNames.size();
     sql.append(filterSql);
   }
 

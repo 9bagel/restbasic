@@ -31,7 +31,7 @@ public class CertificateController {
   }
 
   /**
-   * Returns a single Certificate instance for a given certificate id. See {@link #getAll(String,
+   * Returns a single Certificate instance for a given certificate id. See {@link #getAll(List,
    * String, String)} to return a list of certificates and determine individual {@code id} Path [GET
    * /api/certificates/{id}]
    *
