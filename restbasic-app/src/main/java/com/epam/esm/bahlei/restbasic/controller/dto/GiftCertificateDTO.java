@@ -3,6 +3,7 @@ package com.epam.esm.bahlei.restbasic.controller.dto;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Component
-public class GiftCertificateDTO {
+public class GiftCertificateDTO extends RepresentationModel<GiftCertificateDTO> {
   public long id;
   public String name;
   public String description;

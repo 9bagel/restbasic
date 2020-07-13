@@ -11,6 +11,7 @@ import com.epam.esm.bahlei.restbasic.service.certificate.GiftCertificateService;
 import com.epam.esm.bahlei.restbasic.service.order.OrderService;
 import com.epam.esm.bahlei.restbasic.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
@@ -40,7 +43,7 @@ public class UserController {
     this.certificateService = certificateService;
   }
 
-  @PostMapping("")
+  @PostMapping("/")
   public ResponseEntity<?> addUser(
       @RequestBody UserDTO userDTO, HttpServletRequest httpServletRequest) {
     User user = toUser(userDTO);
@@ -51,12 +54,28 @@ public class UserController {
         .build();
   }
 
-  @GetMapping("")
+  @GetMapping("/")
   public ResponseEntity<?> getAll(
       @RequestParam(required = false, defaultValue = "1") int page,
       @RequestParam(required = false, defaultValue = "10") int size) {
-
-    return ok(userService.getAll(page, size).stream().map(this::toUserRefDTO).collect(toList()));
+    // Мб заменить на for? Или вынести в метод?
+    // Нужно ли здесь добавить self ссылку?
+    return ok(
+        userService.getAll(page, size).stream()
+            .map(this::toUserRefDTO)
+            .map(
+                userRefDTO ->
+                    userRefDTO.add(
+                        linkTo(methodOn(UserController.class).getUser(userRefDTO.getId()))
+                            .withSelfRel()))
+            .map(
+                userRefDTO ->
+                    userRefDTO.add(
+                        linkTo(
+                                methodOn(UserController.class)
+                                    .getUserOrders(userRefDTO.getId(), 1, 10))
+                            .withRel("orders")))
+            .collect(toList()));
   }
 
   @GetMapping("/{userId}")
@@ -65,8 +84,13 @@ public class UserController {
     if (!optional.isPresent()) {
       return status(HttpStatus.NOT_FOUND).build();
     }
+    Link selfLink = linkTo(methodOn(UserController.class).getUser(userId)).withSelfRel();
+    Link orders =
+        linkTo(methodOn(UserController.class).getUserOrders(userId, 1, 10)).withRel("orders");
 
-    return ok(toUserRefDTO(optional.get()));
+    UserRefDTO userRefDTO = toUserRefDTO(optional.get());
+    userRefDTO.add(selfLink, orders);
+    return ok(userRefDTO);
   }
 
   @GetMapping("/{userId}/orders")
@@ -75,7 +99,15 @@ public class UserController {
       @RequestParam(required = false, defaultValue = "1") int page,
       @RequestParam(required = false, defaultValue = "10") int size) {
     List<Order> userOrders = orderService.getUserOrders(userId, page, size);
-    List<OrderRefDTO> orderRefDTOS = userOrders.stream().map(this::toOrderRefDTO).collect(toList());
+    List<OrderRefDTO> orderRefDTOS =
+        userOrders.stream()
+            .map(this::toOrderRefDTO)
+            .map(
+                orderRefDTO ->
+                    orderRefDTO.add(
+                        linkTo(methodOn(UserController.class).getOrder(userId, orderRefDTO.id))
+                            .withSelfRel()))
+            .collect(toList());
     return ok(orderRefDTOS);
   }
 
@@ -94,8 +126,11 @@ public class UserController {
     if (!optional.isPresent()) {
       return status(HttpStatus.NOT_FOUND).build();
     }
+    OrderDTO orderDTO = toOrderDTO(optional.get());
+    Link selfLink = linkTo(methodOn(UserController.class).getOrder(userId, orderId)).withSelfRel();
+    orderDTO.add(selfLink);
 
-    return ok(optional.get());
+    return ok(orderDTO);
   }
 
   @PostMapping("/{userId}/orders")
@@ -137,6 +172,10 @@ public class UserController {
     order.setCertificates(orderDTO.certificates);
     order.setUserId(userId);
     return order;
+  }
+
+  private OrderDTO toOrderDTO(Order order) {
+    return new OrderDTO(order);
   }
 
   private OrderRefDTO toOrderRefDTO(Order order) {

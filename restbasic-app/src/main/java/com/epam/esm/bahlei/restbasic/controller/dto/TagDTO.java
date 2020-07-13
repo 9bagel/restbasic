@@ -1,10 +1,11 @@
 package com.epam.esm.bahlei.restbasic.controller.dto;
 
 import com.epam.esm.bahlei.restbasic.model.Tag;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TagDTO {
+public class TagDTO extends RepresentationModel<TagDTO> {
   public long id;
   public String name;
 

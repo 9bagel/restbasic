@@ -2,10 +2,11 @@ package com.epam.esm.bahlei.restbasic.controller.dto;
 
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.User;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
-public class UserDTO {
+public class UserDTO extends RepresentationModel<UserDTO> {
   public long id;
   public String firstName;
   public String secondName;

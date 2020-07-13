@@ -2,12 +2,14 @@ package com.epam.esm.bahlei.restbasic.controller.refdto;
 
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-public class OrderRefDTO {
+public class OrderRefDTO extends RepresentationModel<OrderRefDTO> {
   public long id;
+  public long userId;
   public BigDecimal cost;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:X")
@@ -17,6 +19,7 @@ public class OrderRefDTO {
     this.id = order.getId();
     this.cost = order.getCost();
     this.purchaseDate = order.getPurchaseDate();
+    userId = order.getUserId();
   }
 
   public OrderRefDTO() {}

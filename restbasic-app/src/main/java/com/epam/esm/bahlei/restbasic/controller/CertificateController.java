@@ -7,6 +7,7 @@ import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.service.certificate.GiftCertificateService;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/")
 public class CertificateController {
 
   private final GiftCertificateService giftCertificateService;
@@ -32,8 +35,8 @@ public class CertificateController {
 
   /**
    * Returns a single Certificate instance for a given certificate id. See {@link #getAll(List,
-   * String, String)} to return a list of certificates and determine individual {@code id} Path [GET
-   * /api/certificates/{id}]
+   * String, String, int, int)} to return a list of certificates and determine individual {@code id}
+   * Path [GET /api/certificates/{id}]
    *
    * @param id an id of a certificate
    */
@@ -43,8 +46,10 @@ public class CertificateController {
     if (!optional.isPresent()) {
       return status(HttpStatus.NOT_FOUND).build();
     }
-
-    return ok(toCertificateDTO(optional.get()));
+    Link selfLink = linkTo(methodOn(CertificateController.class).getCertificate(id)).withSelfRel();
+    GiftCertificateDTO dto = toCertificateDTO(optional.get());
+    dto.add(selfLink);
+    return ok(dto);
   }
 
   /**
@@ -54,7 +59,7 @@ public class CertificateController {
    * @param sortBy (not required) name of sorting field including sorting order
    * @param find (not required) search phrase that certificate should have
    */
-  @GetMapping("/certificates")
+  @GetMapping("/certificates/")
   public ResponseEntity<?> getAll(
       @RequestParam(required = false) List<String> tagName,
       @RequestParam(required = false) String sortBy,
@@ -66,6 +71,13 @@ public class CertificateController {
     return ok(
         giftCertificateService.getAll(criteria, page, size).stream()
             .map(this::toCertificateDTO)
+            .map(
+                certificateDTO ->
+                    certificateDTO.add(
+                        linkTo(
+                                methodOn(CertificateController.class)
+                                    .getCertificate(certificateDTO.id))
+                            .withSelfRel()))
             .collect(toList()));
   }
 

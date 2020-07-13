@@ -14,6 +14,8 @@ import java.net.URI;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
@@ -26,8 +28,9 @@ public class TagController {
     this.tagService = tagService;
   }
   /**
-   * Returns a single Tag instance for a given id. See {@link #getAll(int, int)} to return a list of tags
-   * and determine individual {@code id} Path [GET /api/certificates/{id}] Path [GET /api/tags/{id}]
+   * Returns a single Tag instance for a given id. See {@link #getAll(int, int)} to return a list of
+   * tags and determine individual {@code id} Path [GET /api/certificates/{id}] Path [GET
+   * /api/tags/{id}]
    *
    * @param id an id of a tag
    */
@@ -37,8 +40,9 @@ public class TagController {
     if (!optional.isPresent()) {
       return status(HttpStatus.NOT_FOUND).build();
     }
-
-    return ok(toTagDTO(optional.get()));
+    TagDTO tagDTO = toTagDTO(optional.get());
+    tagDTO.add(linkTo(methodOn(TagController.class).getTag(id)).withSelfRel());
+    return ok(tagDTO);
   }
 
   /** Returns a list of Tags Path [GET /api/tags/] */
@@ -46,7 +50,14 @@ public class TagController {
   public ResponseEntity<?> getAll(
       @RequestParam(required = false, defaultValue = "1") int page,
       @RequestParam(required = false, defaultValue = "10") int size) {
-    return ok(tagService.getAll(page, size).stream().map(this::toTagDTO).collect(toList()));
+    return ok(
+        tagService.getAll(page, size).stream()
+            .map(this::toTagDTO)
+            .map(
+                tagDTO ->
+                    tagDTO.add(
+                        linkTo(methodOn(TagController.class).getTag(tagDTO.id)).withSelfRel()))
+            .collect(toList()));
   }
 
   /**
