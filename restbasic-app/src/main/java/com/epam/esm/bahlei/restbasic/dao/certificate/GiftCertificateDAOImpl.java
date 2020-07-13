@@ -43,14 +43,15 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
   }
 
   @Override
-  public List<GiftCertificate> getAll(Criteria criteria) {
+  public List<GiftCertificate> getAll(Criteria criteria, int size, long offset) {
     String sql = CriteriaToSQL.mapSql(criteria);
     String wholeSql =
         "SELECT c.id, c.name, c.description, c.price, c.created_at, c.updated_at, c.duration "
             + "FROM certificates c "
-            + sql;
+            + sql
+            + " LIMIT ? OFFSET ? ";
 
-    return jdbcTemplate.query(wholeSql, this::toCertificate);
+    return jdbcTemplate.query(wholeSql, new Object[] {size, offset}, this::toCertificate);
   }
 
   @Override

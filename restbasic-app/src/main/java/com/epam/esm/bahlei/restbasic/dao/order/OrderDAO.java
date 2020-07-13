@@ -16,7 +16,7 @@ public interface OrderDAO {
 
   Optional<Order> get(long id);
 
-  List<Order> getUserOrders(long userId);
+  List<Order> getUserOrders(long id, int size, long offset);
 
   Optional<Order> getUserOrderDetails(long userId, long orderId);
 }

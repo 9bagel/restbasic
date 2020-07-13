@@ -36,7 +36,7 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public List<User> getAll(int limit, int offset) {
+  public List<User> getAll(int limit, long offset) {
     String sql = "SELECT id, first_name, second_name FROM users LIMIT ? OFFSET ? ";
 
     return jdbcTemplate.query(sql, new Object[] {limit, offset}, this::toUser);

@@ -2,6 +2,7 @@ package com.epam.esm.bahlei.restbasic.service.tag;
 
 import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
 import com.epam.esm.bahlei.restbasic.model.Tag;
+import com.epam.esm.bahlei.restbasic.service.utils.ServiceUtils;
 import com.epam.esm.bahlei.restbasic.service.validator.GlobalValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.TagValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
@@ -35,7 +36,7 @@ public class TagServiceImpl implements TagService {
       throw new ValidationException(errors);
     }
 
-    int offset = size * (page - 1);
+    long offset = ServiceUtils.getOffset(page, size);
     return tagDAO.getAll(size, offset);
   }
 

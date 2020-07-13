@@ -3,6 +3,7 @@ package com.epam.esm.bahlei.restbasic.service.user;
 import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.User;
+import com.epam.esm.bahlei.restbasic.service.utils.ServiceUtils;
 import com.epam.esm.bahlei.restbasic.service.validator.GlobalValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.epam.esm.bahlei.restbasic.service.utils.ServiceUtils.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,7 +32,7 @@ public class UserServiceImpl implements UserService {
     if (!errors.isEmpty()) {
       throw new ValidationException(errors);
     }
-    int offset = size * (page - 1);
+    long offset = getOffset(page, size);
 
     return userDAO.getAll(size, offset);
   }

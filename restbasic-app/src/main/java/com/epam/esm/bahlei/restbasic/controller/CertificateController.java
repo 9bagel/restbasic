@@ -58,11 +58,13 @@ public class CertificateController {
   public ResponseEntity<?> getAll(
       @RequestParam(required = false) List<String> tagName,
       @RequestParam(required = false) String sortBy,
-      @RequestParam(required = false) String find) {
+      @RequestParam(required = false) String find,
+      @RequestParam(required = false, defaultValue = "1") int page,
+      @RequestParam(required = false, defaultValue = "10") int size) {
     Criteria criteria = new CriteriaParser().parse(tagName, sortBy, find);
 
     return ok(
-        giftCertificateService.getAll(criteria).stream()
+        giftCertificateService.getAll(criteria, page, size).stream()
             .map(this::toCertificateDTO)
             .collect(toList()));
   }

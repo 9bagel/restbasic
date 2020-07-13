@@ -6,6 +6,7 @@ import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
+import com.epam.esm.bahlei.restbasic.service.utils.ServiceUtils;
 import com.epam.esm.bahlei.restbasic.service.validator.CertificateValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +50,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
   }
 
   @Override
-  public List<GiftCertificate> getAll(Criteria criteria) {
-
-    List<GiftCertificate> certificates = giftCertificateDAO.getAll(criteria);
+  public List<GiftCertificate> getAll(Criteria criteria, int page, int size) {
+    long offset = ServiceUtils.getOffset(page, size);
+    List<GiftCertificate> certificates = giftCertificateDAO.getAll(criteria, size, offset);
     certificates.forEach(this::setCertificateTags);
     return certificates;
   }

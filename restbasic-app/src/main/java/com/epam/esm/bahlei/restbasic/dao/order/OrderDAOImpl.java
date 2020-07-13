@@ -74,11 +74,11 @@ public class OrderDAOImpl implements OrderDAO {
   }
 
   @Override
-  public List<Order> getUserOrders(long userId) {
+  public List<Order> getUserOrders(long id, int size, long offset) {
     String sql =
-        "SELECT o.id, o.cost, o.purchase_date, o.user_id FROM orders o WHERE o.user_id = ?";
+        "SELECT o.id, o.cost, o.purchase_date, o.user_id FROM orders o WHERE o.user_id = ? LIMIT ? OFFSET ? ";
 
-    return jdbcTemplate.query(sql, new Object[] {userId}, this::toOrder);
+    return jdbcTemplate.query(sql, new Object[] {id, size, offset}, this::toOrder);
   }
 
   @Override

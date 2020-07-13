@@ -10,7 +10,7 @@ public interface GiftCertificateService {
 
   Optional<GiftCertificate> get(long giftCertificateId);
 
-  List<GiftCertificate> getAll(Criteria criteria);
+  List<GiftCertificate> getAll(Criteria criteria, int page, int size);
 
   void save(GiftCertificate giftCertificate);
 

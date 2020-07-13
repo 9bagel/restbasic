@@ -10,7 +10,7 @@ public interface GiftCertificateDAO {
 
   Optional<GiftCertificate> get(long giftCertificateId);
 
-  List<GiftCertificate> getAll(Criteria criteria);
+  List<GiftCertificate> getAll(Criteria criteria, int size, long offset);
 
   void save(GiftCertificate giftCertificate);
 

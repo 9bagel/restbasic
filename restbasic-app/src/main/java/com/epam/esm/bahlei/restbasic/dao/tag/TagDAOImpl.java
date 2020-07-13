@@ -35,7 +35,7 @@ public class TagDAOImpl implements TagDAO {
   }
 
   @Override
-  public List<Tag> getAll(int limit, int offset) {
+  public List<Tag> getAll(int limit, long offset) {
     String sql = "SELECT id, name FROM tags LIMIT ? OFFSET ? ";
 
     return jdbcTemplate.query(sql, new Object[] {limit, offset}, this::toTag);

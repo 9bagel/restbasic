@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserDAO {
-  List<User> getAll(int limit, int offset);
+  List<User> getAll(int limit, long offset);
 
   void save(User user);
 

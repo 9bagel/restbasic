@@ -40,7 +40,7 @@ public class UserController {
     this.certificateService = certificateService;
   }
 
-  @PostMapping("/")
+  @PostMapping("")
   public ResponseEntity<?> addUser(
       @RequestBody UserDTO userDTO, HttpServletRequest httpServletRequest) {
     User user = toUser(userDTO);
@@ -51,7 +51,7 @@ public class UserController {
         .build();
   }
 
-  @GetMapping("/")
+  @GetMapping("")
   public ResponseEntity<?> getAll(
       @RequestParam(required = false, defaultValue = "1") int page,
       @RequestParam(required = false, defaultValue = "10") int size) {
@@ -70,8 +70,11 @@ public class UserController {
   }
 
   @GetMapping("/{userId}/orders")
-  public ResponseEntity<?> getUserOrders(@PathVariable long userId) {
-    List<Order> userOrders = orderService.getUserOrders(userId);
+  public ResponseEntity<?> getUserOrders(
+      @PathVariable long userId,
+      @RequestParam(required = false, defaultValue = "1") int page,
+      @RequestParam(required = false, defaultValue = "10") int size) {
+    List<Order> userOrders = orderService.getUserOrders(userId, page, size);
     List<OrderRefDTO> orderRefDTOS = userOrders.stream().map(this::toOrderRefDTO).collect(toList());
     return ok(orderRefDTOS);
   }
