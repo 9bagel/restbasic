@@ -15,7 +15,7 @@ public class CriteriaToSQL {
 
     return sql.toString();
   }
-
+  // Экранировать tagName
   private static void buildFilterSql(List<String> tagNames, StringBuilder sql) {
     if (tagNames == null || tagNames.isEmpty()) {
       return;

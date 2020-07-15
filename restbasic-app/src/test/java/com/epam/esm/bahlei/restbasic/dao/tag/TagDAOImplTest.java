@@ -3,6 +3,7 @@ package com.epam.esm.bahlei.restbasic.dao.tag;
 import com.epam.esm.bahlei.restbasic.config.TestAppConfig;
 import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -76,9 +77,7 @@ class TagDAOImplTest {
   void getAll_OK() {
     List<Tag> expected = Arrays.asList(new Tag("books"), new Tag("tools"), new Tag("news"));
     expected.forEach(tag -> tagDAO.save(tag));
-    int limit = 3;
-    int offset = 0;
-    List<Tag> actual = tagDAO.getAll(limit, offset);
+    List<Tag> actual = tagDAO.getAll(new Pageable(1, 3));
 
     assertThat(actual).extracting("name").containsExactly("books", "tools", "news");
   }

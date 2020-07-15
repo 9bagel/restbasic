@@ -2,6 +2,7 @@ package com.epam.esm.bahlei.restbasic.dao.order;
 
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,7 +33,7 @@ public class OrderDAOImpl implements OrderDAO {
     order.setId(resultSet.getLong("id"));
     order.setUserId(resultSet.getLong("user_id"));
     order.setCost(resultSet.getBigDecimal("cost"));
-    order.setPurchaseDate(resultSet.getTimestamp("purchase_date").toInstant().atOffset(UTC));
+    order.setPurchasedAt(resultSet.getTimestamp("purchase_date").toInstant().atOffset(UTC));
 
     return order;
   }
@@ -74,11 +75,12 @@ public class OrderDAOImpl implements OrderDAO {
   }
 
   @Override
-  public List<Order> getUserOrders(long id, int size, long offset) {
+  public List<Order> getUserOrders(long id, Pageable pageable) {
     String sql =
         "SELECT o.id, o.cost, o.purchase_date, o.user_id FROM orders o WHERE o.user_id = ? LIMIT ? OFFSET ? ";
 
-    return jdbcTemplate.query(sql, new Object[] {id, size, offset}, this::toOrder);
+    return jdbcTemplate.query(
+        sql, new Object[] {id, pageable.getLimit(), pageable.getOffset()}, this::toOrder);
   }
 
   @Override

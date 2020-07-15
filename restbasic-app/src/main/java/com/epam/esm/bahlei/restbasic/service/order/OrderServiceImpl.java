@@ -6,8 +6,8 @@ import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
 import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
-import com.epam.esm.bahlei.restbasic.service.utils.ServiceUtils;
 import com.epam.esm.bahlei.restbasic.service.validator.OrderValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +53,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     List<GiftCertificate> certificates = getCertificatesData(order.getCertificates());
-    if (order.getCost() == null) {
-      order.setCost(calculateCost(certificates));
-    }
+    order.setCost(calculateCost(certificates));
 
     orderDAO.save(order);
     orderDAO.saveOrderedCertificates(order.getCertificates(), order.getId());
@@ -83,9 +81,8 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public List<Order> getUserOrders(long id, int page, int size) {
-    long offset = getOffset(page, size);
-    List<Order> userOrders = orderDAO.getUserOrders(id, size, offset);
+  public List<Order> getUserOrders(long id, Pageable pageable) {
+    List<Order> userOrders = orderDAO.getUserOrders(id, pageable);
     userOrders.forEach(this::setOrderedCertificates);
     return userOrders;
   }

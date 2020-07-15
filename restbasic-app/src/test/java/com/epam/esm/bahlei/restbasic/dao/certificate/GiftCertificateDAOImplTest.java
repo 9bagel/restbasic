@@ -2,6 +2,7 @@ package com.epam.esm.bahlei.restbasic.dao.certificate;
 
 import com.epam.esm.bahlei.restbasic.config.TestAppConfig;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import com.epam.esm.bahlei.restbasic.service.supplies.SortColumn;
@@ -36,7 +37,7 @@ class GiftCertificateDAOImplTest {
   void getAll_NoCriteria_OK() {
     Criteria criteria = new Criteria(emptyList(), emptyList(), "");
 
-    List<GiftCertificate> actual = certificateDAO.getAll(criteria, 3, 0);
+    List<GiftCertificate> actual = certificateDAO.getAll(criteria, new Pageable(1, 3));
 
     assertThat(actual).extracting("id").containsExactly(1L, 2L, 3L);
   }
@@ -47,7 +48,7 @@ class GiftCertificateDAOImplTest {
     SortColumn sortColumn = new SortColumn("name", SortOrder.DESC);
     Criteria criteria = new Criteria(singletonList(sortColumn), emptyList(), "");
 
-    List<GiftCertificate> actual = certificateDAO.getAll(criteria, 3, 0);
+    List<GiftCertificate> actual = certificateDAO.getAll(criteria, new Pageable(1, 3));
 
     assertThat(actual).extracting("id").containsExactly(3L, 2L, 1L);
   }
@@ -59,7 +60,7 @@ class GiftCertificateDAOImplTest {
   void getAll_TagName_OK() {
     Criteria criteria = new Criteria(emptyList(), singletonList("books"), "");
 
-    List<GiftCertificate> actual = certificateDAO.getAll(criteria, 1, 0);
+    List<GiftCertificate> actual = certificateDAO.getAll(criteria, new Pageable(1, 10));
 
     assertThat(actual.size()).isEqualTo(1);
   }
@@ -69,7 +70,7 @@ class GiftCertificateDAOImplTest {
   void getAll_FindPhrase_OK() {
     Criteria criteria = new Criteria(emptyList(), emptyList(), "test");
 
-    List<GiftCertificate> actual = certificateDAO.getAll(criteria, 1, 0);
+    List<GiftCertificate> actual = certificateDAO.getAll(criteria, new Pageable(1, 1));
 
     assertThat(actual).extracting("id").isEqualTo(singletonList(3L));
   }

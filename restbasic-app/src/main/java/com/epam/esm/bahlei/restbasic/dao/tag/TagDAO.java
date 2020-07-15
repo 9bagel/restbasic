@@ -1,5 +1,6 @@
 package com.epam.esm.bahlei.restbasic.dao.tag;
 
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public interface TagDAO {
 
   Optional<Tag> get(long tagId);
 
-  List<Tag> getAll(int limit, long offset);
+  List<Tag> getAll(Pageable pageable);
 
   void save(Tag tag);
 

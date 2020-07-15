@@ -56,7 +56,7 @@ class GiftCertificateServiceImplTest {
   @Test
   void update_InvalidCertificate_Error() {
     GiftCertificate certificate = getValidCertificate();
-    when(validator.validateForUpdate(certificate)).thenReturn(singletonList("error"));
+    when(validator.validate(certificate)).thenReturn(singletonList("error"));
 
     assertThrows(ValidationException.class, () -> certificateService.update(certificate));
   }
@@ -64,7 +64,7 @@ class GiftCertificateServiceImplTest {
   @Test
   void update_ValidCertificate_OK() {
     GiftCertificate certificate = getValidCertificate();
-    when(validator.validateForUpdate(certificate)).thenReturn(emptyList());
+    when(validator.validate(certificate)).thenReturn(emptyList());
 
     assertThatCode(() -> certificateService.update(certificate)).doesNotThrowAnyException();
   }
@@ -72,7 +72,7 @@ class GiftCertificateServiceImplTest {
   @Test
   void save_InvalidCertificate_Error() {
     GiftCertificate certificate = getValidCertificate();
-    when(validator.validateForSave(certificate)).thenReturn(singletonList("error"));
+    when(validator.validate(certificate)).thenReturn(singletonList("error"));
 
     assertThrows(ValidationException.class, () -> certificateService.save(certificate));
   }
@@ -80,7 +80,7 @@ class GiftCertificateServiceImplTest {
   @Test
   void save_ValidCertificate_OK() {
     GiftCertificate certificate = getValidCertificate();
-    when(validator.validateForSave(certificate)).thenReturn(emptyList());
+    when(validator.validate(certificate)).thenReturn(emptyList());
 
     assertThatCode(() -> certificateService.save(certificate)).doesNotThrowAnyException();
   }

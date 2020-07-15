@@ -1,6 +1,7 @@
 package com.epam.esm.bahlei.restbasic.service.certificate;
 
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 
 import java.util.List;
@@ -10,15 +11,13 @@ public interface GiftCertificateService {
 
   Optional<GiftCertificate> get(long giftCertificateId);
 
-  List<GiftCertificate> getAll(Criteria criteria, int page, int size);
+  List<GiftCertificate> getAll(Criteria criteria, Pageable pageable);
 
   void save(GiftCertificate giftCertificate);
 
   void delete(long giftCertificateId);
 
   void update(GiftCertificate giftCertificate);
-
-  void patch(GiftCertificate giftCertificate);
 
   Optional<GiftCertificate> getFavouriteUserCertificate(long userId);
 }

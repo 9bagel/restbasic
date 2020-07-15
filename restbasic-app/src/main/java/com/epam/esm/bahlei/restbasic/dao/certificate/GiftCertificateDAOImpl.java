@@ -1,6 +1,7 @@
 package com.epam.esm.bahlei.restbasic.dao.certificate;
 
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import com.epam.esm.bahlei.restbasic.service.supplies.CriteriaToSQL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
   }
 
   @Override
-  public List<GiftCertificate> getAll(Criteria criteria, int size, long offset) {
+  public List<GiftCertificate> getAll(Criteria criteria, Pageable pageable) {
     String sql = CriteriaToSQL.mapSql(criteria);
     String wholeSql =
         "SELECT c.id, c.name, c.description, c.price, c.created_at, c.updated_at, c.duration "
@@ -51,7 +52,8 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
             + sql
             + " LIMIT ? OFFSET ? ";
 
-    return jdbcTemplate.query(wholeSql, new Object[] {size, offset}, this::toCertificate);
+    return jdbcTemplate.query(
+        wholeSql, new Object[] {pageable.getLimit(), pageable.getOffset()}, this::toCertificate);
   }
 
   @Override

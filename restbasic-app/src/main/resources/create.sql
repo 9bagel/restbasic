@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS certificate_tags(
 	CREATE TABLE IF NOT EXISTS orders(
 	id bigserial PRIMARY KEY,
 	cost decimal NOT NULL,
-	purchase_Date timestamp with time zone NOT NULL);
+	user_id bigint REFERENCES users (id) ON  DELETE CASCADE,
+	purchase_at timestamp with time zone NOT NULL);
 
 	CREATE TABLE IF NOT EXISTS ordered_certificates(
 	id bigserial PRIMARY KEY,
@@ -30,11 +31,6 @@ CREATE TABLE IF NOT EXISTS certificate_tags(
 	id bigserial PRIMARY KEY,
 	first_name varchar(255) NOT NULL,
 	second_name varchar(255) NOT NULL);
-
-	CREATE TABLE IF NOT EXISTS user_orders(
-	id bigserial PRIMARY KEY,
-	user_id bigint REFERENCES users (id) ON  DELETE CASCADE,
-	order_id bigint REFERENCES orders (id) ON DELETE CASCADE);
 
 CREATE OR REPLACE FUNCTION search(IN word CHARACTER varying) RETURNS certificates AS $$
 CREATE OR REPLACE FUNCTION search(IN word character varying) RETURNS SETOF certificates AS $$

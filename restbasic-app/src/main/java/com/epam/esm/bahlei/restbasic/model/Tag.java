@@ -3,13 +3,20 @@ package com.epam.esm.bahlei.restbasic.model;
 import com.google.common.base.Objects;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.*;
+
 @Component
+@Entity
+@Table(name = "tags")
 public class Tag {
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
+
+  @Column(name = "name")
   private String name;
 
-  public Tag() {
-  }
+  public Tag() {}
 
   public Tag(long id, String name) {
     this.id = id;

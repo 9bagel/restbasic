@@ -1,5 +1,6 @@
 package com.epam.esm.bahlei.restbasic.dao.user;
 
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -36,10 +37,11 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public List<User> getAll(int limit, long offset) {
+  public List<User> getAll(Pageable pageable) {
     String sql = "SELECT id, first_name, second_name FROM users LIMIT ? OFFSET ? ";
 
-    return jdbcTemplate.query(sql, new Object[] {limit, offset}, this::toUser);
+    return jdbcTemplate.query(
+        sql, new Object[] {pageable.getLimit(), pageable.getOffset()}, this::toUser);
   }
 
   @Override

@@ -1,5 +1,6 @@
 package com.epam.esm.bahlei.restbasic.dao.tag;
 
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -35,10 +36,11 @@ public class TagDAOImpl implements TagDAO {
   }
 
   @Override
-  public List<Tag> getAll(int limit, long offset) {
+  public List<Tag> getAll(Pageable pageable) {
     String sql = "SELECT id, name FROM tags LIMIT ? OFFSET ? ";
 
-    return jdbcTemplate.query(sql, new Object[] {limit, offset}, this::toTag);
+    return jdbcTemplate.query(
+        sql, new Object[] {pageable.getLimit(), pageable.getOffset()}, this::toTag);
   }
 
   @Override

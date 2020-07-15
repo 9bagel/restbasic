@@ -32,4 +32,8 @@ public class User {
   public void setSecondName(String secondName) {
     this.secondName = secondName;
   }
+
+  public List<Order> getOrders() {
+    return orders;
+  }
 }

@@ -16,21 +16,14 @@ public class CertificateValidator {
     this.certificateDAO = certificateDAO;
   }
 
-  public List<String> validateForSave(GiftCertificate certificate) {
+  public List<String> validate(GiftCertificate certificate) {
     List<String> errors = new ArrayList<>();
 
-    validateNameForSave(certificate.getName(), errors);
-    validateDescription(certificate.getDescription(), errors);
-    validatePrice(certificate.getPrice(), errors);
-    validateDuration(certificate.getDuration(), errors);
-
-    return errors;
-  }
-
-  public List<String> validateForUpdate(GiftCertificate certificate) {
-    List<String> errors = new ArrayList<>();
-
-    validateNameForUpdate(certificate.getName(), errors);
+    if (certificate.getId() == 0) {
+      validateNameForSave(certificate.getName(), errors);
+    } else {
+      validateNameForUpdate(certificate.getName(), errors);
+    }
     validateDescription(certificate.getDescription(), errors);
     validatePrice(certificate.getPrice(), errors);
     validateDuration(certificate.getDuration(), errors);
@@ -41,7 +34,7 @@ public class CertificateValidator {
   private void validateNameForUpdate(String name, List<String> errorMessages) {
     validateName(name, errorMessages);
   }
-
+//Перенести этот if в метод Validate
   private void validateNameForSave(String name, List<String> errorMessages) {
     validateName(name, errorMessages);
     if (certificateDAO.getByName(name).isPresent()) {

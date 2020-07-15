@@ -4,6 +4,7 @@ import com.epam.esm.bahlei.restbasic.config.exception.response.ErrorResponse;
 import com.epam.esm.bahlei.restbasic.controller.criteria.CriteriaParser;
 import com.epam.esm.bahlei.restbasic.controller.dto.GiftCertificateDTO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.service.certificate.GiftCertificateService;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,21 +56,21 @@ public class CertificateController {
   /**
    * Returns a list of Certificates Path [GET /api/certificates/]
    *
-   * @param tagName (not required) name of tag that Certificate should have
+   * @param tagNames (not required) name of tag that Certificate should have
    * @param sortBy (not required) name of sorting field including sorting order
    * @param find (not required) search phrase that certificate should have
    */
   @GetMapping("/certificates/")
   public ResponseEntity<?> getAll(
-      @RequestParam(required = false) List<String> tagName,
+      @RequestParam(required = false) List<String> tagNames,
       @RequestParam(required = false) String sortBy,
       @RequestParam(required = false) String find,
       @RequestParam(required = false, defaultValue = "1") int page,
       @RequestParam(required = false, defaultValue = "10") int size) {
-    Criteria criteria = new CriteriaParser().parse(tagName, sortBy, find);
+    Criteria criteria = new CriteriaParser().parse(tagNames, sortBy, find);
 
     return ok(
-        giftCertificateService.getAll(criteria, page, size).stream()
+        giftCertificateService.getAll(criteria, new Pageable(page, size)).stream()
             .map(this::toCertificateDTO)
             .map(
                 certificateDTO ->
@@ -130,7 +131,7 @@ public class CertificateController {
     GiftCertificate certificate = certificateOptional.get();
     mergeNewValues(certificateDTO, certificate);
 
-    giftCertificateService.patch(certificate);
+    giftCertificateService.update(certificate);
     return noContent().build();
   }
 

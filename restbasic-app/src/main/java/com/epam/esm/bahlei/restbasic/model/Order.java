@@ -8,7 +8,7 @@ public class Order {
   private long id;
   private long userId;
   private BigDecimal cost;
-  private OffsetDateTime purchaseDate;
+  private OffsetDateTime purchasedAt;
   private List<GiftCertificate> certificates;
 
   public long getUserId() {
@@ -35,12 +35,12 @@ public class Order {
     this.cost = cost;
   }
 
-  public OffsetDateTime getPurchaseDate() {
-    return purchaseDate;
+  public OffsetDateTime getPurchasedAt() {
+    return purchasedAt;
   }
 
-  public void setPurchaseDate(OffsetDateTime purchaseDate) {
-    this.purchaseDate = purchaseDate;
+  public void setPurchasedAt(OffsetDateTime purchasedAt) {
+    this.purchasedAt = purchasedAt;
   }
 
   public List<GiftCertificate> getCertificates() {

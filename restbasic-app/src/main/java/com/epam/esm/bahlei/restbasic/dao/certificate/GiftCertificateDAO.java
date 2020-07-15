@@ -1,6 +1,7 @@
 package com.epam.esm.bahlei.restbasic.dao.certificate;
 
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface GiftCertificateDAO {
 
   Optional<GiftCertificate> get(long giftCertificateId);
 
-  List<GiftCertificate> getAll(Criteria criteria, int size, long offset);
+  List<GiftCertificate> getAll(Criteria criteria, Pageable pageable);
 
   void save(GiftCertificate giftCertificate);
 

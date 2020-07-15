@@ -2,6 +2,7 @@ package com.epam.esm.bahlei.restbasic.controller;
 
 import com.epam.esm.bahlei.restbasic.config.exception.response.ErrorResponse;
 import com.epam.esm.bahlei.restbasic.controller.dto.TagDTO;
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.tag.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class TagController {
       @RequestParam(required = false, defaultValue = "1") int page,
       @RequestParam(required = false, defaultValue = "10") int size) {
     return ok(
-        tagService.getAll(page, size).stream()
+        tagService.getAll(new Pageable(page, size)).stream()
             .map(this::toTagDTO)
             .map(
                 tagDTO ->
@@ -63,7 +64,7 @@ public class TagController {
   /**
    * Create a tag Path [POST /api/tags/]
    *
-   * @param tagDTO a Tag object in JSON formaat
+   * @param tagDTO a Tag object in JSON format
    */
   @PostMapping("/tags")
   public ResponseEntity<?> addTag(

@@ -4,6 +4,7 @@ import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
 import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import com.epam.esm.bahlei.restbasic.service.utils.ServiceUtils;
@@ -50,9 +51,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
   }
 
   @Override
-  public List<GiftCertificate> getAll(Criteria criteria, int page, int size) {
-    long offset = ServiceUtils.getOffset(page, size);
-    List<GiftCertificate> certificates = giftCertificateDAO.getAll(criteria, size, offset);
+  public List<GiftCertificate> getAll(Criteria criteria, Pageable pageable) {
+    List<GiftCertificate> certificates = giftCertificateDAO.getAll(criteria, pageable);
     certificates.forEach(this::setCertificateTags);
     return certificates;
   }
@@ -78,7 +78,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
   @Transactional
   @Override
   public void save(GiftCertificate giftCertificate) {
-    List<String> errors = certificateValidator.validateForSave(giftCertificate);
+    List<String> errors = certificateValidator.validate(giftCertificate);
 
     if (!errors.isEmpty()) {
       throw new ValidationException(errors);
@@ -97,20 +97,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
   @Transactional
   @Override
   public void update(GiftCertificate giftCertificate) {
-    List<String> errors = certificateValidator.validateForUpdate(giftCertificate);
-
-    if (!errors.isEmpty()) {
-      throw new ValidationException(errors);
-    }
-    saveCertificateTags(giftCertificate);
-    giftCertificateDAO.update(giftCertificate);
-  }
-
-  @Transactional
-  @Override
-  public void patch(GiftCertificate giftCertificate) {
-    List<String> errors = certificateValidator.validateForUpdate(giftCertificate);
-
+    List<String> errors = certificateValidator.validate(giftCertificate);
+//Мб перенести этот код в Validator?
     if (!errors.isEmpty()) {
       throw new ValidationException(errors);
     }

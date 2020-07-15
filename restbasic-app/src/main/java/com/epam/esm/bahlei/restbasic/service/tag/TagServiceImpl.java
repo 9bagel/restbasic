@@ -1,9 +1,8 @@
 package com.epam.esm.bahlei.restbasic.service.tag;
 
 import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
+import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
-import com.epam.esm.bahlei.restbasic.service.utils.ServiceUtils;
-import com.epam.esm.bahlei.restbasic.service.validator.GlobalValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.TagValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +29,8 @@ public class TagServiceImpl implements TagService {
   }
 
   @Override
-  public List<Tag> getAll(int page, int size) {
-    List<String> errors = GlobalValidator.validatePagination(page, size);
-    if (!errors.isEmpty()) {
-      throw new ValidationException(errors);
-    }
-
-    long offset = ServiceUtils.getOffset(page, size);
-    return tagDAO.getAll(size, offset);
+  public List<Tag> getAll(Pageable pageable) {
+    return tagDAO.getAll(pageable);
   }
 
   @Override
