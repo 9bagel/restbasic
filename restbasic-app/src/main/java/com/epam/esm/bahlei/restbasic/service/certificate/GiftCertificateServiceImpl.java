@@ -12,6 +12,7 @@ import com.epam.esm.bahlei.restbasic.service.validator.CertificateValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -75,7 +76,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     return optional;
   }
 
-  @Transactional
+  @Transactional(isolation = Isolation.READ_UNCOMMITTED)
   @Override
   public void save(GiftCertificate giftCertificate) {
     List<String> errors = certificateValidator.validate(giftCertificate);
@@ -94,11 +95,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     giftCertificateDAO.delete(giftCertificateId);
   }
 
-  @Transactional
+  @Transactional(isolation = Isolation.READ_UNCOMMITTED)
   @Override
   public void update(GiftCertificate giftCertificate) {
     List<String> errors = certificateValidator.validate(giftCertificate);
-//Мб перенести этот код в Validator?
     if (!errors.isEmpty()) {
       throw new ValidationException(errors);
     }

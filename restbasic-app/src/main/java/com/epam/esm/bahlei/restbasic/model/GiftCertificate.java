@@ -1,20 +1,39 @@
 package com.epam.esm.bahlei.restbasic.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
 @Component
+@Entity
+@Table(name = "certificates")
 public class GiftCertificate {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
+
+  @Column(name = "name")
   private String name;
+
+  @Column(name = "description")
   private String description;
+
+  @Column(name = "price")
   private BigDecimal price;
-  private List<Tag> tags;
+
+  @JsonInclude() @Transient private List<Tag> tags;
+
+  @Column(name = "created_at")
   private OffsetDateTime createdAt;
+
+  @Column(name = "updated_at")
   private OffsetDateTime modifiedAt;
+
+  @Column(name = "duration")
   private Integer duration;
 
   public GiftCertificate() {}

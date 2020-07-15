@@ -7,13 +7,15 @@ import com.epam.esm.bahlei.restbasic.service.supplies.CriteriaToSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +23,12 @@ import java.util.Optional;
 @Repository
 public class GiftCertificateDAOImpl implements GiftCertificateDAO {
   private final JdbcTemplate jdbcTemplate;
+  private final EntityManager entityManager;
 
   @Autowired
-  public GiftCertificateDAOImpl(DataSource dataSource) {
+  public GiftCertificateDAOImpl(DataSource dataSource, EntityManager entityManager) {
     jdbcTemplate = new JdbcTemplate(dataSource);
+    this.entityManager = entityManager;
   }
 
   private GiftCertificate toCertificate(ResultSet resultSet, int i) throws SQLException {
@@ -58,26 +62,9 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
 
   @Override
   public void save(GiftCertificate certificate) {
-    String sql =
-        "INSERT INTO certificates(name, description, price, created_at, updated_at, duration) "
-            + "VALUES(?, ?, ?, ?, ?, ?)";
-    KeyHolder keyHolder = new GeneratedKeyHolder();
-
-    jdbcTemplate.update(
-        connection -> {
-          PreparedStatement statement =
-              connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-          statement.setString(1, certificate.getName());
-          statement.setString(2, certificate.getDescription());
-          statement.setBigDecimal(3, certificate.getPrice());
-          statement.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
-          statement.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
-          statement.setInt(6, certificate.getDuration());
-          return statement;
-        },
-        keyHolder);
-
-    certificate.setId((Long) keyHolder.getKeys().get("id"));
+    certificate.setCreatedAt(OffsetDateTime.now());
+    certificate.setModifiedAt(OffsetDateTime.now());
+    entityManager.persist(certificate);
   }
 
   @Override
