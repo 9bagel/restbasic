@@ -4,94 +4,60 @@ import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
-import java.sql.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-
-import static java.time.ZoneOffset.UTC;
 
 @Repository
 public class OrderDAOImpl implements OrderDAO {
   private final JdbcTemplate jdbcTemplate;
+  private final EntityManager entityManager;
 
   @Autowired
-  public OrderDAOImpl(DataSource dataSource) {
+  public OrderDAOImpl(DataSource dataSource, EntityManager entityManager) {
     jdbcTemplate = new JdbcTemplate(dataSource);
-  }
-
-  private Order toOrder(ResultSet resultSet, int i) throws SQLException {
-    Order order = new Order();
-
-    order.setId(resultSet.getLong("id"));
-    order.setUserId(resultSet.getLong("user_id"));
-    order.setCost(resultSet.getBigDecimal("cost"));
-    order.setPurchasedAt(resultSet.getTimestamp("purchase_date").toInstant().atOffset(UTC));
-
-    return order;
+    this.entityManager = entityManager;
   }
 
   @Override
   public void save(Order order) {
-    String sql = "INSERT INTO orders(cost, purchase_date, user_id) VALUES(?, ?, ?)";
-    KeyHolder keyHolder = new GeneratedKeyHolder();
-
-    jdbcTemplate.update(
-        connection -> {
-          PreparedStatement statement =
-              connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-          statement.setBigDecimal(1, order.getCost());
-          statement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
-          statement.setLong(3, order.getUserId());
-          return statement;
-        },
-        keyHolder);
-    order.setId((Long) keyHolder.getKeys().get("id"));
-  }
-
-  @Override
-  public List<Order> getAll() {
-    String sql = "SELECT id, cost, purchase_date, user_id FROM orders";
-
-    return jdbcTemplate.query(sql, this::toOrder);
+    order.setPurchasedAt(Instant.now());
+    entityManager.persist(order);
   }
 
   @Override
   public Optional<Order> get(long id) {
-    String sql = "SELECT id, cost, purchase_date, user_id FROM orders WHERE id = ?";
-    try {
-      return Optional.ofNullable(
-          jdbcTemplate.queryForObject(sql, new Object[] {id}, this::toOrder));
-    } catch (EmptyResultDataAccessException ex) {
-      return Optional.empty();
-    }
+    return Optional.ofNullable(entityManager.find(Order.class, id));
   }
 
   @Override
   public List<Order> getUserOrders(long id, Pageable pageable) {
-    String sql =
-        "SELECT o.id, o.cost, o.purchase_date, o.user_id FROM orders o WHERE o.user_id = ? LIMIT ? OFFSET ? ";
+    TypedQuery<Order> query =
+        entityManager
+            .createQuery("SELECT o FROM Order o WHERE o.userId = ?1", Order.class)
+            .setFirstResult(pageable.getOffset())
+            .setMaxResults(pageable.getLimit());
 
-    return jdbcTemplate.query(
-        sql, new Object[] {id, pageable.getLimit(), pageable.getOffset()}, this::toOrder);
+    query.setParameter(1, id);
+
+    return query.getResultList();
   }
 
   @Override
   public Optional<Order> getUserOrderDetails(long userId, long orderId) {
-    String sql =
-        "SELECT o.id, o.cost, o.purchase_date, o.user_id "
-            + "FROM orders o "
-            + "WHERE o.user_id = ? "
-            + "AND o.id = ?";
-    return Optional.ofNullable(
-        jdbcTemplate.queryForObject(sql, new Object[] {userId, orderId}, this::toOrder));
+    TypedQuery<Order> query =
+        entityManager
+            .createQuery("SELECT o FROM Order o WHERE o.userId = ?1 AND o.id = ?2", Order.class)
+            .setParameter(1, userId)
+            .setParameter(2, orderId);
+
+    return query.getResultList().stream().findFirst();
   }
 
   @Override

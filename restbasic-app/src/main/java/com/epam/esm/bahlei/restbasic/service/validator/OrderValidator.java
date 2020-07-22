@@ -30,7 +30,7 @@ public class OrderValidator {
     List<String> errors = new ArrayList<>();
     validateCost(order.getCost(), errors);
     validateCertificates(order.getCertificates(), errors);
-    errors.addAll(userValidator.validate(order.getUserId()));
+    //errors.addAll(userValidator.validate(order.getUser().getId()));
     return errors;
   }
 

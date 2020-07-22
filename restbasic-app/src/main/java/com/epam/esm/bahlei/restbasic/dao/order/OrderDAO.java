@@ -13,8 +13,6 @@ public interface OrderDAO {
 
   void saveOrderedCertificates(List<GiftCertificate> certificates, long orderId);
 
-  List<Order> getAll();
-
   Optional<Order> get(long id);
 
   List<Order> getUserOrders(long id, Pageable pageable);

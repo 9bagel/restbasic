@@ -69,7 +69,7 @@ public class TagDAOImpl implements TagDAO {
 
     query.executeUpdate();
   }
-
+//Погуглить как исправить.
   @Override
   public List<Tag> getCertificateTags(long certificateId) {
     String sql =
@@ -90,14 +90,5 @@ public class TagDAOImpl implements TagDAO {
     query.setParameter("certificateId", certificateId);
 
     query.executeUpdate();
-  }
-
-  private Tag toTag(ResultSet resultSet, int i) throws SQLException {
-    Tag tag = new Tag();
-
-    tag.setId(resultSet.getLong("id"));
-    tag.setName(resultSet.getString("name"));
-
-    return tag;
   }
 }

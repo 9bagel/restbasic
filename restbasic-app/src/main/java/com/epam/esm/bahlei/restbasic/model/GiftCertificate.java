@@ -1,23 +1,29 @@
 package com.epam.esm.bahlei.restbasic.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.stereotype.Component;
+import com.epam.esm.bahlei.restbasic.dao.audit.AuditListener;
+import com.epam.esm.bahlei.restbasic.model.audit.Audit;
+import com.epam.esm.bahlei.restbasic.model.audit.Auditable;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.List;
 
-@Component
 @Entity
 @Table(name = "certificates")
-public class GiftCertificate {
+@EntityListeners(AuditListener.class)
+public class GiftCertificate implements Auditable {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "default_generator")
+  @SequenceGenerator(
+      name = "default_generator",
+      sequenceName = "certificates_id_seq",
+      allocationSize = 1)
+  private Long id;
 
   @Column(name = "name")
   private String name;
+
+  @Embedded private Audit audit;
 
   @Column(name = "description")
   private String description;
@@ -25,13 +31,12 @@ public class GiftCertificate {
   @Column(name = "price")
   private BigDecimal price;
 
-  @JsonInclude() @Transient private List<Tag> tags;
-
-  @Column(name = "created_at")
-  private OffsetDateTime createdAt;
-
-  @Column(name = "updated_at")
-  private OffsetDateTime modifiedAt;
+  @ManyToMany
+  @JoinTable(
+      name = "certificate_tags",
+      joinColumns = @JoinColumn(name = "certificate_id"),
+      inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  private List<Tag> tags;
 
   @Column(name = "duration")
   private Integer duration;
@@ -39,27 +44,19 @@ public class GiftCertificate {
   public GiftCertificate() {}
 
   public GiftCertificate(
-      long id,
-      String name,
-      String description,
-      BigDecimal price,
-      OffsetDateTime createdAt,
-      OffsetDateTime modifiedAt,
-      int duration) {
+      long id, String name, String description, BigDecimal price, Integer duration) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.price = price;
-    this.createdAt = createdAt;
-    this.modifiedAt = modifiedAt;
     this.duration = duration;
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -87,22 +84,6 @@ public class GiftCertificate {
     this.price = price;
   }
 
-  public OffsetDateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(OffsetDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public OffsetDateTime getModifiedAt() {
-    return modifiedAt;
-  }
-
-  public void setModifiedAt(OffsetDateTime modifiedAt) {
-    this.modifiedAt = modifiedAt;
-  }
-
   public Integer getDuration() {
     return duration;
   }
@@ -117,5 +98,15 @@ public class GiftCertificate {
 
   public void setTags(List<Tag> tags) {
     this.tags = tags;
+  }
+
+  @Override
+  public Audit getAudit() {
+    return audit;
+  }
+
+  @Override
+  public void setAudit(Audit audit) {
+    this.audit = audit;
   }
 }

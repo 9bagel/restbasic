@@ -1,27 +1,21 @@
 package com.epam.esm.bahlei.restbasic.model;
 
-public class Pageable {
-  private int offset;
-  private int limit;
-  private int page;
+import static java.lang.Math.*;
 
-  public Pageable() {}
+public class Pageable {
+  private final int limit;
+  private final int page;
 
   public Pageable(int page, int limit) {
-    this.limit = limit > 0 ? limit : 0;
+    this.limit = max(limit, 0);
     this.page = page > 0 ? page : 1;
-    this.offset = this.limit * (this.page - 1);
   }
 
   public int getOffset() {
-    return offset;
+    return limit * (page - 1);
   }
 
   public int getLimit() {
     return limit;
-  }
-
-  public int getPage() {
-    return page;
   }
 }

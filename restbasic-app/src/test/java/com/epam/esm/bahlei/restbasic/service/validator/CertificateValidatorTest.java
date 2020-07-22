@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,7 +73,8 @@ class CertificateValidatorTest {
   @Test
   void validate_TooLongDescription_Error() {
     GiftCertificate certificate = getValidCertificate();
-    certificate.setDescription("Long descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong description");
+    certificate.setDescription(
+        "Long descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong descriptionLong description");
     List<String> errors = validator.validate(certificate);
     assertThat(errors).containsOnly("Length of the description cannot be more than 255.");
   }
@@ -164,8 +165,8 @@ class CertificateValidatorTest {
     giftCertificate.setPrice(BigDecimal.valueOf(100));
     giftCertificate.setDuration(10);
     giftCertificate.setName("certificate");
-    giftCertificate.setCreatedAt(OffsetDateTime.now());
-    giftCertificate.setModifiedAt(OffsetDateTime.now());
+    giftCertificate.setCreatedAt(Instant.now());
+    giftCertificate.setModifiedAt(Instant.now());
 
     return giftCertificate;
   }

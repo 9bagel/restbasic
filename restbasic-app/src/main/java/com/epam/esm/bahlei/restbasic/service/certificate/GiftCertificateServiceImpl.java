@@ -7,12 +7,10 @@ import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
-import com.epam.esm.bahlei.restbasic.service.utils.ServiceUtils;
 import com.epam.esm.bahlei.restbasic.service.validator.CertificateValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -43,24 +41,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
   @Transactional
   @Override
   public Optional<GiftCertificate> get(long giftCertificateId) {
-    Optional<GiftCertificate> optional = giftCertificateDAO.get(giftCertificateId);
-    if (!optional.isPresent()) {
-      return Optional.empty();
-    }
-    setCertificateTags(optional.get());
-    return optional;
+    return giftCertificateDAO.get(giftCertificateId);
   }
 
   @Override
   public List<GiftCertificate> getAll(Criteria criteria, Pageable pageable) {
-    List<GiftCertificate> certificates = giftCertificateDAO.getAll(criteria, pageable);
-    certificates.forEach(this::setCertificateTags);
-    return certificates;
-  }
-
-  private void setCertificateTags(GiftCertificate giftCertificate) {
-    List<Tag> tags = tagDAO.getCertificateTags(giftCertificate.getId());
-    giftCertificate.setTags(tags);
+    return giftCertificateDAO.getAll(criteria, pageable);
   }
 
   @Override
@@ -68,24 +54,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     if (!userDAO.get(userId).isPresent()) {
       return Optional.empty();
     }
-    Optional<GiftCertificate> optional = giftCertificateDAO.getFavouriteUserCertificate(userId);
-    if (!optional.isPresent()) {
-      return Optional.empty();
-    }
-    setCertificateTags(optional.get());
-    return optional;
+    return giftCertificateDAO.getFavouriteUserCertificate(userId);
   }
 
-  @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+  @Transactional
   @Override
   public void save(GiftCertificate giftCertificate) {
-    List<String> errors = certificateValidator.validate(giftCertificate);
-
-    if (!errors.isEmpty()) {
-      throw new ValidationException(errors);
-    }
+    getTagIds(giftCertificate);
     giftCertificateDAO.save(giftCertificate);
-    saveCertificateTags(giftCertificate);
   }
 
   @Transactional
@@ -95,30 +71,39 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     giftCertificateDAO.delete(giftCertificateId);
   }
 
-  @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+  @Transactional
   @Override
   public void update(GiftCertificate giftCertificate) {
     List<String> errors = certificateValidator.validate(giftCertificate);
     if (!errors.isEmpty()) {
       throw new ValidationException(errors);
     }
-    saveCertificateTags(giftCertificate);
+    getTagIds(giftCertificate);
     giftCertificateDAO.update(giftCertificate);
   }
 
-  private void saveCertificateTags(GiftCertificate giftCertificate) {
+  private void getTagIds(GiftCertificate giftCertificate) {
     List<Tag> tags = giftCertificate.getTags();
 
     if (tags.isEmpty()) {
       return;
     }
-    tagDAO.deleteCertificateTags(giftCertificate.getId());
+    // tagDAO.deleteCertificateTags(giftCertificate.getId());
 
-    List<Tag> nonExistingTags =
-        tags.stream().filter(tag -> !tagDAO.getByName(tag.getName()).isPresent()).collect(toList());
+    List<Tag> nonExistingTags = getUnExistingTags(tags);
     nonExistingTags.forEach(tagDAO::save);
 
-    tags = tags.stream().map(tag -> tagDAO.getByName(tag.getName()).orElse(tag)).collect(toList());
-    tags.forEach(tag -> tagDAO.saveCertificateTag(giftCertificate.getId(), tag.getId()));
+    setTagIds(tags);
+    // tags.forEach(tag -> tagDAO.saveCertificateTag(giftCertificate.getId(), tag.getId()));
+  }
+
+  private List<Tag> getUnExistingTags(List<Tag> tags) {
+    return tags.stream()
+        .filter(tag -> !tagDAO.getByName(tag.getName()).isPresent())
+        .collect(toList());
+  }
+
+  private void setTagIds(List<Tag> tags) {
+    tags.forEach(tag -> tagDAO.getByName(tag.getName()));
   }
 }

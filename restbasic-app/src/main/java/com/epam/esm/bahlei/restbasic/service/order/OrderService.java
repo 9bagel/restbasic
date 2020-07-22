@@ -10,11 +10,9 @@ public interface OrderService {
 
   void save(Order order);
 
-  List<Order> getAll();
-
   Optional<Order> get(long orderId, long userId);
 
-  List<Order> getUserOrders(long id,  Pageable pageable);
+  List<Order> getUserOrders(long id, Pageable pageable);
 
-    Optional<Order> get(long orderId);
+  Optional<Order> get(long orderId);
 }

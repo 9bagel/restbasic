@@ -42,7 +42,7 @@ public class UserController {
     this.orderService = orderService;
     this.certificateService = certificateService;
   }
-  // Заменить refDTO на DTO +
+
   @GetMapping("/{userId}")
   public ResponseEntity<?> getUser(@PathVariable long userId) {
     Optional<User> optional = userService.get(userId);
@@ -57,7 +57,7 @@ public class UserController {
     userDTO.add(selfLink, orders);
     return ok(userDTO);
   }
-  // Заменить refDTO на DTO +
+
   @GetMapping("/{userId}/orders")
   public ResponseEntity<?> getUserOrders(
       @PathVariable long userId,
@@ -74,15 +74,6 @@ public class UserController {
                             .withSelfRel()))
             .collect(toList());
 
-    orderDTOs.forEach(
-        orderDTO ->
-            orderDTO.certificates.forEach(
-                certificateRef ->
-                    certificateRef.add(
-                        linkTo(
-                                methodOn(CertificateController.class)
-                                    .getCertificate(certificateRef.getId()))
-                            .withSelfRel())));
     return ok(orderDTOs);
   }
 
@@ -111,6 +102,9 @@ public class UserController {
   @PostMapping("/{userId}/orders")
   public ResponseEntity<?> createOrder(
       @PathVariable long userId, @RequestBody Order order, HttpServletRequest httpServletRequest) {
+    User user = new User();
+    user.setId(userId);
+
     order.setUserId(userId);
 
     orderService.save(order);
@@ -126,7 +120,7 @@ public class UserController {
 
   private RefDTO toRefDTO(User user) {
 
-    return new RefDTO(user);
+    return new RefDTO(user.getId(), user.getFirstName() + " " + user.getSecondName());
   }
 
   private User toUser(UserDTO userDTO) {

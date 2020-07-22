@@ -10,10 +10,11 @@ import javax.persistence.*;
 @Table(name = "tags")
 public class Tag {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "default_generator")
+  @SequenceGenerator(name = "default_generator", sequenceName = "tags_id_seq", allocationSize = 1)
   private long id;
 
-  @Column(name = "name")
+  @Column(name = "name", unique = true, nullable = false)
   private String name;
 
   public Tag() {}

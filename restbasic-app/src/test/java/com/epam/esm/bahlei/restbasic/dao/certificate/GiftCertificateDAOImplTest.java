@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,13 +80,7 @@ class GiftCertificateDAOImplTest {
 
     GiftCertificate certificate1 =
         new GiftCertificate(
-            1,
-            "certificate1",
-            "desc",
-            BigDecimal.valueOf(10),
-            OffsetDateTime.now(),
-            OffsetDateTime.now(),
-            5);
+            1, "certificate1", "desc", BigDecimal.valueOf(10), Instant.now(), Instant.now(), 5);
     List<Tag> tags = new ArrayList<>();
     tags.add(new Tag(1, "books"));
     tags.add(new Tag(2, "tools"));
@@ -94,24 +88,12 @@ class GiftCertificateDAOImplTest {
 
     GiftCertificate certificate2 =
         new GiftCertificate(
-            2,
-            "certificate2",
-            "desc",
-            BigDecimal.valueOf(10),
-            OffsetDateTime.now(),
-            OffsetDateTime.now(),
-            5);
+            2, "certificate2", "desc", BigDecimal.valueOf(10), Instant.now(), Instant.now(), 5);
     certificate2.setTags(singletonList(new Tag(3, "news")));
 
     GiftCertificate certificate3 =
         new GiftCertificate(
-            3,
-            "certificate3",
-            "desc",
-            BigDecimal.valueOf(10),
-            OffsetDateTime.now(),
-            OffsetDateTime.now(),
-            5);
+            3, "certificate3", "desc", BigDecimal.valueOf(10), Instant.now(), Instant.now(), 5);
 
     certificates.add(certificate1);
     certificates.add(certificate2);
@@ -132,13 +114,7 @@ class GiftCertificateDAOImplTest {
 
   private GiftCertificate getValidCertificate() {
     return new GiftCertificate(
-        1,
-        "certificate1",
-        "desc",
-        BigDecimal.valueOf(10),
-        OffsetDateTime.now(),
-        OffsetDateTime.now(),
-        5);
+        1, "certificate1", "desc", BigDecimal.valueOf(10), Instant.now(), Instant.now(), 5);
   }
 
   @Test

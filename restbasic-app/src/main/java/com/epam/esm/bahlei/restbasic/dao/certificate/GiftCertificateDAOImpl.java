@@ -5,142 +5,94 @@ import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import com.epam.esm.bahlei.restbasic.service.supplies.CriteriaToSQL;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class GiftCertificateDAOImpl implements GiftCertificateDAO {
-  private final JdbcTemplate jdbcTemplate;
   private final EntityManager entityManager;
 
   @Autowired
   public GiftCertificateDAOImpl(DataSource dataSource, EntityManager entityManager) {
-    jdbcTemplate = new JdbcTemplate(dataSource);
     this.entityManager = entityManager;
   }
-
-  private GiftCertificate toCertificate(ResultSet resultSet, int i) throws SQLException {
-    GiftCertificate giftCertificate = new GiftCertificate();
-
-    giftCertificate.setId(resultSet.getLong("id"));
-    giftCertificate.setName(resultSet.getString("name"));
-    giftCertificate.setCreatedAt(
-        resultSet.getTimestamp("created_at").toInstant().atOffset(ZoneOffset.UTC));
-    giftCertificate.setModifiedAt(
-        resultSet.getTimestamp("updated_at").toInstant().atOffset(ZoneOffset.UTC));
-    giftCertificate.setDuration(resultSet.getInt("duration"));
-    giftCertificate.setPrice(resultSet.getBigDecimal("price"));
-    giftCertificate.setDescription(resultSet.getString("description"));
-
-    return giftCertificate;
-  }
-
+  // Куда перенести появившуюся логику? В private метод внутри dao или в CriteriaToSQL
   @Override
   public List<GiftCertificate> getAll(Criteria criteria, Pageable pageable) {
-    String sql = CriteriaToSQL.mapSql(criteria);
-    String wholeSql =
-        "SELECT c.id, c.name, c.description, c.price, c.created_at, c.updated_at, c.duration "
-            + "FROM certificates c "
-            + sql
-            + " LIMIT ? OFFSET ? ";
+    Query query = CriteriaToSQL.buildQuery(entityManager, criteria, pageable);
 
-    return jdbcTemplate.query(
-        wholeSql, new Object[] {pageable.getLimit(), pageable.getOffset()}, this::toCertificate);
+    return query.getResultList();
   }
 
   @Override
   public void save(GiftCertificate certificate) {
-    certificate.setCreatedAt(OffsetDateTime.now());
-    certificate.setModifiedAt(OffsetDateTime.now());
-    entityManager.persist(certificate);
+    entityManager.merge(certificate);
   }
 
   @Override
   public Optional<GiftCertificate> get(long id) {
-    String sql =
-        "SELECT id, name, description, price, created_at, updated_at, duration "
-            + "FROM certificates WHERE id = ?";
-    try {
-      return Optional.ofNullable(
-          jdbcTemplate.queryForObject(sql, new Object[] {id}, this::toCertificate));
-    } catch (EmptyResultDataAccessException ex) {
-      return Optional.empty();
-    }
+    TypedQuery<GiftCertificate> query =
+        entityManager.createQuery("from GiftCertificate where id = :id", GiftCertificate.class);
+    query.setParameter("id", id);
+
+    return query.getResultList().stream().findFirst();
   }
 
   @Override
   public void delete(long id) {
-    String sql = "DELETE FROM certificates WHERE id = ?";
+    Query query = entityManager.createQuery("delete from GiftCertificate where id=:id");
 
-    jdbcTemplate.update(sql, id);
+    query.setParameter("id", id);
+    query.executeUpdate();
   }
 
   @Override
   public void update(GiftCertificate certificate) {
-    String sql =
-        "UPDATE certificates SET name = ?, description = ?, price = ?, "
-            + "updated_at = ?, duration = ? WHERE id = ?";
-
-    jdbcTemplate.update(
-        sql,
-        certificate.getName(),
-        certificate.getDescription(),
-        certificate.getPrice(),
-        Timestamp.valueOf(LocalDateTime.now()),
-        certificate.getDuration(),
-        certificate.getId());
+    GiftCertificate dbCertificate = entityManager.merge(certificate);
+    certificate.setId(dbCertificate.getId());
   }
 
   @Override
   public Optional<GiftCertificate> getByName(String name) {
-    String sql =
-        "SELECT id, name, description, price, created_at, updated_at, duration "
-            + "FROM certificates WHERE name = ?";
-    try {
-      return Optional.ofNullable(
-          jdbcTemplate.queryForObject(sql, new Object[] {name}, this::toCertificate));
-    } catch (EmptyResultDataAccessException ex) {
-      return Optional.empty();
-    }
+    TypedQuery<GiftCertificate> query =
+        entityManager.createQuery("from GiftCertificate where name=:name", GiftCertificate.class);
+    query.setParameter("name", name);
+
+    return query.getResultList().stream().findFirst();
   }
 
   @Override
-  public List<GiftCertificate> getOrderedCertificates(long id) {
-    String sql =
-        "SELECT c.id, c.name, c.description, c.price, c.created_at, c.updated_at, c.duration "
-            + "FROM certificates c "
-            + "JOIN ordered_certificates ON c.id = ordered_certificates.certificate_id "
-            + "WHERE ordered_certificates.order_id = ?";
+  public List<GiftCertificate> getOrderedCertificates(long orderId) {
+    TypedQuery<GiftCertificate> query =
+        entityManager.createQuery(
+            "SELECT c from Order o " + "JOIN o.certificates c  " + "WHERE o.id = :orderId",
+            GiftCertificate.class);
 
-    return jdbcTemplate.query(sql, new Object[] {id}, this::toCertificate);
+    query.setParameter("orderId", orderId);
+
+    return query.getResultList();
   }
 
   @Override
   public Optional<GiftCertificate> getFavouriteUserCertificate(long userId) {
-    String sql =
-        "SELECT c.id, c.name, c.description, c.price, c.created_at, c.updated_at, c.duration, "
-            + "COUNT(c.id) AS \"count\" "
-            + "FROM certificates c "
-            + "JOIN ordered_certificates oc ON c.id = oc.certificate_id "
-            + "JOIN user_orders uo ON oc.order_id = uo.order_id "
-            + "WHERE uo.user_id = ? "
-            + "GROUP BY c.id "
-            + "ORDER BY \"count\" DESC "
-            + "LIMIT 1";
 
-    return Optional.ofNullable(
-        jdbcTemplate.queryForObject(sql, new Object[] {userId}, this::toCertificate));
+    TypedQuery<GiftCertificate> query =
+        entityManager
+            .createQuery(
+                "SELECT c FROM Order o JOIN o.certificates c "
+                    + "WHERE o.userId = ?1 "
+                    + "GROUP BY c.id "
+                    + "ORDER BY COUNT(c.id) DESC",
+                GiftCertificate.class)
+            .setMaxResults(1)
+            .setParameter(1, userId);
+
+    return query.getResultList().stream().findFirst();
   }
 }

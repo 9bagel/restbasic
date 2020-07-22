@@ -1,5 +1,9 @@
 package com.epam.esm.bahlei.restbasic.service.supplies;
 
+import com.epam.esm.bahlei.restbasic.model.Pageable;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -15,32 +19,26 @@ public class CriteriaToSQL {
 
     return sql.toString();
   }
-  // Экранировать tagName
+
   private static void buildFilterSql(List<String> tagNames, StringBuilder sql) {
-    if (tagNames == null || tagNames.isEmpty()) {
+    if (tagNames.isEmpty()) {
       return;
     }
-    StringJoiner joiner = new StringJoiner(", ");
-    tagNames.forEach(tagName -> joiner.add("'" + tagName + "' "));
     String filterSql =
-        "JOIN certificate_tags ct ON c.id = ct.certificate_id "
-            + "JOIN tags t ON t.id = ct.tag_id WHERE t.name IN("
-            + joiner.toString()
-            + ")"
+        "JOIN c.tags t WHERE t.name IN :names "
             + "GROUP BY (c.id) "
-            + "HAVING COUNT(c.id) >="
-            + tagNames.size();
+            + "HAVING COUNT(c.id) >= :size ";
     sql.append(filterSql);
   }
 
   private static void buildSearchSql(String search, StringBuilder sql) {
-    if (search == null || search.isEmpty()) {
+    if (search.isEmpty()) {
       return;
     }
     if (sql.length() > 0) {
-      sql.append("AND c in(select search('").append(search).append("') ) ");
+      sql.append("AND c.id in (function('search',:findPhrase) ) ");
     } else {
-      sql.append("WHERE c in(select search('").append(search).append("') ) ");
+      sql.append("WHERE c.id in (function('search',:findPhrase) ) ");
     }
   }
 
@@ -50,8 +48,31 @@ public class CriteriaToSQL {
     }
     StringJoiner joiner = new StringJoiner(", ");
     sortColumns.forEach(
-        sortColumn -> joiner.add(sortColumn.columnName + " " + sortColumn.sortOrder));
+        sortColumn -> joiner.add("c." + sortColumn.columnName + " " + sortColumn.sortOrder));
 
     sql.append("ORDER BY ").append(joiner.toString());
+  }
+
+  public static Query buildQuery(
+      EntityManager entityManager, Criteria criteria, Pageable pageable) {
+
+    String sql = CriteriaToSQL.mapSql(criteria);
+    String wholeSql = "SELECT c FROM GiftCertificate c " + sql;
+
+    Query query =
+        entityManager
+            .createQuery(wholeSql)
+            .setFirstResult(pageable.getOffset())
+            .setMaxResults(pageable.getLimit());
+
+    if (!criteria.tagNames.isEmpty()) {
+      query.setParameter("names", criteria.tagNames);
+      query.setParameter("size", (long) criteria.tagNames.size());
+    }
+
+    if (!criteria.findPhrase.isEmpty()) {
+      query.setParameter("findPhrase", criteria.findPhrase);
+    }
+    return query;
   }
 }

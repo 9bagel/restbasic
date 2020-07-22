@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -109,8 +109,7 @@ class TagDAOImplTest {
 
   private GiftCertificate certificate(String name, Tag... tags) {
     GiftCertificate certificate =
-        new GiftCertificate(
-            0, name, "desc", BigDecimal.ONE, OffsetDateTime.now(), OffsetDateTime.now(), 10);
+        new GiftCertificate(0, name, "desc", BigDecimal.ONE, Instant.now(), Instant.now(), 10);
     certificate.setTags(Arrays.asList(tags));
 
     return certificate;

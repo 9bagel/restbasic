@@ -7,6 +7,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -19,20 +20,20 @@ public class GiftCertificateDTO extends RepresentationModel<GiftCertificateDTO> 
   public BigDecimal price;
   public Integer duration;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:X")
-  public OffsetDateTime createdAt;
+  @JsonFormat
+  public Instant createdAt;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:X")
-  public OffsetDateTime modifiedAt;
+  @JsonFormat
+  public Instant modifiedAt;
 
   public List<Tag> tags;
 
   public GiftCertificateDTO(GiftCertificate certificate) {
     this.id = certificate.getId();
-    this.createdAt = certificate.getCreatedAt();
+    this.createdAt = certificate.getAudit().getCreatedAt();
     this.description = certificate.getDescription();
     this.duration = certificate.getDuration();
-    this.modifiedAt = certificate.getModifiedAt();
+    this.modifiedAt = certificate.getAudit().getUpdatedAt();
     this.name = certificate.getName();
     this.price = certificate.getPrice();
     this.tags = certificate.getTags();

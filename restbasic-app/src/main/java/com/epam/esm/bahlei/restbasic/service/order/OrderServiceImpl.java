@@ -3,7 +3,6 @@ package com.epam.esm.bahlei.restbasic.service.order;
 import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.dao.order.OrderDAO;
 import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
-import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
@@ -18,7 +17,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static com.epam.esm.bahlei.restbasic.service.utils.ServiceUtils.getOffset;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -28,20 +26,17 @@ public class OrderServiceImpl implements OrderService {
   private final GiftCertificateDAO certificateDAO;
   private final OrderValidator validator;
   private final TagDAO tagDAO;
-  private final UserDAO userDAO;
 
   @Autowired
   public OrderServiceImpl(
       OrderDAO orderDAO,
       GiftCertificateDAO certificateDAO,
       OrderValidator validator,
-      TagDAO tagDAO,
-      UserDAO userDAO) {
+      TagDAO tagDAO) {
     this.orderDAO = orderDAO;
     this.certificateDAO = certificateDAO;
     this.validator = validator;
     this.tagDAO = tagDAO;
-    this.userDAO = userDAO;
   }
 
   @Override
@@ -56,7 +51,6 @@ public class OrderServiceImpl implements OrderService {
     order.setCost(calculateCost(certificates));
 
     orderDAO.save(order);
-    orderDAO.saveOrderedCertificates(order.getCertificates(), order.getId());
   }
 
   private BigDecimal calculateCost(List<GiftCertificate> certificates) {
@@ -73,18 +67,8 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public List<Order> getAll() {
-    List<Order> orders = orderDAO.getAll();
-
-    orders.forEach(this::setOrderedCertificates);
-    return orders;
-  }
-
-  @Override
   public List<Order> getUserOrders(long id, Pageable pageable) {
-    List<Order> userOrders = orderDAO.getUserOrders(id, pageable);
-    userOrders.forEach(this::setOrderedCertificates);
-    return userOrders;
+    return orderDAO.getUserOrders(id, pageable);
   }
 
   @Override

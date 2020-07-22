@@ -64,7 +64,7 @@ public class CertificateController {
   public ResponseEntity<?> getAll(
       @RequestParam(required = false) List<String> tagNames,
       @RequestParam(required = false) String sortBy,
-      @RequestParam(required = false) String find,
+      @RequestParam(required = false, defaultValue = "") String find,
       @RequestParam(required = false, defaultValue = "1") int page,
       @RequestParam(required = false, defaultValue = "10") int size) {
     Criteria criteria = new CriteriaParser().parse(tagNames, sortBy, find);
@@ -177,10 +177,8 @@ public class CertificateController {
   private GiftCertificate toCertificate(GiftCertificateDTO dto) {
     GiftCertificate certificate = new GiftCertificate();
     certificate.setId(dto.id);
-    certificate.setCreatedAt(dto.createdAt);
     certificate.setDescription(dto.description);
     certificate.setDuration(dto.duration);
-    certificate.setModifiedAt(dto.modifiedAt);
     certificate.setName(dto.name);
     certificate.setPrice(dto.price);
     certificate.setTags(dto.tags);
