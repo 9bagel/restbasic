@@ -22,7 +22,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
   public GiftCertificateDAOImpl(DataSource dataSource, EntityManager entityManager) {
     this.entityManager = entityManager;
   }
-  // Куда перенести появившуюся логику? В private метод внутри dao или в CriteriaToSQL
+
   @Override
   public List<GiftCertificate> getAll(Criteria criteria, Pageable pageable) {
     Query query = CriteriaToSQL.buildQuery(entityManager, criteria, pageable);

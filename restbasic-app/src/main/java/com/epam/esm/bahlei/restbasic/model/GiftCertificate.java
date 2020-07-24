@@ -13,9 +13,9 @@ import java.util.List;
 @EntityListeners(AuditListener.class)
 public class GiftCertificate implements Auditable {
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "default_generator")
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "certificate_generator")
   @SequenceGenerator(
-      name = "default_generator",
+      name = "certificate_generator",
       sequenceName = "certificates_id_seq",
       allocationSize = 1)
   private Long id;

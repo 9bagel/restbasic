@@ -90,20 +90,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
     // tagDAO.deleteCertificateTags(giftCertificate.getId());
 
-    List<Tag> nonExistingTags = getUnExistingTags(tags);
+    List<Tag> nonExistingTags = getNonExistingTags(tags);
     nonExistingTags.forEach(tagDAO::save);
 
-    setTagIds(tags);
+    giftCertificate.setTags(getTagsWIthId(tags));
     // tags.forEach(tag -> tagDAO.saveCertificateTag(giftCertificate.getId(), tag.getId()));
   }
 
-  private List<Tag> getUnExistingTags(List<Tag> tags) {
+  private List<Tag> getNonExistingTags(List<Tag> tags) {
     return tags.stream()
         .filter(tag -> !tagDAO.getByName(tag.getName()).isPresent())
         .collect(toList());
   }
 
-  private void setTagIds(List<Tag> tags) {
-    tags.forEach(tag -> tagDAO.getByName(tag.getName()));
+  private List<Tag> getTagsWIthId(List<Tag> tags) {
+    return tags.stream().map(tag -> tagDAO.getByName(tag.getName()).orElse(tag)).collect(toList());
   }
 }

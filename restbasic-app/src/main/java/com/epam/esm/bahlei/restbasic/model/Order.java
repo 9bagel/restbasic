@@ -3,14 +3,14 @@ package com.epam.esm.bahlei.restbasic.model;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "orders")
 public class Order {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_generator")
+  @SequenceGenerator(name = "order_generator", sequenceName = "orders_id_seq", allocationSize = 1)
   private long id;
 
   @ManyToOne

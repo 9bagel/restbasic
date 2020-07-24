@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +33,7 @@ public class TagDAOImpl implements TagDAO {
 
   @Override
   public void save(Tag tag) {
-    entityManager.persist(tag);
+    entityManager.merge(tag);
   }
 
   @Override

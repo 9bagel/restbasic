@@ -12,4 +12,6 @@ public interface UserDAO {
   void save(User user);
 
   Optional<User> get(long id);
+
+  Optional<User> getByUsername(String username);
 }

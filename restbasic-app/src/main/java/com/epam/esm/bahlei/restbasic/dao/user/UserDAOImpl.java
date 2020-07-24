@@ -3,72 +3,50 @@ package com.epam.esm.bahlei.restbasic.dao.user;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
-  private final JdbcTemplate jdbcTemplate;
+  private final EntityManager entityManager;
 
   @Autowired
-  public UserDAOImpl(DataSource dataSource) {
-    jdbcTemplate = new JdbcTemplate(dataSource);
-  }
-
-  private User toUser(ResultSet resultSet, int i) throws SQLException {
-    User user = new User();
-
-    user.setId(resultSet.getLong("id"));
-    user.setFirstName(resultSet.getString("first_name"));
-    user.setSecondName(resultSet.getString("second_name"));
-
-    return user;
+  public UserDAOImpl(EntityManager entityManager) {
+    this.entityManager = entityManager;
   }
 
   @Override
   public List<User> getAll(Pageable pageable) {
-    String sql = "SELECT id, first_name, second_name FROM users LIMIT ? OFFSET ? ";
+    TypedQuery<User> query =
+        entityManager
+            .createQuery("FROM User", User.class)
+            .setFirstResult(pageable.getOffset())
+            .setMaxResults(pageable.getLimit());
 
-    return jdbcTemplate.query(
-        sql, new Object[] {pageable.getLimit(), pageable.getOffset()}, this::toUser);
+    return query.getResultList();
   }
 
   @Override
   public Optional<User> get(long id) {
-    String sql = "SELECT id, first_name, second_name FROM users WHERE id = ?";
-    try {
-      return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[] {id}, this::toUser));
-    } catch (EmptyResultDataAccessException ex) {
-      return Optional.empty();
-    }
+    return Optional.ofNullable(entityManager.find(User.class, id));
   }
 
   @Override
   public void save(User user) {
-    String sql = "INSERT INTO users(first_name, second_name) VALUES(?, ?)";
+    entityManager.persist(user);
+  }
 
-    KeyHolder keyHolder = new GeneratedKeyHolder();
+  @Override
+  public Optional<User> getByUsername(String username) {
+    TypedQuery<User> query =
+        entityManager
+            .createQuery("FROM User u WHERE u.username = ?1", User.class)
+            .setParameter(1, username);
 
-    jdbcTemplate.update(
-        connection -> {
-          PreparedStatement statement =
-              connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-          statement.setString(1, user.getFirstName());
-          statement.setString(2, user.getSecondName());
-          return statement;
-        },
-        keyHolder);
-    user.setId((Long) keyHolder.getKeys().get("id"));
+    return query.getResultList().stream().findFirst();
   }
 }

@@ -1,27 +1,22 @@
 package com.epam.esm.bahlei.restbasic.dao.order;
 
-import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.sql.DataSource;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class OrderDAOImpl implements OrderDAO {
-  private final JdbcTemplate jdbcTemplate;
   private final EntityManager entityManager;
 
   @Autowired
-  public OrderDAOImpl(DataSource dataSource, EntityManager entityManager) {
-    jdbcTemplate = new JdbcTemplate(dataSource);
+  public OrderDAOImpl(EntityManager entityManager) {
     this.entityManager = entityManager;
   }
 
@@ -58,12 +53,5 @@ public class OrderDAOImpl implements OrderDAO {
             .setParameter(2, orderId);
 
     return query.getResultList().stream().findFirst();
-  }
-
-  @Override
-  public void saveOrderedCertificates(List<GiftCertificate> certificates, long orderId) {
-    String sql = "INSERT INTO ordered_certificates (certificate_id, order_id) VALUES (?, ?)";
-
-    certificates.forEach(certificate -> jdbcTemplate.update(sql, certificate.getId(), orderId));
   }
 }

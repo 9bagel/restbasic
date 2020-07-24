@@ -8,6 +8,7 @@ import com.epam.esm.bahlei.restbasic.service.tag.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ public class TagController {
    *
    * @param id an id of a tag
    */
+  @PreAuthorize("hasAuthority('role_user')")
   @GetMapping("/tags/{id}")
   public ResponseEntity<?> getTag(@PathVariable long id) {
     Optional<Tag> optional = tagService.get(id);
@@ -47,6 +49,7 @@ public class TagController {
   }
 
   /** Returns a list of Tags Path [GET /api/tags/] */
+  @PreAuthorize("hasAuthority('role_user')")
   @GetMapping("/tags")
   public ResponseEntity<?> getAll(
       @RequestParam(required = false, defaultValue = "1") int page,
@@ -66,6 +69,7 @@ public class TagController {
    *
    * @param tagDTO a Tag object in JSON format
    */
+  @PreAuthorize("hasAuthority('role_admin')")
   @PostMapping("/tags")
   public ResponseEntity<?> addTag(
       @RequestBody TagDTO tagDTO, HttpServletRequest httpServletRequest) {
@@ -81,6 +85,7 @@ public class TagController {
    *
    * @param id tag id
    */
+  @PreAuthorize("hasAuthority('role_admin')")
   @DeleteMapping("/tags/{id}")
   public ResponseEntity<ErrorResponse> deleteTag(@PathVariable long id) {
     if (!tagService.get(id).isPresent()) {

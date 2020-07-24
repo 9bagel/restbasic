@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ public class CertificateController {
    *
    * @param id an id of a certificate
    */
+  @PreAuthorize("permitAll()")
   @GetMapping("/certificates/{id}")
   public ResponseEntity<?> getCertificate(@PathVariable long id) {
     Optional<GiftCertificate> optional = giftCertificateService.get(id);
@@ -60,7 +62,8 @@ public class CertificateController {
    * @param sortBy (not required) name of sorting field including sorting order
    * @param find (not required) search phrase that certificate should have
    */
-  @GetMapping("/certificates/")
+  @PreAuthorize("permitAll()")
+  @GetMapping("/certificates")
   public ResponseEntity<?> getAll(
       @RequestParam(required = false) List<String> tagNames,
       @RequestParam(required = false) String sortBy,
@@ -87,6 +90,7 @@ public class CertificateController {
    *
    * @param certificateDTO a certificate object in json format
    */
+  @PreAuthorize("hasAuthority('role_admin')")
   @PostMapping("/certificates")
   public ResponseEntity<?> addCertificate(
       @RequestBody GiftCertificateDTO certificateDTO, HttpServletRequest httpServletRequest) {
@@ -106,6 +110,7 @@ public class CertificateController {
    * @param certificateDTO certificate object in JSON format
    * @param id certificate id
    */
+  @PreAuthorize("hasAuthority('role_admin')")
   @PutMapping("/certificates/{id}")
   public ResponseEntity<?> updateCertificate(
       @RequestBody GiftCertificateDTO certificateDTO, @PathVariable long id) {
@@ -117,7 +122,7 @@ public class CertificateController {
     giftCertificateService.update(toCertificate(certificateDTO));
     return noContent().build();
   }
-
+  @PreAuthorize("hasAuthority('role_admin')")
   @PatchMapping("/certificates/{id}")
   public ResponseEntity<?> patchCertificate(
       @RequestBody GiftCertificateDTO certificateDTO, @PathVariable long id) {
@@ -133,6 +138,22 @@ public class CertificateController {
 
     giftCertificateService.update(certificate);
     return noContent().build();
+  }
+
+  /**
+   * Deletes a single certificate for a specific certificate id. Path [DELETE
+   * /api/certificates/{id}]
+   *
+   * @param id certificate id
+   */
+  @PreAuthorize("hasAuthority('role_admin')")
+  @DeleteMapping("/certificates/{id}")
+  public ResponseEntity<ErrorResponse> deleteCertificate(@PathVariable int id) {
+    if (giftCertificateService.get(id).isPresent()) {
+      giftCertificateService.delete(id);
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 
   private void mergeNewValues(GiftCertificateDTO dto, GiftCertificate to) {
@@ -152,21 +173,6 @@ public class CertificateController {
     if (from.getTags() != null) {
       to.setTags(from.getTags());
     }
-  }
-
-  /**
-   * Deletes a single certificate for a specific certificate id. Path [DELETE
-   * /api/certificates/{id}]
-   *
-   * @param id certificate id
-   */
-  @DeleteMapping("/certificates/{id}")
-  public ResponseEntity<ErrorResponse> deleteCertificate(@PathVariable int id) {
-    if (giftCertificateService.get(id).isPresent()) {
-      giftCertificateService.delete(id);
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 
   private GiftCertificateDTO toCertificateDTO(GiftCertificate certificate) {

@@ -9,7 +9,9 @@ import java.util.Optional;
 public interface UserService {
   List<User> getAll(Pageable pageable);
 
-  void save(User user);
-
   Optional<User> get(long id);
+
+  void register(User user);
+
+  Optional<User> getByUsername(String username);
 }

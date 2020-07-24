@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +44,7 @@ public class UserController {
     this.certificateService = certificateService;
   }
 
+  @PreAuthorize("hasAuthority('role_user')")
   @GetMapping("/{userId}")
   public ResponseEntity<?> getUser(@PathVariable long userId) {
     Optional<User> optional = userService.get(userId);
@@ -59,6 +61,7 @@ public class UserController {
   }
 
   @GetMapping("/{userId}/orders")
+  @PreAuthorize("hasAuthority('role_user')")
   public ResponseEntity<?> getUserOrders(
       @PathVariable long userId,
       @RequestParam(required = false, defaultValue = "1") int page,
@@ -77,6 +80,7 @@ public class UserController {
     return ok(orderDTOs);
   }
 
+  @PreAuthorize("hasAuthority('role_user')")
   @GetMapping("/{userId}/orders/favourite_certificate")
   public ResponseEntity<?> getFavouriteCertificate(@PathVariable long userId) {
     Optional<GiftCertificate> optional = certificateService.getFavouriteUserCertificate(userId);
@@ -86,6 +90,7 @@ public class UserController {
     return ok(optional.get());
   }
 
+  @PreAuthorize("hasAuthority('role_user')")
   @GetMapping("/{userId}/orders/{orderId}")
   public ResponseEntity<?> getOrder(@PathVariable long userId, @PathVariable long orderId) {
     Optional<Order> optional = orderService.get(orderId, userId);
@@ -99,6 +104,7 @@ public class UserController {
     return ok(orderDTO);
   }
 
+  @PreAuthorize("hasAuthority('role_user')")
   @PostMapping("/{userId}/orders")
   public ResponseEntity<?> createOrder(
       @PathVariable long userId, @RequestBody Order order, HttpServletRequest httpServletRequest) {
@@ -120,15 +126,7 @@ public class UserController {
 
   private RefDTO toRefDTO(User user) {
 
-    return new RefDTO(user.getId(), user.getFirstName() + " " + user.getSecondName());
-  }
-
-  private User toUser(UserDTO userDTO) {
-    User user = new User();
-    user.setId(userDTO.id);
-    user.setFirstName(userDTO.firstName);
-    user.setSecondName(userDTO.secondName);
-    return user;
+    return new RefDTO(user.getId(), user.getFirstName() + " " + user.getLastName());
   }
 
   private OrderDTO toOrderDTO(Order order) {

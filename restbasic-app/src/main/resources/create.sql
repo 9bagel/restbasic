@@ -29,8 +29,20 @@ CREATE TABLE IF NOT EXISTS certificate_tags(
 
 	CREATE TABLE IF NOT EXISTS users(
 	id bigserial PRIMARY KEY,
-	first_name varchar(255) NOT NULL,
-	second_name varchar(255) NOT NULL);
+	username varchar(255),
+	first_name varchar(255),
+	last_name varchar(255),
+	password varchar(255),
+	email varchar(255) UNIQUE);
+
+	CREATE TABLE IF NOT EXISTS roles(
+	id bigserial PRIMARY KEY,
+	name varchar(255) NOT NULL UNIQUE);
+
+	CREATE TABLE IF NOT EXISTS user_roles(
+	id bigserial PRIMARY KEY,
+	user_id bigint REFERENCES users (id) ON  DELETE CASCADE,
+	role_id bigint REFERENCES roles (id) ON DELETE CASCADE);
 
 CREATE OR REPLACE FUNCTION search(IN word CHARACTER varying) RETURNS certificates AS $$
 CREATE OR REPLACE FUNCTION search(IN word character varying) RETURNS SETOF certificates AS $$
