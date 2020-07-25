@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     List<Role> roles = new ArrayList<>();
     roles.add(userRole);
 
-    user.setPassword(encoder.encode(user.getPassword()));
+    user.setPassword(encoder. encode(user.getPassword()));
     user.setRoles(roles);
 
     userDAO.save(user);
