@@ -68,7 +68,7 @@ public class TagDAOImpl implements TagDAO {
 
     query.executeUpdate();
   }
-//Погуглить как исправить.
+
   @Override
   public List<Tag> getCertificateTags(long certificateId) {
     String sql =
