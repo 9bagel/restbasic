@@ -19,27 +19,16 @@ public class CertificateValidator {
   public List<String> validate(GiftCertificate certificate) {
     List<String> errors = new ArrayList<>();
 
-    if (certificate.getId() == 0) {
-      validateNameForSave(certificate.getName(), errors);
-    } else {
-      validateNameForUpdate(certificate.getName(), errors);
+    if (certificate.getId() == 0 && certificateDAO.getByName(certificate.getName()).isPresent()) {
+      errors.add(String.format("Certificate with name %s already exists.", certificate.getName()));
     }
+
+    validateName(certificate.getName(), errors);
     validateDescription(certificate.getDescription(), errors);
     validatePrice(certificate.getPrice(), errors);
     validateDuration(certificate.getDuration(), errors);
 
     return errors;
-  }
-
-  private void validateNameForUpdate(String name, List<String> errorMessages) {
-    validateName(name, errorMessages);
-  }
-//Перенести этот if в метод Validate
-  private void validateNameForSave(String name, List<String> errorMessages) {
-    validateName(name, errorMessages);
-    if (certificateDAO.getByName(name).isPresent()) {
-      errorMessages.add(String.format("Certificate with name %s already exists.", name));
-    }
   }
 
   private void validateName(String name, List<String> errorMessages) {

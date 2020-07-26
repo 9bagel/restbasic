@@ -19,7 +19,7 @@ public interface GiftCertificateDAO {
 
   void update(GiftCertificate giftCertificate);
 
-  Optional<GiftCertificate> getByName(String tagName);
+  Optional<GiftCertificate> getByName(String name);
 
   List<GiftCertificate> getCertificatesByOrderId(long id);
 
