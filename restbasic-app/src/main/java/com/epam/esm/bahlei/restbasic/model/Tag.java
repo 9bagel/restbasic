@@ -1,7 +1,5 @@
 package com.epam.esm.bahlei.restbasic.model;
 
-import com.google.common.base.Objects;
-
 import javax.persistence.*;
 
 @Entity
@@ -40,18 +38,5 @@ public class Tag {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Tag)) return false;
-    Tag tag = (Tag) o;
-    return id == tag.id && Objects.equal(name, tag.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(id, name);
   }
 }

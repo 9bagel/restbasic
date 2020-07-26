@@ -1,4 +1,4 @@
-package com.epam.esm.bahlei.restbasic.service.order;
+package com.epam.esm.bahlei.restbasic.service;
 
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
@@ -13,6 +13,4 @@ public interface OrderService {
   Optional<Order> get(long orderId, long userId);
 
   List<Order> getUserOrders(long id, Pageable pageable);
-
-  Optional<Order> get(long orderId);
 }

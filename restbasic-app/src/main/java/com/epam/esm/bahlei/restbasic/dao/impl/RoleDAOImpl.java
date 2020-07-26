@@ -1,5 +1,6 @@
-package com.epam.esm.bahlei.restbasic.dao.role;
+package com.epam.esm.bahlei.restbasic.dao.impl;
 
+import com.epam.esm.bahlei.restbasic.dao.RoleDAO;
 import com.epam.esm.bahlei.restbasic.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

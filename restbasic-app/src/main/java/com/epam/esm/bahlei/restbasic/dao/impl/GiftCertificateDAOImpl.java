@@ -1,5 +1,6 @@
-package com.epam.esm.bahlei.restbasic.dao.certificate;
+package com.epam.esm.bahlei.restbasic.dao.impl;
 
+import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +19,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
   private final EntityManager entityManager;
 
   @Autowired
-  public GiftCertificateDAOImpl(DataSource dataSource, EntityManager entityManager) {
+  public GiftCertificateDAOImpl(EntityManager entityManager) {
     this.entityManager = entityManager;
   }
 
@@ -68,7 +68,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
   }
 
   @Override
-  public List<GiftCertificate> getOrderedCertificates(long orderId) {
+  public List<GiftCertificate> getCertificatesByOrderId(long orderId) {
     TypedQuery<GiftCertificate> query =
         entityManager.createQuery(
             "SELECT c from Order o " + "JOIN o.certificates c  " + "WHERE o.id = :orderId",

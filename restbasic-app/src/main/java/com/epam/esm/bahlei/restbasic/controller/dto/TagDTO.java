@@ -9,16 +9,10 @@ public class TagDTO extends RepresentationModel<TagDTO> {
   public long id;
   public String name;
 
-  public TagDTO(long id, String name) {
-    this.id = id;
-    this.name = name;
-  }
-
   public TagDTO(Tag tag) {
     this.id = tag.getId();
     this.name = tag.getName();
   }
 
-  public TagDTO() {
-  }
+  public TagDTO() {}
 }

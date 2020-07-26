@@ -2,14 +2,13 @@ package com.epam.esm.bahlei.restbasic.controller;
 
 import com.epam.esm.bahlei.restbasic.controller.dto.OrderDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.UserDTO;
-import com.epam.esm.bahlei.restbasic.controller.refdto.RefDTO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.User;
-import com.epam.esm.bahlei.restbasic.service.certificate.GiftCertificateService;
-import com.epam.esm.bahlei.restbasic.service.order.OrderService;
-import com.epam.esm.bahlei.restbasic.service.user.UserService;
+import com.epam.esm.bahlei.restbasic.service.GiftCertificateService;
+import com.epam.esm.bahlei.restbasic.service.OrderService;
+import com.epam.esm.bahlei.restbasic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;

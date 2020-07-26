@@ -2,7 +2,7 @@ package com.epam.esm.bahlei.restbasic.security;
 
 import com.epam.esm.bahlei.restbasic.model.User;
 import com.epam.esm.bahlei.restbasic.security.jwt.JwtUserFactory;
-import com.epam.esm.bahlei.restbasic.service.user.UserService;
+import com.epam.esm.bahlei.restbasic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

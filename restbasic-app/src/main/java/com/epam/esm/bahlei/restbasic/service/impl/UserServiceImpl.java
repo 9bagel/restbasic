@@ -1,10 +1,12 @@
-package com.epam.esm.bahlei.restbasic.service.user;
+package com.epam.esm.bahlei.restbasic.service.impl;
 
-import com.epam.esm.bahlei.restbasic.dao.role.RoleDAO;
-import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
+import com.epam.esm.bahlei.restbasic.dao.RoleDAO;
+import com.epam.esm.bahlei.restbasic.dao.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Role;
 import com.epam.esm.bahlei.restbasic.model.User;
+import com.epam.esm.bahlei.restbasic.service.UserService;
+import com.epam.esm.bahlei.restbasic.service.validator.UserValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,6 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<User> getAll(Pageable pageable) {
-
     return userDAO.getAll(pageable);
   }
 
@@ -44,6 +45,8 @@ public class UserServiceImpl implements UserService {
   @Transactional
   @Override
   public void register(User user) {
+    UserValidator validator = new UserValidator();
+    validator.validate(user);
     Role userRole =
         roleDAO
             .getByName("role_user")
@@ -51,7 +54,7 @@ public class UserServiceImpl implements UserService {
     List<Role> roles = new ArrayList<>();
     roles.add(userRole);
 
-    user.setPassword(encoder. encode(user.getPassword()));
+    user.setPassword(encoder.encode(user.getPassword()));
     user.setRoles(roles);
 
     userDAO.save(user);

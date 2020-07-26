@@ -4,7 +4,7 @@ import com.epam.esm.bahlei.restbasic.controller.dto.AuthenticationDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.UserDTO;
 import com.epam.esm.bahlei.restbasic.model.User;
 import com.epam.esm.bahlei.restbasic.security.jwt.JwtTokenProvider;
-import com.epam.esm.bahlei.restbasic.service.user.UserService;
+import com.epam.esm.bahlei.restbasic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -82,11 +82,11 @@ public class AuthenticationController {
 
   private User toUser(UserDTO userDTO) {
     User user = new User();
-    user.setUsername(userDTO.getUsername());
-    user.setPassword(userDTO.getPassword());
-    user.setFirstName(userDTO.getFirstName());
-    user.setLastName(userDTO.getLastName());
-    user.setEmail(userDTO.getEmail());
+    user.setUsername(userDTO.username);
+    user.setPassword(userDTO.password);
+    user.setFirstName(userDTO.firstName);
+    user.setLastName(userDTO.lastName);
+    user.setEmail(userDTO.email);
     return user;
   }
 }

@@ -1,4 +1,4 @@
-package com.epam.esm.bahlei.restbasic.dao.role;
+package com.epam.esm.bahlei.restbasic.dao;
 
 import com.epam.esm.bahlei.restbasic.model.Role;
 

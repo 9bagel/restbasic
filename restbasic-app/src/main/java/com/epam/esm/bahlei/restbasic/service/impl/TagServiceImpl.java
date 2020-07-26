@@ -1,8 +1,9 @@
-package com.epam.esm.bahlei.restbasic.service.tag;
+package com.epam.esm.bahlei.restbasic.service.impl;
 
-import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
+import com.epam.esm.bahlei.restbasic.dao.TagDAO;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
+import com.epam.esm.bahlei.restbasic.service.TagService;
 import com.epam.esm.bahlei.restbasic.service.validator.TagValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +49,5 @@ public class TagServiceImpl implements TagService {
   @Transactional
   public void delete(long tagId) {
     tagDAO.delete(tagId);
-  }
-
-  @Override
-  public Optional<Tag> getTagByName(String tagName) {
-    return tagDAO.getByName(tagName);
   }
 }

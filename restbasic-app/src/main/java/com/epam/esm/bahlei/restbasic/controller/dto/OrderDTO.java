@@ -1,6 +1,6 @@
 package com.epam.esm.bahlei.restbasic.controller.dto;
 
-import com.epam.esm.bahlei.restbasic.controller.refdto.RefDTO;
+import com.epam.esm.bahlei.restbasic.controller.RefDTO;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.hateoas.RepresentationModel;

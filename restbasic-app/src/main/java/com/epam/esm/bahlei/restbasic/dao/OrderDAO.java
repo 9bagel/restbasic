@@ -1,4 +1,4 @@
-package com.epam.esm.bahlei.restbasic.dao.order;
+package com.epam.esm.bahlei.restbasic.dao;
 
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
@@ -10,9 +10,7 @@ public interface OrderDAO {
 
   void save(Order order);
 
-  Optional<Order> get(long id);
-
   List<Order> getUserOrders(long id, Pageable pageable);
 
-  Optional<Order> getUserOrderDetails(long userId, long orderId);
+  Optional<Order> get(long userId, long orderId);
 }

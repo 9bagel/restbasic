@@ -5,7 +5,7 @@ import com.epam.esm.bahlei.restbasic.controller.criteria.CriteriaParser;
 import com.epam.esm.bahlei.restbasic.controller.dto.GiftCertificateDTO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
-import com.epam.esm.bahlei.restbasic.service.certificate.GiftCertificateService;
+import com.epam.esm.bahlei.restbasic.service.GiftCertificateService;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;

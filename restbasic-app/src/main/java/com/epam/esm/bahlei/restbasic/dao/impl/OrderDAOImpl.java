@@ -1,5 +1,6 @@
-package com.epam.esm.bahlei.restbasic.dao.order;
+package com.epam.esm.bahlei.restbasic.dao.impl;
 
+import com.epam.esm.bahlei.restbasic.dao.OrderDAO;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,25 +28,20 @@ public class OrderDAOImpl implements OrderDAO {
   }
 
   @Override
-  public Optional<Order> get(long id) {
-    return Optional.ofNullable(entityManager.find(Order.class, id));
-  }
-
-  @Override
-  public List<Order> getUserOrders(long id, Pageable pageable) {
+  public List<Order> getUserOrders(long userId, Pageable pageable) {
     TypedQuery<Order> query =
         entityManager
             .createQuery("SELECT o FROM Order o WHERE o.userId = ?1", Order.class)
             .setFirstResult(pageable.getOffset())
             .setMaxResults(pageable.getLimit());
 
-    query.setParameter(1, id);
+    query.setParameter(1, userId);
 
     return query.getResultList();
   }
 
   @Override
-  public Optional<Order> getUserOrderDetails(long userId, long orderId) {
+  public Optional<Order> get(long userId, long orderId) {
     TypedQuery<Order> query =
         entityManager
             .createQuery("SELECT o FROM Order o WHERE o.userId = ?1 AND o.id = ?2", Order.class)

@@ -1,12 +1,13 @@
-package com.epam.esm.bahlei.restbasic.service.order;
+package com.epam.esm.bahlei.restbasic.service.impl;
 
-import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
-import com.epam.esm.bahlei.restbasic.dao.order.OrderDAO;
-import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
+import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
+import com.epam.esm.bahlei.restbasic.dao.OrderDAO;
+import com.epam.esm.bahlei.restbasic.dao.TagDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
+import com.epam.esm.bahlei.restbasic.service.OrderService;
 import com.epam.esm.bahlei.restbasic.service.validator.OrderValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,29 +73,14 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public Optional<Order> get(long orderId) {
-    List<String> errors = validator.validate(orderId);
-    if (!errors.isEmpty()) {
-      throw new ValidationException(errors);
-    }
-    Optional<Order> order = orderDAO.get(orderId);
-    order.ifPresent(this::setOrderedCertificates);
-    return order;
-  }
-
-  @Override
   public Optional<Order> get(long orderId, long userId) {
-    List<String> errors = validator.validate(orderId, userId);
-    if (!errors.isEmpty()) {
-      throw new ValidationException(errors);
-    }
-    Optional<Order> order = orderDAO.getUserOrderDetails(userId, orderId);
+    Optional<Order> order = orderDAO.get(userId, orderId);
     order.ifPresent(this::setOrderedCertificates);
     return order;
   }
 
   private void setOrderedCertificates(Order order) {
-    List<GiftCertificate> certificates = certificateDAO.getOrderedCertificates(order.getId());
+    List<GiftCertificate> certificates = certificateDAO.getCertificatesByOrderId(order.getId());
     certificates.forEach(this::setCertificateTags);
     order.setCertificates(certificates);
   }

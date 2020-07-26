@@ -1,4 +1,4 @@
-package com.epam.esm.bahlei.restbasic.dao.certificate;
+package com.epam.esm.bahlei.restbasic.dao;
 
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
@@ -21,7 +21,7 @@ public interface GiftCertificateDAO {
 
   Optional<GiftCertificate> getByName(String tagName);
 
-  List<GiftCertificate> getOrderedCertificates(long id);
+  List<GiftCertificate> getCertificatesByOrderId(long id);
 
   Optional<GiftCertificate> getFavouriteUserCertificate(long userId);
 }

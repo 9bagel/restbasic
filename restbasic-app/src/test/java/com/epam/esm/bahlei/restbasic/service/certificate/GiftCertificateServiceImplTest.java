@@ -1,9 +1,10 @@
 package com.epam.esm.bahlei.restbasic.service.certificate;
 
-import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
-import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
+import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
+import com.epam.esm.bahlei.restbasic.dao.TagDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Tag;
+import com.epam.esm.bahlei.restbasic.service.impl.GiftCertificateServiceImpl;
 import com.epam.esm.bahlei.restbasic.service.validator.CertificateValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,8 @@
 package com.epam.esm.bahlei.restbasic.service.tag;
 
-import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
+import com.epam.esm.bahlei.restbasic.dao.TagDAO;
 import com.epam.esm.bahlei.restbasic.model.Tag;
+import com.epam.esm.bahlei.restbasic.service.impl.TagServiceImpl;
 import com.epam.esm.bahlei.restbasic.service.validator.TagValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.junit.jupiter.api.Test;

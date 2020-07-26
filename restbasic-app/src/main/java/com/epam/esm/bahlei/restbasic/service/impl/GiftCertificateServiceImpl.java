@@ -1,11 +1,12 @@
-package com.epam.esm.bahlei.restbasic.service.certificate;
+package com.epam.esm.bahlei.restbasic.service.impl;
 
-import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
-import com.epam.esm.bahlei.restbasic.dao.tag.TagDAO;
-import com.epam.esm.bahlei.restbasic.dao.user.UserDAO;
+import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
+import com.epam.esm.bahlei.restbasic.dao.TagDAO;
+import com.epam.esm.bahlei.restbasic.dao.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
+import com.epam.esm.bahlei.restbasic.service.GiftCertificateService;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import com.epam.esm.bahlei.restbasic.service.validator.CertificateValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
@@ -88,13 +89,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     if (tags.isEmpty()) {
       return;
     }
-    // tagDAO.deleteCertificateTags(giftCertificate.getId());
 
     List<Tag> nonExistingTags = getNonExistingTags(tags);
     nonExistingTags.forEach(tagDAO::save);
 
     giftCertificate.setTags(getTagsWIthId(tags));
-    // tags.forEach(tag -> tagDAO.saveCertificateTag(giftCertificate.getId(), tag.getId()));
   }
 
   private List<Tag> getNonExistingTags(List<Tag> tags) {

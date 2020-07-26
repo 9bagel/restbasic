@@ -1,4 +1,4 @@
-package com.epam.esm.bahlei.restbasic.dao.tag;
+package com.epam.esm.bahlei.restbasic.dao;
 
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;

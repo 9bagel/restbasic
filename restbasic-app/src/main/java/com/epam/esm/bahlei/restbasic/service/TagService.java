@@ -1,4 +1,4 @@
-package com.epam.esm.bahlei.restbasic.service.tag;
+package com.epam.esm.bahlei.restbasic.service;
 
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
@@ -15,6 +15,4 @@ public interface TagService {
   void save(Tag tag);
 
   void delete(long tagId);
-
-  Optional<Tag> getTagByName(String tagName);
 }

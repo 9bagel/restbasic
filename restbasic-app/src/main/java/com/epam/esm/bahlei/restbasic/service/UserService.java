@@ -1,4 +1,4 @@
-package com.epam.esm.bahlei.restbasic.service.user;
+package com.epam.esm.bahlei.restbasic.service;
 
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.User;

@@ -4,7 +4,7 @@ import com.epam.esm.bahlei.restbasic.config.exception.response.ErrorResponse;
 import com.epam.esm.bahlei.restbasic.controller.dto.TagDTO;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
-import com.epam.esm.bahlei.restbasic.service.tag.TagService;
+import com.epam.esm.bahlei.restbasic.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

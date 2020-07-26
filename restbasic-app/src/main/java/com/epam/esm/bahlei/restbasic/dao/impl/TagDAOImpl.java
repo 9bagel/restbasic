@@ -1,5 +1,6 @@
-package com.epam.esm.bahlei.restbasic.dao.tag;
+package com.epam.esm.bahlei.restbasic.dao.impl;
 
+import com.epam.esm.bahlei.restbasic.dao.TagDAO;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;

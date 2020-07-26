@@ -1,7 +1,8 @@
 package com.epam.esm.bahlei.restbasic.dao.tag;
 
 import com.epam.esm.bahlei.restbasic.config.TestAppConfig;
-import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
+import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
+import com.epam.esm.bahlei.restbasic.dao.TagDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;

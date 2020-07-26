@@ -1,6 +1,6 @@
 package com.epam.esm.bahlei.restbasic.service.validator;
 
-import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
+import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

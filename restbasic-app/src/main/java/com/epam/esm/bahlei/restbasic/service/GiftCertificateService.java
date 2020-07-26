@@ -1,4 +1,4 @@
-package com.epam.esm.bahlei.restbasic.service.certificate;
+package com.epam.esm.bahlei.restbasic.service;
 
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;

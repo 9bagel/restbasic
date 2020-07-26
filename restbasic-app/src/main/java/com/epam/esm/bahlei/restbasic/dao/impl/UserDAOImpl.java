@@ -1,5 +1,6 @@
-package com.epam.esm.bahlei.restbasic.dao.user;
+package com.epam.esm.bahlei.restbasic.dao.impl;
 
+import com.epam.esm.bahlei.restbasic.dao.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.User;
 import org.springframework.beans.factory.annotation.Autowired;

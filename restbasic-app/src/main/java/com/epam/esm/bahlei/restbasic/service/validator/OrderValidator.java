@@ -1,7 +1,7 @@
 package com.epam.esm.bahlei.restbasic.service.validator;
 
-import com.epam.esm.bahlei.restbasic.dao.certificate.GiftCertificateDAO;
-import com.epam.esm.bahlei.restbasic.dao.order.OrderDAO;
+import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
+import com.epam.esm.bahlei.restbasic.dao.OrderDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,29 +32,6 @@ public class OrderValidator {
     validateCertificates(order.getCertificates(), errors);
     //errors.addAll(userValidator.validate(order.getUser().getId()));
     return errors;
-  }
-
-  public List<String> validate(long orderId, long userId) {
-    List<String> errors = new ArrayList<>();
-    validateOrderId(orderId, errors);
-    errors.addAll(userValidator.validate(userId));
-    return errors;
-  }
-
-  public List<String> validate(long orderId) {
-    List<String> errors = new ArrayList<>();
-    validateOrderId(orderId, errors);
-    return errors;
-  }
-
-  private void validateOrderId(long orderId, List<String> errors) {
-    if (orderId <= 0) {
-      errors.add("orderId should be > 0");
-      return;
-    }
-    if (!orderDAO.get(orderId).isPresent()) {
-      errors.add("There is no order with id " + orderId);
-    }
   }
 
   private void validateCost(BigDecimal cost, List<String> errors) {
