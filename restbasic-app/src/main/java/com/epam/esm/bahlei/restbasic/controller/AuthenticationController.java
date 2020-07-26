@@ -5,10 +5,10 @@ import com.epam.esm.bahlei.restbasic.model.User;
 import com.epam.esm.bahlei.restbasic.security.jwt.JwtTokenProvider;
 import com.epam.esm.bahlei.restbasic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.springframework.http.ResponseEntity.status;
 
 @RestController
 @RequestMapping(value = "/api/auth/")
@@ -42,7 +44,7 @@ public class AuthenticationController {
 
   @PreAuthorize("permitAll()")
   @PostMapping("/login")
-  public ResponseEntity login(@RequestBody AuthenticationDTO requestDto) {
+  public ResponseEntity<?> login(@RequestBody AuthenticationDTO requestDto) {
     try {
       String username = requestDto.getUsername();
       authenticationManager.authenticate(
@@ -58,8 +60,7 @@ public class AuthenticationController {
 
       return ResponseEntity.ok(response);
     } catch (AuthenticationException e) {
-      // Возвращать сразу Status Code
-      throw new BadCredentialsException("Invalid username or password");
+      return status(HttpStatus.UNAUTHORIZED).build();
     }
   }
 }
