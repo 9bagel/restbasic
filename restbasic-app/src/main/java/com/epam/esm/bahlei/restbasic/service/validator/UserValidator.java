@@ -16,6 +16,7 @@ public class UserValidator {
 
   public List<String> validate(User user) {
     List<String> errors = new ArrayList<>();
+
     validateUsername(user.getUsername(), errors);
     validateEmail(user.getEmail(), errors);
     validateFirstName(user.getFirstName(), errors);
