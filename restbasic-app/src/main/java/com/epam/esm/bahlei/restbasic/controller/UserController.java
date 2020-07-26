@@ -27,7 +27,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/")
 public class UserController {
   private final UserService userService;
   private final OrderService orderService;
@@ -44,7 +44,7 @@ public class UserController {
   }
 
   @PreAuthorize("hasAuthority('role_user')")
-  @GetMapping("/{userId}")
+  @GetMapping("/users/{userId}")
   public ResponseEntity<?> getUser(@PathVariable long userId) {
     Optional<User> optional = userService.get(userId);
     if (!optional.isPresent()) {
@@ -59,7 +59,19 @@ public class UserController {
     return ok(userDTO);
   }
 
-  @GetMapping("/{userId}/orders")
+  @PreAuthorize("permitAll()")
+  @PostMapping("/register")
+  public ResponseEntity<?> register(
+      @RequestBody UserDTO userDTO, HttpServletRequest httpServletRequest) {
+    User user = toUser(userDTO);
+
+    userService.register(user);
+
+    return created(URI.create(httpServletRequest.getRequestURL().append(user.getId()).toString()))
+        .build();
+  }
+
+  @GetMapping("/users/{userId}/orders")
   @PreAuthorize("hasAuthority('role_user')")
   public ResponseEntity<?> getUserOrders(
       @PathVariable long userId,
@@ -80,7 +92,7 @@ public class UserController {
   }
 
   @PreAuthorize("hasAuthority('role_user')")
-  @GetMapping("/{userId}/orders/favourite_certificate")
+  @GetMapping("/users/{userId}/orders/favourite_certificate")
   public ResponseEntity<?> getFavouriteCertificate(@PathVariable long userId) {
     Optional<GiftCertificate> optional = certificateService.getFavouriteUserCertificate(userId);
     if (!optional.isPresent()) {
@@ -90,7 +102,7 @@ public class UserController {
   }
 
   @PreAuthorize("hasAuthority('role_user')")
-  @GetMapping("/{userId}/orders/{orderId}")
+  @GetMapping("/users/{userId}/orders/{orderId}")
   public ResponseEntity<?> getOrder(@PathVariable long userId, @PathVariable long orderId) {
     Optional<Order> optional = orderService.get(orderId, userId);
     if (!optional.isPresent()) {
@@ -104,7 +116,7 @@ public class UserController {
   }
 
   @PreAuthorize("hasAuthority('role_user')")
-  @PostMapping("/{userId}/orders")
+  @PostMapping("/users/{userId}/orders")
   public ResponseEntity<?> createOrder(
       @PathVariable long userId, @RequestBody Order order, HttpServletRequest httpServletRequest) {
     User user = new User();
@@ -130,5 +142,15 @@ public class UserController {
 
   private OrderDTO toOrderDTO(Order order) {
     return new OrderDTO(order);
+  }
+
+  private User toUser(UserDTO userDTO) {
+    User user = new User();
+    user.setUsername(userDTO.username);
+    user.setPassword(userDTO.password);
+    user.setFirstName(userDTO.firstName);
+    user.setLastName(userDTO.lastName);
+    user.setEmail(userDTO.email);
+    return user;
   }
 }

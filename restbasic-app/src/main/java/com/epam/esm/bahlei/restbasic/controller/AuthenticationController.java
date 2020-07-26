@@ -1,7 +1,6 @@
 package com.epam.esm.bahlei.restbasic.controller;
 
 import com.epam.esm.bahlei.restbasic.controller.dto.AuthenticationDTO;
-import com.epam.esm.bahlei.restbasic.controller.dto.UserDTO;
 import com.epam.esm.bahlei.restbasic.model.User;
 import com.epam.esm.bahlei.restbasic.security.jwt.JwtTokenProvider;
 import com.epam.esm.bahlei.restbasic.service.UserService;
@@ -18,12 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.springframework.http.ResponseEntity.created;
 
 @RestController
 @RequestMapping(value = "/api/auth/")
@@ -66,27 +61,5 @@ public class AuthenticationController {
       // Возвращать сразу Status Code
       throw new BadCredentialsException("Invalid username or password");
     }
-  }
-
-  @PreAuthorize("permitAll()")
-  @PostMapping("/register")
-  public ResponseEntity<?> register(
-      @RequestBody UserDTO userDTO, HttpServletRequest httpServletRequest) {
-    User user = toUser(userDTO);
-
-    userService.register(user);
-
-    return created(URI.create(httpServletRequest.getRequestURL().append(user.getId()).toString()))
-        .build();
-  }
-
-  private User toUser(UserDTO userDTO) {
-    User user = new User();
-    user.setUsername(userDTO.username);
-    user.setPassword(userDTO.password);
-    user.setFirstName(userDTO.firstName);
-    user.setLastName(userDTO.lastName);
-    user.setEmail(userDTO.email);
-    return user;
   }
 }
