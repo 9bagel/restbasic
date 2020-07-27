@@ -47,7 +47,6 @@ class GiftCertificateServiceImplTest {
     Optional<GiftCertificate> expected = Optional.of(getValidCertificate());
     List<Tag> tags = getValidTags();
     when(certificateDAO.get(1)).thenReturn(expected);
-    when(tagDAO.getCertificateTags(1)).thenReturn(tags);
 
     Optional<GiftCertificate> actual = certificateService.get(1);
 
@@ -88,13 +87,11 @@ class GiftCertificateServiceImplTest {
 
   private GiftCertificate getValidCertificate() {
     GiftCertificate giftCertificate = new GiftCertificate();
-    giftCertificate.setId(1);
+    giftCertificate.setId(1L);
     giftCertificate.setDescription("desc");
     giftCertificate.setPrice(BigDecimal.valueOf(100));
     giftCertificate.setDuration(10);
     giftCertificate.setName("certificate");
-    giftCertificate.setCreatedAt(Instant.now());
-    giftCertificate.setModifiedAt(Instant.now());
     giftCertificate.setTags(getValidTags());
 
     return giftCertificate;

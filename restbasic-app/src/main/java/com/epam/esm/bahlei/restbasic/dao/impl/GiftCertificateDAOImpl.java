@@ -3,6 +3,7 @@ package com.epam.esm.bahlei.restbasic.dao.impl;
 import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
+import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import com.epam.esm.bahlei.restbasic.service.supplies.CriteriaToSQL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,8 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
 
   @Override
   public void save(GiftCertificate certificate) {
-    entityManager.merge(certificate);
+    GiftCertificate mergedCertificate = entityManager.merge(certificate);
+    certificate.setId(mergedCertificate.getId());
   }
 
   @Override

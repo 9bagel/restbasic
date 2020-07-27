@@ -61,6 +61,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
   @Transactional
   @Override
   public void save(GiftCertificate giftCertificate) {
+    List<String> errors = certificateValidator.validate(giftCertificate);
+
+    if (!errors.isEmpty()) {
+      throw new ValidationException(errors);
+    }
     getTagIds(giftCertificate);
     giftCertificateDAO.save(giftCertificate);
   }

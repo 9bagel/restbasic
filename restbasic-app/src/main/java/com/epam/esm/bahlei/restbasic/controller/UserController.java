@@ -60,7 +60,7 @@ public class UserController {
   }
 
   @PreAuthorize("permitAll()")
-  @PostMapping("/register")
+  @PostMapping("/users/")
   public ResponseEntity<?> register(
       @RequestBody UserDTO userDTO, HttpServletRequest httpServletRequest) {
     User user = toUser(userDTO);
@@ -72,7 +72,7 @@ public class UserController {
   }
 
   @GetMapping("/users/{userId}/orders")
-  @PreAuthorize("hasAuthority('role_user')")
+  @PreAuthorize("hasAuthority('role_user'), hasAuthority('role_admin')")
   public ResponseEntity<?> getUserOrders(
       @PathVariable long userId,
       @RequestParam(required = false, defaultValue = "1") int page,

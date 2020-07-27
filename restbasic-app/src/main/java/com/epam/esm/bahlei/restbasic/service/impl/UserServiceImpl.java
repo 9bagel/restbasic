@@ -9,6 +9,7 @@ import com.epam.esm.bahlei.restbasic.service.UserService;
 import com.epam.esm.bahlei.restbasic.service.validator.UserValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import com.google.common.collect.ImmutableList;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,8 +46,9 @@ public class UserServiceImpl implements UserService {
   @Transactional
   @Override
   public void register(User user) {
-    UserValidator validator = new UserValidator();
+    UserValidator validator = new UserValidator(EmailValidator.getInstance());
     validator.validate(user);
+
     Role userRole =
         roleDAO
             .getByName("role_user")

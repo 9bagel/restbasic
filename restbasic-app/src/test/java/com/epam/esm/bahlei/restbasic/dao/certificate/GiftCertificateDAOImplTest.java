@@ -5,12 +5,19 @@ import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
+import com.epam.esm.bahlei.restbasic.model.audit.Audit;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import com.epam.esm.bahlei.restbasic.service.supplies.SortColumn;
 import com.epam.esm.bahlei.restbasic.service.supplies.SortOrder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,6 +32,7 @@ import java.util.Optional;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestAppConfig.class)
@@ -80,21 +88,18 @@ class GiftCertificateDAOImplTest {
     List<GiftCertificate> certificates = new ArrayList<>();
 
     GiftCertificate certificate1 =
-        new GiftCertificate(
-            1, "certificate1", "desc", BigDecimal.valueOf(10), Instant.now(), Instant.now(), 5);
+        new GiftCertificate(1, "certificate1", "desc", BigDecimal.valueOf(10), 5);
     List<Tag> tags = new ArrayList<>();
     tags.add(new Tag(1, "books"));
     tags.add(new Tag(2, "tools"));
     certificate1.setTags(tags);
 
     GiftCertificate certificate2 =
-        new GiftCertificate(
-            2, "certificate2", "desc", BigDecimal.valueOf(10), Instant.now(), Instant.now(), 5);
+        new GiftCertificate(2, "certificate2", "desc", BigDecimal.valueOf(10), 5);
     certificate2.setTags(singletonList(new Tag(3, "news")));
 
     GiftCertificate certificate3 =
-        new GiftCertificate(
-            3, "certificate3", "desc", BigDecimal.valueOf(10), Instant.now(), Instant.now(), 5);
+        new GiftCertificate(3, "certificate3", "desc", BigDecimal.valueOf(10), 5);
 
     certificates.add(certificate1);
     certificates.add(certificate2);
@@ -114,8 +119,13 @@ class GiftCertificateDAOImplTest {
   }
 
   private GiftCertificate getValidCertificate() {
-    return new GiftCertificate(
-        1, "certificate1", "desc", BigDecimal.valueOf(10), Instant.now(), Instant.now(), 5);
+    GiftCertificate certificate =
+        new GiftCertificate(1, "certificate1", "desc", BigDecimal.valueOf(10), 5);
+    Audit audit = new Audit();
+    audit.setCreatedAt(Instant.now());
+    audit.setUpdatedAt(Instant.now());
+    certificate.setAudit(audit);
+    return certificate;
   }
 
   @Test

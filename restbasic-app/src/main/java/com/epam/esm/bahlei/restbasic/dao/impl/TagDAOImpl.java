@@ -5,6 +5,7 @@ import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -34,7 +35,8 @@ public class TagDAOImpl implements TagDAO {
 
   @Override
   public void save(Tag tag) {
-    entityManager.merge(tag);
+    Tag mergedTag = entityManager.merge(tag);
+    tag.setId(mergedTag.getId());
   }
 
   @Override
@@ -43,10 +45,10 @@ public class TagDAOImpl implements TagDAO {
   }
 
   @Override
+  @Transactional
   public void delete(long tagId) {
-    Query query = entityManager.createQuery("delete from Tag where id=:tagId");
-    query.setParameter("tagId", tagId);
-    query.executeUpdate();
+    Tag tag = entityManager.find(Tag.class, tagId);
+    entityManager.remove(tag);
   }
 
   @Override
@@ -83,7 +85,7 @@ public class TagDAOImpl implements TagDAO {
 
   @Override
   public void deleteCertificateTags(long certificateId) {
-    String sql = "DELETE FROM certificate_tags WHERE certificate_id = ?";
+    String sql = "DELETE FROM certificate_tags WHERE certificate_id = :certificateId";
 
     Query query = entityManager.createNativeQuery(sql);
     query.setParameter("certificateId", certificateId);

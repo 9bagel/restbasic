@@ -14,7 +14,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -100,9 +99,6 @@ class TagDAOImplTest {
     certificate.getTags().forEach(tag -> tagDAO.save(tag));
     certificateDAO.save(certificate);
 
-    certificate
-        .getTags()
-        .forEach(tag -> tagDAO.saveCertificateTag(certificate.getId(), tag.getId()));
     List<Tag> actual = tagDAO.getCertificateTags(certificate.getId());
 
     assertThat(actual).usingRecursiveComparison().isEqualTo(certificate.getTags());
@@ -110,7 +106,7 @@ class TagDAOImplTest {
 
   private GiftCertificate certificate(String name, Tag... tags) {
     GiftCertificate certificate =
-        new GiftCertificate(0, name, "desc", BigDecimal.ONE, Instant.now(), Instant.now(), 10);
+        new GiftCertificate(0, name, "desc", BigDecimal.ONE,  10);
     certificate.setTags(Arrays.asList(tags));
 
     return certificate;
@@ -124,18 +120,9 @@ class TagDAOImplTest {
   @Test
   void saveCertificateTag_OK() {
     GiftCertificate certificate = certificate("certificate", new Tag("books"), new Tag("tools"));
-    certificate.getTags().forEach(tag -> tagDAO.save(tag));
     certificateDAO.save(certificate);
-
-    certificate
-        .getTags()
-        .forEach(tag -> tagDAO.saveCertificateTag(certificate.getId(), tag.getId()));
-    Tag expected = new Tag("news");
-    tagDAO.save(expected);
-
-    tagDAO.saveCertificateTag(1, expected.getId());
-
-    assertThat(tagDAO.getCertificateTags(1)).containsOnlyOnce(expected);
+    List<Tag> actual = tagDAO.getCertificateTags(certificate.getId());
+    assertThat(actual.size()).isEqualTo(2);
   }
 
   @Test
@@ -147,8 +134,8 @@ class TagDAOImplTest {
     certificate
         .getTags()
         .forEach(tag -> tagDAO.saveCertificateTag(certificate.getId(), tag.getId()));
-    tagDAO.deleteCertificateTags(1);
-    List<Tag> actual = tagDAO.getCertificateTags(1);
+    tagDAO.deleteCertificateTags(certificate.getId());
+    List<Tag> actual = tagDAO.getCertificateTags(certificate.getId());
 
     assertThat(actual).isEmpty();
   }

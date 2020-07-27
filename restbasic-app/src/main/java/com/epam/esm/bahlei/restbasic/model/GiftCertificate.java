@@ -31,7 +31,7 @@ public class GiftCertificate implements Auditable {
   @Column(name = "price")
   private BigDecimal price;
 
-  @ManyToMany
+  @ManyToMany(cascade=CascadeType.ALL)
   @JoinTable(
       name = "certificate_tags",
       joinColumns = @JoinColumn(name = "certificate_id"),

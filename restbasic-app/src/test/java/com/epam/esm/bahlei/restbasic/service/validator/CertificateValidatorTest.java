@@ -160,13 +160,11 @@ class CertificateValidatorTest {
 
   private GiftCertificate getValidCertificate() {
     GiftCertificate giftCertificate = new GiftCertificate();
-    giftCertificate.setId(1);
+    giftCertificate.setId(1L);
     giftCertificate.setDescription("desc");
     giftCertificate.setPrice(BigDecimal.valueOf(100));
     giftCertificate.setDuration(10);
     giftCertificate.setName("certificate");
-    giftCertificate.setCreatedAt(Instant.now());
-    giftCertificate.setModifiedAt(Instant.now());
 
     return giftCertificate;
   }
