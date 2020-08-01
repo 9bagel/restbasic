@@ -14,4 +14,6 @@ public interface UserDAO {
   Optional<User> get(long id);
 
   Optional<User> getByUsername(String username);
+
+  Optional<User> getByEmail(String email);
 }

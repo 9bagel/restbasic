@@ -61,12 +61,12 @@ public class CertificateRestExceptionHandler {
     return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler
-  public ResponseEntity<ErrorResponse> handleException(DataAccessException exc) {
-    ErrorResponse error = new ErrorResponse("Wrong parameters");
-
-    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-  }
+//  @ExceptionHandler
+//  public ResponseEntity<ErrorResponse> handleException(DataAccessException exc) {
+//    ErrorResponse error = new ErrorResponse("Wrong parameters");
+//
+//    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+//  }
 
   @ExceptionHandler
   public ResponseEntity<ErrorResponse> handleException(MethodArgumentTypeMismatchException exc) {

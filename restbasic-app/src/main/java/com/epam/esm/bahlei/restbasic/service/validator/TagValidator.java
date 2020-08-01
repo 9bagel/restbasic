@@ -2,6 +2,7 @@ package com.epam.esm.bahlei.restbasic.service.validator;
 
 import com.epam.esm.bahlei.restbasic.dao.TagDAO;
 import com.epam.esm.bahlei.restbasic.model.Tag;
+import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +18,13 @@ public class TagValidator {
     this.tagDAO = tagDAO;
   }
 
-  public List<String> validate(Tag tag) {
-    List<String> errorMessages = new ArrayList<>();
-    validateName(tag.getName(), errorMessages);
+  public void validate(Tag tag) {
+    List<String> errors = new ArrayList<>();
+    validateName(tag.getName(), errors);
 
-    return errorMessages;
+    if (!errors.isEmpty()) {
+      throw new ValidationException(errors);
+    }
   }
 
   private void validateName(String tagName, List<String> errorMessages) {

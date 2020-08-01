@@ -19,11 +19,13 @@ public class UserServiceImpl implements UserService {
 
   private final UserDAO userDAO;
   private final BCryptPasswordEncoder encoder;
+  private final UserValidator validator;
 
   @Autowired
-  public UserServiceImpl(UserDAO userDAO, BCryptPasswordEncoder encoder) {
+  public UserServiceImpl(UserDAO userDAO, BCryptPasswordEncoder encoder, UserValidator validator) {
     this.userDAO = userDAO;
     this.encoder = encoder;
+    this.validator = validator;
   }
 
   @Override
@@ -39,7 +41,6 @@ public class UserServiceImpl implements UserService {
   @Transactional
   @Override
   public void register(User user) {
-    UserValidator validator = new UserValidator();
     validator.validate(user);
 
     user.setPassword(encoder.encode(user.getPassword()));

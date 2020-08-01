@@ -9,7 +9,6 @@ import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.OrderService;
 import com.epam.esm.bahlei.restbasic.service.validator.OrderValidator;
-import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,10 +42,7 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Transactional
   public void save(Order order) {
-    List<String> errors = validator.validate(order);
-    if (!errors.isEmpty()) {
-      throw new ValidationException(errors);
-    }
+    validator.validate(order);
 
     List<GiftCertificate> certificates = getCertificatesData(order.getCertificates());
     order.setCost(calculateCost(certificates));

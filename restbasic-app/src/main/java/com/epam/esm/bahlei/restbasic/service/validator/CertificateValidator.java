@@ -21,7 +21,6 @@ public class CertificateValidator {
 
   public void validate(GiftCertificate certificate) {
     List<String> errors = new ArrayList<>();
-    // Попробовать вынести в 1 метод
     if (certificate.getId() == 0 && certificateDAO.getByName(certificate.getName()).isPresent()) {
       errors.add(String.format("Certificate with name %s already exists.", certificate.getName()));
     }

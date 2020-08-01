@@ -87,7 +87,7 @@ public class CertificateController {
    *
    * @param certificateDTO a certificate object in json format
    */
-  @PreAuthorize("hasAuthority('role_admin')")
+  @PreAuthorize("hasAuthority('ADMIN')")
   @PostMapping("/certificates")
   public ResponseEntity<?> addCertificate(
       @RequestBody GiftCertificateDTO certificateDTO, HttpServletRequest httpServletRequest) {
@@ -107,7 +107,7 @@ public class CertificateController {
    * @param certificateDTO certificate object in JSON format
    * @param id certificate id
    */
-  @PreAuthorize("hasAuthority('role_admin')")
+  @PreAuthorize("hasAuthority('ADMIN')")
   @PutMapping("/certificates/{id}")
   public ResponseEntity<?> updateCertificate(
       @RequestBody GiftCertificateDTO certificateDTO, @PathVariable long id) {
@@ -120,7 +120,7 @@ public class CertificateController {
     return noContent().build();
   }
 
-  @PreAuthorize("hasAuthority('role_admin')")
+  @PreAuthorize("hasAuthority('ADMIN')")
   @PatchMapping("/certificates/{id}")
   public ResponseEntity<?> patchCertificate(
       @RequestBody GiftCertificateDTO certificateDTO, @PathVariable long id) {
@@ -144,7 +144,7 @@ public class CertificateController {
    *
    * @param id certificate id
    */
-  @PreAuthorize("hasAuthority('role_admin')")
+  @PreAuthorize("hasAuthority('ADMIN')")
   @DeleteMapping("/certificates/{id}")
   public ResponseEntity<ErrorResponse> deleteCertificate(@PathVariable int id) {
     if (giftCertificateService.get(id).isPresent()) {

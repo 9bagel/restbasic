@@ -44,7 +44,7 @@ public class UserController {
     this.certificateService = certificateService;
   }
 
-  @PreAuthorize("hasAuthority('role_user')")
+  @PreAuthorize("hasAuthority('USER')")
   @GetMapping("/users/{userId}")
   public ResponseEntity<?> getUser(@PathVariable long userId) {
     Optional<User> optional = userService.get(userId);
@@ -73,7 +73,7 @@ public class UserController {
   }
 
   @GetMapping("/users/{userId}/orders")
-  @PreAuthorize("hasAuthority('role_user')")
+  @PreAuthorize("hasAuthority('USER')")
   public ResponseEntity<?> getUserOrders(
       @PathVariable long userId,
       @RequestParam(required = false, defaultValue = "1") int page,
@@ -92,7 +92,7 @@ public class UserController {
     return ok(orderDTOs);
   }
 
-  @PreAuthorize("hasAuthority('role_user')")
+  @PreAuthorize("hasAuthority('USER')")
   @GetMapping("/users/{userId}/orders/favourite-certificate")
   public ResponseEntity<?> getFavouriteCertificate(@PathVariable long userId) {
     Optional<GiftCertificate> optional = certificateService.getFavouriteUserCertificate(userId);
@@ -102,7 +102,7 @@ public class UserController {
     return ok(optional.get());
   }
 
-  @PreAuthorize("hasAuthority('role_user')")
+  @PreAuthorize("hasAuthority('USER')")
   @GetMapping("/users/{userId}/orders/{orderId}")
   public ResponseEntity<?> getOrder(@PathVariable long userId, @PathVariable long orderId) {
     Optional<Order> optional = orderService.get(orderId, userId);
@@ -116,7 +116,7 @@ public class UserController {
     return ok(orderDTO);
   }
 
-  @PreAuthorize("hasAuthority('role_user')")
+  @PreAuthorize("hasAuthority('USER')")
   @PostMapping("/users/{userId}/orders")
   public ResponseEntity<?> createOrder(
       @PathVariable long userId, @RequestBody Order order, HttpServletRequest httpServletRequest) {
