@@ -37,12 +37,12 @@ public class TagController {
    * tags and determine individual {@code id} Path [GET /api/certificates/{id}] Path [GET
    * /api/tags/{id}]
    *
-   * @param id an id of a tag
+   * @param tagId an id of a tag
    */
   @PreAuthorize("hasAuthority('USER')")
-  @GetMapping("/tags/{id}")
-  public ResponseEntity<?> getTag(@PathVariable long id) {
-    Optional<Tag> optional = tagService.get(id);
+  @GetMapping("/tags/{tagId}")
+  public ResponseEntity<?> getTag(@PathVariable long tagId) {
+    Optional<Tag> optional = tagService.get(tagId);
     if (!optional.isPresent()) {
       return status(NOT_FOUND).build();
     }

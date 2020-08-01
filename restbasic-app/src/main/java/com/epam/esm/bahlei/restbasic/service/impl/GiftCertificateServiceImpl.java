@@ -2,11 +2,11 @@ package com.epam.esm.bahlei.restbasic.service.impl;
 
 import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.dao.TagDAO;
-import com.epam.esm.bahlei.restbasic.dao.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.GiftCertificateService;
+import com.epam.esm.bahlei.restbasic.service.UserService;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import com.epam.esm.bahlei.restbasic.service.validator.CertificateValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
@@ -24,18 +24,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
   private final GiftCertificateDAO giftCertificateDAO;
   private final TagDAO tagDAO;
-  private final UserDAO userDAO;
+  private final UserService userService;
   private final CertificateValidator certificateValidator;
 
   @Autowired
   public GiftCertificateServiceImpl(
-      GiftCertificateDAO giftCertificateDAO,
-      TagDAO tagDAO,
-      UserDAO userDAO,
-      CertificateValidator certificateValidator) {
+          GiftCertificateDAO giftCertificateDAO,
+          TagDAO tagDAO,
+          UserService userService, CertificateValidator certificateValidator) {
     this.giftCertificateDAO = giftCertificateDAO;
     this.tagDAO = tagDAO;
-    this.userDAO = userDAO;
+    this.userService = userService;
     this.certificateValidator = certificateValidator;
   }
 
@@ -51,7 +50,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
   @Override
   public Optional<GiftCertificate> getFavouriteUserCertificate(long userId) {
-    if (!userDAO.get(userId).isPresent()) {
+    if (!userService.get(userId).isPresent()) {
       return Optional.empty();
     }
     return giftCertificateDAO.getFavouriteUserCertificate(userId);

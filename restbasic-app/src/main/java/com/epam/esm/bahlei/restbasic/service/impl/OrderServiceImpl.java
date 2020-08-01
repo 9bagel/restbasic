@@ -7,10 +7,13 @@ import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
+import com.epam.esm.bahlei.restbasic.security.jwt.JwtUser;
 import com.epam.esm.bahlei.restbasic.service.OrderService;
 import com.epam.esm.bahlei.restbasic.service.validator.OrderValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,11 +73,20 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   public List<Order> getUserOrders(long id, Pageable pageable) {
+    JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (user.getId() != id) {
+      throw new AccessDeniedException("Access denied");
+    }
+
     return orderDAO.getUserOrders(id, pageable);
   }
 
   @Override
   public Optional<Order> get(long orderId, long userId) {
+    JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (user.getId() != userId) {
+      throw new AccessDeniedException("Access denied");
+    }
     Optional<Order> order = orderDAO.get(userId, orderId);
     order.ifPresent(this::setOrderedCertificates);
     return order;

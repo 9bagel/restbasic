@@ -1,11 +1,11 @@
 package com.epam.esm.bahlei.restbasic.security;
 
 import com.epam.esm.bahlei.restbasic.model.Role;
+import com.epam.esm.bahlei.restbasic.security.jwt.JwtUser;
 import com.epam.esm.bahlei.restbasic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,17 +29,13 @@ public class JwtUserDetailsService implements UserDetailsService {
     com.epam.esm.bahlei.restbasic.model.User user =
         userService
             .getByUsername(username)
-            .orElseThrow(
-                () ->
-                    new UsernameNotFoundException("Authentication failed"));
+            .orElseThrow(() -> new UsernameNotFoundException("Authentication failed"));
 
-    return createSpringUser(user);
-  }
-
-  private User createSpringUser(com.epam.esm.bahlei.restbasic.model.User user) {
-
-    return new User(
-        user.getUsername(), user.getPassword(), mapToGrantedAuthorities(user.getRole()));
+    return new JwtUser(
+        user.getId(),
+        user.getUsername(),
+        user.getPassword(),
+        mapToGrantedAuthorities(user.getRole()));
   }
 
   private static List<GrantedAuthority> mapToGrantedAuthorities(Role role) {

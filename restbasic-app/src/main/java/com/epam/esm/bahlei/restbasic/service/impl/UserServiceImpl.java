@@ -4,9 +4,12 @@ import com.epam.esm.bahlei.restbasic.dao.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Role;
 import com.epam.esm.bahlei.restbasic.model.User;
+import com.epam.esm.bahlei.restbasic.security.jwt.JwtUser;
 import com.epam.esm.bahlei.restbasic.service.UserService;
 import com.epam.esm.bahlei.restbasic.service.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +38,10 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Optional<User> get(long id) {
+    JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (user.getId() != id) {
+      throw new AccessDeniedException("Access denied");
+    }
     return userDAO.get(id);
   }
 

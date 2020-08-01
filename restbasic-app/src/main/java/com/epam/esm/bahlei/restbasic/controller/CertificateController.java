@@ -90,7 +90,7 @@ public class CertificateController {
   @PreAuthorize("hasAuthority('ADMIN')")
   @PostMapping("/certificates")
   public ResponseEntity<?> addCertificate(
-      @RequestBody GiftCertificateDTO certificateDTO, HttpServletRequest httpServletRequest) {
+      @RequestBody GiftCertificateDTO certificateDTO) {
     GiftCertificate giftCertificate = toCertificate(certificateDTO);
     giftCertificateService.save(giftCertificate);
 

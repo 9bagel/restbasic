@@ -3,6 +3,7 @@ package com.epam.esm.bahlei.restbasic.controller;
 import com.epam.esm.bahlei.restbasic.controller.dto.OrderDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.RefDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.UserDTO;
+import com.epam.esm.bahlei.restbasic.controller.linkmapper.LinkMapper;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
@@ -33,15 +34,18 @@ public class UserController {
   private final UserService userService;
   private final OrderService orderService;
   private final GiftCertificateService certificateService;
+  private final LinkMapper linkMapper;
 
   @Autowired
   public UserController(
       UserService userService,
       OrderService orderService,
-      GiftCertificateService certificateService) {
+      GiftCertificateService certificateService,
+      LinkMapper linkMapper) {
     this.userService = userService;
     this.orderService = orderService;
     this.certificateService = certificateService;
+    this.linkMapper = linkMapper;
   }
 
   @PreAuthorize("hasAuthority('USER')")
@@ -51,12 +55,9 @@ public class UserController {
     if (!optional.isPresent()) {
       return status(HttpStatus.NOT_FOUND).build();
     }
-    Link selfLink = linkTo(methodOn(UserController.class).getUser(userId)).withSelfRel();
-    Link orders =
-        linkTo(methodOn(UserController.class).getUserOrders(userId, 1, 10)).withRel("orders");
 
     UserDTO userDTO = toUserDTO(optional.get());
-    userDTO.add(selfLink, orders);
+    linkMapper.mapLinks(userDTO);
     return ok(userDTO);
   }
 
@@ -80,14 +81,7 @@ public class UserController {
       @RequestParam(required = false, defaultValue = "10") int size) {
     List<Order> userOrders = orderService.getUserOrders(userId, new Pageable(page, size));
     List<OrderDTO> orderDTOs =
-        userOrders.stream()
-            .map(this::toOrderDTO)
-            .map(
-                orderDTO ->
-                    orderDTO.add(
-                        linkTo(methodOn(UserController.class).getOrder(userId, orderDTO.id))
-                            .withSelfRel()))
-            .collect(toList());
+        userOrders.stream().map(this::toOrderDTO).peek(linkMapper::mapLinks).collect(toList());
 
     return ok(orderDTOs);
   }
@@ -110,16 +104,14 @@ public class UserController {
       return status(HttpStatus.NOT_FOUND).build();
     }
     OrderDTO orderDTO = toOrderDTO(optional.get());
-    Link selfLink = linkTo(methodOn(UserController.class).getOrder(userId, orderId)).withSelfRel();
-    orderDTO.add(selfLink);
+    linkMapper.mapLinks(orderDTO);
 
     return ok(orderDTO);
   }
 
   @PreAuthorize("hasAuthority('USER')")
   @PostMapping("/users/{userId}/orders")
-  public ResponseEntity<?> createOrder(
-      @PathVariable long userId, @RequestBody Order order, HttpServletRequest httpServletRequest) {
+  public ResponseEntity<?> createOrder(@PathVariable long userId, @RequestBody Order order) {
     User user = new User();
     user.setId(userId);
 
@@ -127,7 +119,7 @@ public class UserController {
 
     orderService.save(order);
 
-    return created(URI.create(httpServletRequest.getRequestURL().append(order.getId()).toString()))
+    return created(linkTo(methodOn(UserController.class).createOrder(userId, order)).toUri())
         .build();
   }
 
