@@ -72,8 +72,8 @@ public class UserController {
         .build();
   }
 
-  @GetMapping("/users/{userId}/orders")
   @PreAuthorize("hasAuthority('USER')")
+  @GetMapping("/users/{userId}/orders")
   public ResponseEntity<?> getUserOrders(
       @PathVariable long userId,
       @RequestParam(required = false, defaultValue = "1") int page,

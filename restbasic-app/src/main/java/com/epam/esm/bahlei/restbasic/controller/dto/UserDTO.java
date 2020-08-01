@@ -6,10 +6,10 @@ import org.springframework.hateoas.RepresentationModel;
 public class UserDTO extends RepresentationModel<UserDTO> {
   public long id;
   public String username;
-  public String password;
   public String firstName;
   public String lastName;
   public String email;
+  public String password;
 
   public UserDTO() {}
 
@@ -17,5 +17,7 @@ public class UserDTO extends RepresentationModel<UserDTO> {
     this.id = user.getId();
     this.firstName = user.getFirstName();
     this.lastName = user.getLastName();
+    this.username = user.getUsername();
+    this.email = user.getEmail();
   }
 }

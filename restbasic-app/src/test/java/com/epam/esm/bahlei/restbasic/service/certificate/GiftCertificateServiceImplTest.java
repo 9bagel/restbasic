@@ -56,7 +56,6 @@ class GiftCertificateServiceImplTest {
   @Test
   void update_InvalidCertificate_Error() {
     GiftCertificate certificate = getValidCertificate();
-    when(validator.validate(certificate)).thenReturn(singletonList("error"));
 
     assertThrows(ValidationException.class, () -> certificateService.update(certificate));
   }

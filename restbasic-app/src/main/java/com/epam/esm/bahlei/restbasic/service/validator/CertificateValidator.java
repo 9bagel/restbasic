@@ -19,7 +19,7 @@ public class CertificateValidator {
     this.certificateDAO = certificateDAO;
   }
 
-  public void validate(GiftCertificate certificate) {
+  public List<String> validate(GiftCertificate certificate) {
     List<String> errors = new ArrayList<>();
     if (certificate.getId() == 0 && certificateDAO.getByName(certificate.getName()).isPresent()) {
       errors.add(String.format("Certificate with name %s already exists.", certificate.getName()));
@@ -30,9 +30,7 @@ public class CertificateValidator {
     validatePrice(certificate.getPrice(), errors);
     validateDuration(certificate.getDuration(), errors);
 
-    if (!errors.isEmpty()) {
-      throw new ValidationException(errors);
-    }
+    return errors;
   }
 
   private void validateName(String name, List<String> errorMessages) {

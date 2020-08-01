@@ -33,16 +33,13 @@ public class OrderValidator {
     this.userDAO = userDAO;
   }
 
-  public void validate(Order order) {
+  public List<String> validate(Order order) {
     List<String> errors = new ArrayList<>();
 
     validateCost(order.getCost(), errors);
     validateCertificates(order.getCertificates(), errors);
     validateUserId(order.getUserId(), errors);
-
-    if (!errors.isEmpty()) {
-      throw new ValidationException(errors);
-    }
+    return errors;
   }
 
   private void validateUserId(long userId, List<String> errors) {

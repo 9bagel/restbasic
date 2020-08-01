@@ -18,13 +18,11 @@ public class TagValidator {
     this.tagDAO = tagDAO;
   }
 
-  public void validate(Tag tag) {
+  public List<String> validate(Tag tag) {
     List<String> errors = new ArrayList<>();
     validateName(tag.getName(), errors);
 
-    if (!errors.isEmpty()) {
-      throw new ValidationException(errors);
-    }
+    return errors;
   }
 
   private void validateName(String tagName, List<String> errorMessages) {

@@ -36,7 +36,7 @@ public class UserValidator {
   }
 
   private void validateEmail(String email, List<String> errors) {
-    if (email == null) {
+    if (isNullOrEmpty(email)) {
       errors.add("email should not be empty!");
       return;
     }

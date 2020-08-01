@@ -60,7 +60,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
   @Transactional
   @Override
   public void save(GiftCertificate giftCertificate) {
-    certificateValidator.validate(giftCertificate);
+    List<String> errors = certificateValidator.validate(giftCertificate);
+
+    if (!errors.isEmpty()) {
+      throw new ValidationException(errors);
+    }
 
     getTagIds(giftCertificate);
     giftCertificateDAO.save(giftCertificate);
@@ -72,16 +76,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     tagDAO.deleteCertificateTags(giftCertificateId);
     giftCertificateDAO.delete(giftCertificateId);
   }
-//Имя поменять
+
   @Transactional
   @Override
   public void update(GiftCertificate giftCertificate) {
-    certificateValidator.validate(giftCertificate);
+    List<String> errors = certificateValidator.validate(giftCertificate);
+
+    if (!errors.isEmpty()) {
+      throw new ValidationException(errors);
+    }
 
     getTagIds(giftCertificate);
     giftCertificateDAO.update(giftCertificate);
   }
-
+  //Имя поменять
   private void getTagIds(GiftCertificate giftCertificate) {
     List<Tag> tags = giftCertificate.getTags();
 

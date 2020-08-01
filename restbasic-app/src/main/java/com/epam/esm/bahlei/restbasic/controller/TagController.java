@@ -18,6 +18,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
@@ -38,14 +39,14 @@ public class TagController {
    *
    * @param id an id of a tag
    */
-  @PreAuthorize("hasAuthority('role_user')")
+  @PreAuthorize("hasAuthority('USER')")
   @GetMapping("/tags/{id}")
   public ResponseEntity<?> getTag(@PathVariable long id) {
     Optional<Tag> optional = tagService.get(id);
     if (!optional.isPresent()) {
-      return status(HttpStatus.NOT_FOUND).build();
+      return status(NOT_FOUND).build();
     }
-    TagDTO tagDTO = toTagDTO(optional.get());
+    TagDTO tagDTO = new TagDTO(optional.get());
     linkMapper.mapLinks(tagDTO);
     return ok(tagDTO);
   }
@@ -58,7 +59,7 @@ public class TagController {
       @RequestParam(required = false, defaultValue = "10") int size) {
     return ok(
         tagService.getAll(new Pageable(page, size)).stream()
-            .map(this::toTagDTO)
+            .map(TagDTO::new)
             .peek(linkMapper::mapLinks)
             .collect(toList()));
   }
@@ -68,11 +69,11 @@ public class TagController {
    *
    * @param tagDTO a Tag object in JSON format
    */
-  @PreAuthorize("hasAuthority('role_admin')")
+  @PreAuthorize("hasAuthority('ADMIN')")
   @PostMapping("/tags")
   public ResponseEntity<?> addTag(
-      @RequestBody TagDTO tagDTO, HttpServletRequest httpServletRequest) {
-    Tag tag = toTag(tagDTO);
+      @RequestBody TagDTO tagDTO) {
+    Tag tag = new Tag(tagDTO.id, tagDTO.name);
 
     tagService.save(tag);
 
@@ -83,7 +84,7 @@ public class TagController {
    *
    * @param id tag id
    */
-  @PreAuthorize("hasAuthority('role_admin')")
+  @PreAuthorize("hasAuthority('ADMIN')")
   @DeleteMapping("/tags/{id}")
   public ResponseEntity<ErrorResponse> deleteTag(@PathVariable long id) {
     if (!tagService.get(id).isPresent()) {
@@ -93,16 +94,5 @@ public class TagController {
     return noContent().build();
   }
 
-  private TagDTO toTagDTO(Tag tag) {
 
-    return new TagDTO(tag);
-  }
-
-  private Tag toTag(TagDTO tagDTO) {
-    Tag tag = new Tag();
-    tag.setId(tagDTO.id);
-    tag.setName(tagDTO.name);
-
-    return tag;
-  }
 }

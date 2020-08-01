@@ -5,6 +5,7 @@ import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.TagService;
 import com.epam.esm.bahlei.restbasic.service.validator.TagValidator;
+import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,12 @@ public class TagServiceImpl implements TagService {
   @Override
   @Transactional
   public void save(Tag tag) {
-    tagValidator.validate(tag);
+    List<String> errors = tagValidator.validate(tag);
+
+    if (!errors.isEmpty()) {
+      throw new ValidationException(errors);
+    }
+
     tagDAO.save(tag);
   }
 
