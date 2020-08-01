@@ -3,13 +3,13 @@ package com.epam.esm.bahlei.restbasic.dao.impl;
 import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
-import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import com.epam.esm.bahlei.restbasic.service.supplies.CriteriaToSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -26,11 +26,11 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
 
   @Override
   public List<GiftCertificate> getAll(Criteria criteria, Pageable pageable) {
-    Query query = CriteriaToSQL.buildQuery(entityManager, criteria, pageable);
+    TypedQuery<GiftCertificate> query = CriteriaToSQL.buildQuery(entityManager, criteria, pageable);
 
     return query.getResultList();
   }
-
+  // Проверить работу persist
   @Override
   public void save(GiftCertificate certificate) {
     GiftCertificate mergedCertificate = entityManager.merge(certificate);
@@ -73,7 +73,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
   public List<GiftCertificate> getCertificatesByOrderId(long orderId) {
     TypedQuery<GiftCertificate> query =
         entityManager.createQuery(
-            "SELECT c from Order o " + "JOIN o.certificates c  " + "WHERE o.id = :orderId",
+            "SELECT c from Order o JOIN o.certificates c WHERE o.id = :orderId",
             GiftCertificate.class);
 
     query.setParameter("orderId", orderId);

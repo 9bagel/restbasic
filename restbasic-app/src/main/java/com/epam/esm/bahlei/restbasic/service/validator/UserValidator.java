@@ -2,21 +2,19 @@ package com.epam.esm.bahlei.restbasic.service.validator;
 
 import com.epam.esm.bahlei.restbasic.model.User;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.apache.commons.validator.routines.EmailValidator.*;
 
 @Component
 public class UserValidator {
-
-  private EmailValidator emailValidator;
-
-  public UserValidator(EmailValidator emailValidator) {
-    this.emailValidator = emailValidator;
-  }
+  @Autowired
+  public UserValidator() {}
 
   public List<String> validate(User user) {
     List<String> errors = new ArrayList<>();
@@ -29,6 +27,13 @@ public class UserValidator {
   }
   // Проверку на unique
   private void validateEmail(String email, List<String> errors) {
+
+    if (email == null){
+      errors.add("email should not be empty!");
+      return;
+    }
+
+    EmailValidator emailValidator = getInstance();
     if (!emailValidator.isValid(email)) {
       errors.add("Invalid Email!");
     }

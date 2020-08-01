@@ -1,6 +1,7 @@
 package com.epam.esm.bahlei.restbasic.controller;
 
 import com.epam.esm.bahlei.restbasic.controller.dto.OrderDTO;
+import com.epam.esm.bahlei.restbasic.controller.dto.RefDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.UserDTO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
@@ -72,7 +73,7 @@ public class UserController {
   }
 
   @GetMapping("/users/{userId}/orders")
-  @PreAuthorize("hasAuthority('role_user'), hasAuthority('role_admin')")
+  @PreAuthorize("hasAuthority('role_user')")
   public ResponseEntity<?> getUserOrders(
       @PathVariable long userId,
       @RequestParam(required = false, defaultValue = "1") int page,
@@ -92,7 +93,7 @@ public class UserController {
   }
 
   @PreAuthorize("hasAuthority('role_user')")
-  @GetMapping("/users/{userId}/orders/favourite_certificate")
+  @GetMapping("/users/{userId}/orders/favourite-certificate")
   public ResponseEntity<?> getFavouriteCertificate(@PathVariable long userId) {
     Optional<GiftCertificate> optional = certificateService.getFavouriteUserCertificate(userId);
     if (!optional.isPresent()) {

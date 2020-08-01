@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.singletonList;
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
@@ -31,7 +31,7 @@ public class JwtUserDetailsService implements UserDetailsService {
             .getByUsername(username)
             .orElseThrow(
                 () ->
-                    new UsernameNotFoundException("There is no user with username + " + username));
+                    new UsernameNotFoundException("Authentication failed"));
 
     return createSpringUser(user);
   }
@@ -39,10 +39,10 @@ public class JwtUserDetailsService implements UserDetailsService {
   private User createSpringUser(com.epam.esm.bahlei.restbasic.model.User user) {
 
     return new User(
-        user.getUsername(), user.getPassword(), mapToGrantedAuthorities(user.getRoles()));
+        user.getUsername(), user.getPassword(), mapToGrantedAuthorities(user.getRole()));
   }
 
-  private static List<GrantedAuthority> mapToGrantedAuthorities(List<Role> roles) {
-    return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(toList());
+  private static List<GrantedAuthority> mapToGrantedAuthorities(Role role) {
+    return singletonList(new SimpleGrantedAuthority(role.name()));
   }
 }

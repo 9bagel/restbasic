@@ -1,4 +1,4 @@
-package com.epam.esm.bahlei.restbasic.config.exception.response;
+package com.epam.esm.bahlei.restbasic.controller.dto.response;
 
 import java.util.Collections;
 import java.util.List;

@@ -28,7 +28,7 @@ public class TagDAOImpl implements TagDAO {
         entityManager
             .createQuery("FROM Tag", Tag.class)
             .setFirstResult(pageable.getOffset())
-            .setMaxResults(pageable.getLimit());
+            .setMaxResults(pageable.getSize());
 
     return query.getResultList();
   }

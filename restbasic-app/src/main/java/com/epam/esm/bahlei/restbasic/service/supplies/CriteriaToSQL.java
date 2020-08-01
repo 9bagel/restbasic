@@ -1,9 +1,10 @@
 package com.epam.esm.bahlei.restbasic.service.supplies;
 
+import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -53,17 +54,17 @@ public class CriteriaToSQL {
     sql.append("ORDER BY ").append(joiner.toString());
   }
 
-  public static Query buildQuery(
+  public static TypedQuery<GiftCertificate> buildQuery(
       EntityManager entityManager, Criteria criteria, Pageable pageable) {
 
     String sql = CriteriaToSQL.mapSql(criteria);
     String wholeSql = "SELECT c FROM GiftCertificate c " + sql;
 
-    Query query =
+    TypedQuery<GiftCertificate> query =
         entityManager
-            .createQuery(wholeSql)
+            .createQuery(wholeSql,  GiftCertificate.class)
             .setFirstResult(pageable.getOffset())
-            .setMaxResults(pageable.getLimit());
+            .setMaxResults(pageable.getSize());
 
     if (!criteria.tagNames.isEmpty()) {
       query.setParameter("names", criteria.tagNames);

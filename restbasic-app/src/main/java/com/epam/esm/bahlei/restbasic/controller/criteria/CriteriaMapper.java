@@ -9,9 +9,9 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
-public class CriteriaParser {
+public class CriteriaMapper {
 
-  public Criteria parse(List<String> tagNames, String sortBy, String findPhrase) {
+  public Criteria map(List<String> tagNames, String sortBy, String findPhrase) {
     List<SortColumn> sortColumns = new ArrayList<>();
 
     if (sortBy != null) {
@@ -25,9 +25,11 @@ public class CriteriaParser {
 
   private SortColumn parseSortColumn(String columnName) {
     SortOrder sortOrder = columnName.startsWith("-") ? SortOrder.DESC : SortOrder.ASC;
+
     if (columnName.startsWith("-") || columnName.startsWith("+")) {
       columnName = columnName.substring(1);
     }
+
     return new SortColumn(columnName, sortOrder);
   }
 }

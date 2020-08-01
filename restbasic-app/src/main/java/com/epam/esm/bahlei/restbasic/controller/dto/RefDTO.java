@@ -1,4 +1,4 @@
-package com.epam.esm.bahlei.restbasic.controller;
+package com.epam.esm.bahlei.restbasic.controller.dto;
 
 public class RefDTO {
   private long id;

@@ -16,11 +16,11 @@ import java.util.Optional;
 
 public class JwtTokenFilter extends GenericFilterBean {
 
-  private final JwtTokenProvider jwtTokenProvider;
+  private final JwtTokenService jwtTokenService;
 
   @Autowired
-  public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
-    this.jwtTokenProvider = jwtTokenProvider;
+  public JwtTokenFilter(JwtTokenService jwtTokenService) {
+    this.jwtTokenService = jwtTokenService;
   }
 
   @Override
@@ -28,8 +28,8 @@ public class JwtTokenFilter extends GenericFilterBean {
       throws IOException, ServletException {
 
     Optional<String> token = getTokenFromRequest((HttpServletRequest) req);
-    if (token.isPresent() && jwtTokenProvider.validateToken(token.get())) {
-      Authentication auth = jwtTokenProvider.getAuthentication(token.get());
+    if (token.isPresent() && jwtTokenService.validateToken(token.get())) {
+      Authentication auth = jwtTokenService.getAuthentication(token.get());
 
       if (auth != null) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();

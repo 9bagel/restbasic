@@ -2,7 +2,6 @@ package com.epam.esm.bahlei.restbasic.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -14,14 +13,10 @@ import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.epam.esm.bahlei.restbasic.dao")
-@EntityScan("com.epam.esm.bahlei.restbasic")
+@EntityScan("com.epam.esm.bahlei.restbasic.model")
 @EnableAutoConfiguration
 @PropertySource("classpath:application.properties")
 public class TestAppConfig {
-  @Bean
-  public EmailValidator emailValidator() {
-    return EmailValidator.getInstance();
-  }
 
   @Bean
   public DataSource dataSource() {

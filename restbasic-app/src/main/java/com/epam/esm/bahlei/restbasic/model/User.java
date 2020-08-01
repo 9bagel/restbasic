@@ -29,12 +29,9 @@ public class User {
   @OneToMany(mappedBy = "user")
   private List<Order> orders;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "user_roles",
-      joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id"))
-  private List<Role> roles;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "role")
+  private Role role;
 
   public Long getId() {
     return id;
@@ -76,14 +73,6 @@ public class User {
     return orders;
   }
 
-  public List<Role> getRoles() {
-    return roles;
-  }
-
-  public void setRoles(List<Role> roles) {
-    this.roles = roles;
-  }
-
   public String getEmail() {
     return email;
   }
@@ -98,5 +87,13 @@ public class User {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public Role getRole() {
+    return role;
+  }
+
+  public void setRole(Role role) {
+    this.role = role;
   }
 }

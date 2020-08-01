@@ -1,6 +1,6 @@
 package com.epam.esm.bahlei.restbasic.handler;
 
-import com.epam.esm.bahlei.restbasic.config.exception.response.ErrorResponse;
+import com.epam.esm.bahlei.restbasic.controller.dto.response.ErrorResponse;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import org.springframework.dao.DataAccessException;
@@ -8,13 +8,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class CertificateRestExceptionHandler {
 
   @ExceptionHandler
@@ -78,5 +80,19 @@ public class CertificateRestExceptionHandler {
     ErrorResponse error = new ErrorResponse("Access is denied");
 
     return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+  }
+
+  @ExceptionHandler
+  public ResponseEntity<ErrorResponse> handleException(AuthenticationException exc) {
+    ErrorResponse error = new ErrorResponse("Authentication exception");
+
+    return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+  }
+
+  @ExceptionHandler(UsernameNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleException(UsernameNotFoundException exc) {
+    ErrorResponse error = new ErrorResponse(exc.getMessage());
+
+    return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
   }
 }

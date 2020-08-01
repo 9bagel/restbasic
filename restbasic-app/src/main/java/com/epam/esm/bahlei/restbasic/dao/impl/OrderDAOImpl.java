@@ -33,7 +33,7 @@ public class OrderDAOImpl implements OrderDAO {
         entityManager
             .createQuery("SELECT o FROM Order o WHERE o.userId = ?1", Order.class)
             .setFirstResult(pageable.getOffset())
-            .setMaxResults(pageable.getLimit());
+            .setMaxResults(pageable.getSize());
 
     query.setParameter(1, userId);
 

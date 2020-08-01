@@ -26,7 +26,7 @@ public class UserDAOImpl implements UserDAO {
         entityManager
             .createQuery("FROM User", User.class)
             .setFirstResult(pageable.getOffset())
-            .setMaxResults(pageable.getLimit());
+            .setMaxResults(pageable.getSize());
 
     return query.getResultList();
   }

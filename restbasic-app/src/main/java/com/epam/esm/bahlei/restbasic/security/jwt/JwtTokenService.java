@@ -1,8 +1,9 @@
 package com.epam.esm.bahlei.restbasic.security.jwt;
 
-import com.epam.esm.bahlei.restbasic.model.Role;
 import com.epam.esm.bahlei.restbasic.model.User;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,12 +17,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Component
-public class JwtTokenProvider {
+public class JwtTokenService {
   @Value("${jwt.token.secret}")
   private String secret;
 
@@ -42,7 +40,7 @@ public class JwtTokenProvider {
 
   public String createToken(User user) {
 
-    Claims claims = Jwts.claims().setSubject(String.valueOf(user.getId()));
+    Claims claims = Jwts.claims().setSubject(user.getUsername());
 
     Date now = new Date();
     Date expiredAt = new Date(now.getTime() + validityInMilliseconds);
@@ -66,16 +64,10 @@ public class JwtTokenProvider {
 
   public boolean validateToken(String token) {
     try {
-      Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-
-      return new Date().before(claims.getBody().getExpiration());
-    } catch (JwtException | IllegalArgumentException e) {
+      Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+      return true;
+    } catch (Exception e) {
       return false;
     }
-  }
-
-  private List<String> getRoleNames(List<Role> roles) {
-
-    return roles.stream().map(Role::getName).collect(toList());
   }
 }

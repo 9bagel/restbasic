@@ -1,6 +1,6 @@
 package com.epam.esm.bahlei.restbasic.controller;
 
-import com.epam.esm.bahlei.restbasic.config.exception.response.ErrorResponse;
+import com.epam.esm.bahlei.restbasic.controller.dto.response.ErrorResponse;
 import com.epam.esm.bahlei.restbasic.controller.dto.TagDTO;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
@@ -49,7 +49,7 @@ public class TagController {
   }
 
   /** Returns a list of Tags Path [GET /api/tags/] */
-  @PreAuthorize("hasAuthority('role_user')")
+  @PreAuthorize("hasAuthority('USER')")
   @GetMapping("/tags")
   public ResponseEntity<?> getAll(
       @RequestParam(required = false, defaultValue = "1") int page,

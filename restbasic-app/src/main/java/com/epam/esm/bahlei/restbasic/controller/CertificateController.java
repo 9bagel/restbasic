@@ -1,10 +1,12 @@
 package com.epam.esm.bahlei.restbasic.controller;
 
-import com.epam.esm.bahlei.restbasic.config.exception.response.ErrorResponse;
-import com.epam.esm.bahlei.restbasic.controller.criteria.CriteriaParser;
+import com.epam.esm.bahlei.restbasic.controller.criteria.CriteriaMapper;
 import com.epam.esm.bahlei.restbasic.controller.dto.GiftCertificateDTO;
+import com.epam.esm.bahlei.restbasic.controller.dto.response.ErrorResponse;
+import com.epam.esm.bahlei.restbasic.controller.linkmapper.LinkMapper;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
+import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.GiftCertificateService;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,10 +30,13 @@ import static org.springframework.http.ResponseEntity.*;
 public class CertificateController {
 
   private final GiftCertificateService giftCertificateService;
+  private final LinkMapper linkMapper;
 
   @Autowired
-  public CertificateController(GiftCertificateService giftCertificateService) {
+  public CertificateController(
+      GiftCertificateService giftCertificateService, LinkMapper linkMapper) {
     this.giftCertificateService = giftCertificateService;
+    this.linkMapper = linkMapper;
   }
 
   /**
@@ -49,10 +53,9 @@ public class CertificateController {
     if (!optional.isPresent()) {
       return status(HttpStatus.NOT_FOUND).build();
     }
-    Link selfLink = linkTo(methodOn(CertificateController.class).getCertificate(id)).withSelfRel();
-    GiftCertificateDTO dto = toCertificateDTO(optional.get());
-    dto.add(selfLink);
-    return ok(dto);
+    GiftCertificateDTO certificateDTO = toCertificateDTO(optional.get());
+    linkMapper.mapLinks(certificateDTO);
+    return ok(certificateDTO);
   }
 
   /**
@@ -70,18 +73,12 @@ public class CertificateController {
       @RequestParam(required = false, defaultValue = "") String find,
       @RequestParam(required = false, defaultValue = "1") int page,
       @RequestParam(required = false, defaultValue = "10") int size) {
-    Criteria criteria = new CriteriaParser().parse(tagNames, sortBy, find);
+    Criteria criteria = new CriteriaMapper().map(tagNames, sortBy, find);
 
     return ok(
         giftCertificateService.getAll(criteria, new Pageable(page, size)).stream()
             .map(this::toCertificateDTO)
-            .map(
-                certificateDTO ->
-                    certificateDTO.add(
-                        linkTo(
-                                methodOn(CertificateController.class)
-                                    .getCertificate(certificateDTO.id))
-                            .withSelfRel()))
+            .peek(linkMapper::mapLinks)
             .collect(toList()));
   }
 
@@ -98,8 +95,8 @@ public class CertificateController {
     giftCertificateService.save(giftCertificate);
 
     return created(
-            URI.create(
-                httpServletRequest.getRequestURL().append(giftCertificate.getId()).toString()))
+            linkTo(methodOn(CertificateController.class).getCertificate(giftCertificate.getId()))
+                .toUri())
         .build();
   }
 
@@ -122,6 +119,7 @@ public class CertificateController {
     giftCertificateService.update(toCertificate(certificateDTO));
     return noContent().build();
   }
+
   @PreAuthorize("hasAuthority('role_admin')")
   @PatchMapping("/certificates/{id}")
   public ResponseEntity<?> patchCertificate(
@@ -187,7 +185,8 @@ public class CertificateController {
     certificate.setDuration(dto.duration);
     certificate.setName(dto.name);
     certificate.setPrice(dto.price);
-    certificate.setTags(dto.tags);
+    certificate.setTags(
+        dto.tags.stream().map(tagDTO -> new Tag(tagDTO.id, tagDTO.name)).collect(toList()));
 
     return certificate;
   }
