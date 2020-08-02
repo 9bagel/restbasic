@@ -4,12 +4,11 @@ import com.epam.esm.bahlei.restbasic.dao.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Role;
 import com.epam.esm.bahlei.restbasic.model.User;
-import com.epam.esm.bahlei.restbasic.security.jwt.JwtUser;
 import com.epam.esm.bahlei.restbasic.service.UserService;
+import com.epam.esm.bahlei.restbasic.service.supplies.AuthoritiesChecker;
 import com.epam.esm.bahlei.restbasic.service.validator.UserValidator;
+import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +22,14 @@ public class UserServiceImpl implements UserService {
   private final UserDAO userDAO;
   private final BCryptPasswordEncoder encoder;
   private final UserValidator validator;
+  private final AuthoritiesChecker authoritiesChecker;
 
   @Autowired
-  public UserServiceImpl(UserDAO userDAO, BCryptPasswordEncoder encoder, UserValidator validator) {
+  public UserServiceImpl(UserDAO userDAO, BCryptPasswordEncoder encoder, UserValidator validator, AuthoritiesChecker authoritiesChecker) {
     this.userDAO = userDAO;
     this.encoder = encoder;
     this.validator = validator;
+    this.authoritiesChecker = authoritiesChecker;
   }
 
   @Override
@@ -37,18 +38,20 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Optional<User> get(long id) {
-    JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    if (user.getId() != id) {
-      throw new AccessDeniedException("Access denied");
-    }
-    return userDAO.get(id);
+  public Optional<User> get(long userId) {
+    authoritiesChecker.check(userId);
+
+    return userDAO.get(userId);
   }
 
   @Transactional
   @Override
   public void register(User user) {
-    validator.validate(user);
+    List<String> errors = validator.validate(user);
+
+    if (!errors.isEmpty()) {
+      throw new ValidationException(errors);
+    }
 
     user.setPassword(encoder.encode(user.getPassword()));
     user.setRole(Role.USER);

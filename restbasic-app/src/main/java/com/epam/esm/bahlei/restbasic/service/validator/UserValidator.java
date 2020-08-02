@@ -22,7 +22,7 @@ public class UserValidator {
     this.userDAO = userDAO;
   }
 
-  public void validate(User user) {
+  public List<String> validate(User user) {
     List<String> errors = new ArrayList<>();
 
     validateUsername(user.getUsername(), errors);
@@ -30,9 +30,7 @@ public class UserValidator {
     validateFirstName(user.getFirstName(), errors);
     validateLastName(user.getLastName(), errors);
 
-    if (!errors.isEmpty()) {
-      throw new ValidationException(errors);
-    }
+    return errors;
   }
 
   private void validateEmail(String email, List<String> errors) {

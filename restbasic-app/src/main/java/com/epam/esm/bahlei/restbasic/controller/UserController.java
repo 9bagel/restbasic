@@ -112,9 +112,6 @@ public class UserController {
   @PreAuthorize("hasAuthority('USER')")
   @PostMapping("/users/{userId}/orders")
   public ResponseEntity<?> createOrder(@PathVariable long userId, @RequestBody Order order) {
-    User user = new User();
-    user.setId(userId);
-
     order.setUserId(userId);
 
     orderService.save(order);

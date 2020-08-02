@@ -81,5 +81,12 @@ public class LinkMapper {
     orderDTO.add(
         linkTo(methodOn(UserController.class).getOrder(orderDTO.userId, orderDTO.id))
             .withSelfRel());
+
+    orderDTO.certificates.forEach(
+        certificateRefDTO -> {
+          GiftCertificateDTO certificateDTO = new GiftCertificateDTO();
+          certificateDTO.id = certificateRefDTO.getId();
+          mapLinks(certificateDTO);
+        });
   }
 }

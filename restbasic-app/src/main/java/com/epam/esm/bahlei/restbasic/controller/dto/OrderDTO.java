@@ -25,7 +25,7 @@ public class OrderDTO extends RepresentationModel<OrderDTO> {
     this.purchasedAt = order.getPurchasedAt();
     this.certificates =
         order.getCertificates().stream()
-            .map(certificate -> new RefDTO(id, "Order# " + id))
+            .map(certificate -> new RefDTO(id, certificate.getName()))
             .collect(toList());
     this.userId = order.getUserId();
   }
