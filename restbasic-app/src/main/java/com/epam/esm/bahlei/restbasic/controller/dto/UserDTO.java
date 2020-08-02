@@ -1,7 +1,7 @@
 package com.epam.esm.bahlei.restbasic.controller.dto;
 
 import com.epam.esm.bahlei.restbasic.model.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
 
 public class UserDTO extends RepresentationModel<UserDTO> {
@@ -10,7 +10,9 @@ public class UserDTO extends RepresentationModel<UserDTO> {
   public String firstName;
   public String lastName;
   public String email;
-  @JsonIgnore public String password;
+
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  public String password;
 
   public UserDTO() {}
 

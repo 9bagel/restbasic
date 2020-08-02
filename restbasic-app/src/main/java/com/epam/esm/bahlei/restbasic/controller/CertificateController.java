@@ -9,14 +9,13 @@ import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.GiftCertificateService;
 import com.epam.esm.bahlei.restbasic.service.supplies.Criteria;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,8 +88,7 @@ public class CertificateController {
    */
   @PreAuthorize("hasAuthority('ADMIN')")
   @PostMapping("/certificates")
-  public ResponseEntity<?> addCertificate(
-      @RequestBody GiftCertificateDTO certificateDTO) {
+  public ResponseEntity<?> addCertificate(@RequestBody GiftCertificateDTO certificateDTO) {
     GiftCertificate giftCertificate = toCertificate(certificateDTO);
     giftCertificateService.save(giftCertificate);
 
@@ -185,8 +183,10 @@ public class CertificateController {
     certificate.setDuration(dto.duration);
     certificate.setName(dto.name);
     certificate.setPrice(dto.price);
-    certificate.setTags(
-        dto.tags.stream().map(tagDTO -> new Tag(tagDTO.id, tagDTO.name)).collect(toList()));
+    if (!CollectionUtils.isEmpty(dto.tags)) {
+      certificate.setTags(
+          dto.tags.stream().map(tagDTO -> new Tag(tagDTO.id, tagDTO.name)).collect(toList()));
+    }
 
     return certificate;
   }
