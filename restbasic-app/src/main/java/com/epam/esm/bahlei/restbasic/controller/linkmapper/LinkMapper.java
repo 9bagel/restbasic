@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static com.epam.esm.bahlei.restbasic.model.Role.ADMIN;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -27,8 +28,8 @@ public class LinkMapper {
     tagDTO.add(linkTo(methodOn(TagController.class).getTag(tagDTO.id)).withSelfRel());
 
     if (user.getAuthorities().contains(new SimpleGrantedAuthority(ADMIN.toString()))) {
-      tagDTO.add(linkTo(methodOn(TagController.class).deleteTag(tagDTO.id)).withRel("DELETE"));
-      tagDTO.add(linkTo(methodOn(TagController.class).addTag(tagDTO)).withRel("POST"));
+      tagDTO.add(linkTo(methodOn(TagController.class).deleteTag(tagDTO.id)).withRel("delete"));
+      tagDTO.add(linkTo(methodOn(TagController.class).addTag(tagDTO)).withRel("add"));
     }
   }
 
@@ -46,35 +47,36 @@ public class LinkMapper {
     if (user.getAuthorities().contains(new SimpleGrantedAuthority(ADMIN.toString()))) {
       certificateDTO.add(
           (linkTo(methodOn(CertificateController.class).addCertificate(certificateDTO))
-              .withRel("POST")));
+              .withRel("add")));
 
       certificateDTO.add(
           (linkTo(
                   methodOn(CertificateController.class)
                       .updateCertificate(certificateDTO, certificateDTO.id))
-              .withRel("PUT")));
+              .withRel("replace")));
 
       certificateDTO.add(
           (linkTo(
                   methodOn(CertificateController.class)
                       .patchCertificate(certificateDTO, certificateDTO.id))
-              .withRel("PATCH")));
+              .withRel("update")));
     }
 
-    if (!certificateDTO.tags.isEmpty()) {
+    if (certificateDTO.tags != null && !certificateDTO.tags.isEmpty()) {
+
       mapLinks(certificateDTO.tags);
     }
   }
 
   public void mapLinks(UserDTO userDTO) {
     userDTO.add(linkTo(methodOn(UserController.class).getUser(userDTO.id)).withSelfRel());
-    linkTo(methodOn(UserController.class).getUserOrders(userDTO.id, 1, 10)).withRel("ORDERS");
+    linkTo(methodOn(UserController.class).getUserOrders(userDTO.id, 1, 10)).withRel("orders");
 
     userDTO.add(
         linkTo(methodOn(UserController.class).getFavouriteCertificate(userDTO.id))
-            .withRel("FAVOURITE"));
+            .withRel("favourite"));
 
-    linkTo(methodOn(UserController.class).createOrder(userDTO.id, new Order())).withRel("POST");
+    linkTo(methodOn(UserController.class).createOrder(userDTO.id, new Order())).withRel("add");
   }
 
   public void mapLinks(OrderDTO orderDTO) {
