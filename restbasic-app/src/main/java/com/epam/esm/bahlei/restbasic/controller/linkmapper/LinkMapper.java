@@ -7,7 +7,6 @@ import com.epam.esm.bahlei.restbasic.controller.dto.GiftCertificateDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.OrderDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.TagDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.UserDTO;
-import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.security.jwt.JwtUser;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static com.epam.esm.bahlei.restbasic.model.Role.ADMIN;
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -76,7 +74,7 @@ public class LinkMapper {
         linkTo(methodOn(UserController.class).getFavouriteCertificate(userDTO.id))
             .withRel("favourite"));
 
-    linkTo(methodOn(UserController.class).createOrder(userDTO.id, new Order())).withRel("add");
+    linkTo(methodOn(UserController.class).createOrder(userDTO.id, new OrderDTO())).withRel("add");
   }
 
   public void mapLinks(OrderDTO orderDTO) {
@@ -87,7 +85,7 @@ public class LinkMapper {
     orderDTO.certificates.forEach(
         certificateRefDTO -> {
           GiftCertificateDTO certificateDTO = new GiftCertificateDTO();
-          certificateDTO.id = certificateRefDTO.getId();
+          certificateDTO.id = certificateRefDTO.id;
           mapLinks(certificateDTO);
         });
   }

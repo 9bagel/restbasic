@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.collections.CollectionUtils.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.ResponseEntity.*;
@@ -183,7 +184,7 @@ public class CertificateController {
     certificate.setDuration(dto.duration);
     certificate.setName(dto.name);
     certificate.setPrice(dto.price);
-    if (!CollectionUtils.isEmpty(dto.tags)) {
+    if (!isEmpty(dto.tags)) {
       certificate.setTags(
           dto.tags.stream().map(tagDTO -> new Tag(tagDTO.id, tagDTO.name)).collect(toList()));
     }

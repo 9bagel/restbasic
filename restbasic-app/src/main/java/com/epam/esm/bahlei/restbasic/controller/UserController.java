@@ -12,7 +12,6 @@ import com.epam.esm.bahlei.restbasic.service.GiftCertificateService;
 import com.epam.esm.bahlei.restbasic.service.OrderService;
 import com.epam.esm.bahlei.restbasic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +26,7 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.ResponseEntity.*;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 @RestController
 @RequestMapping("/api/")
@@ -111,12 +111,13 @@ public class UserController {
 
   @PreAuthorize("hasAuthority('USER')")
   @PostMapping("/users/{userId}/orders")
-  public ResponseEntity<?> createOrder(@PathVariable long userId, @RequestBody Order order) {
+  public ResponseEntity<?> createOrder(@PathVariable long userId, @RequestBody OrderDTO orderDTO) {
+    Order order = toOrder(orderDTO);
     order.setUserId(userId);
 
     orderService.save(order);
 
-    return created(linkTo(methodOn(UserController.class).createOrder(userId, order)).toUri())
+    return created(linkTo(methodOn(UserController.class).getOrder(userId, order.getId())).toUri())
         .build();
   }
 
@@ -142,5 +143,23 @@ public class UserController {
     user.setLastName(userDTO.lastName);
     user.setEmail(userDTO.email);
     return user;
+  }
+
+  private Order toOrder(OrderDTO orderDTO) {
+    Order order = new Order();
+    order.setUserId(orderDTO.userId);
+
+    if (!isEmpty(orderDTO.certificates))
+      order.setCertificates(
+          orderDTO.certificates.stream()
+              .map(
+                  certificateDto -> {
+                    GiftCertificate certificate = new GiftCertificate();
+                    certificate.setId(certificateDto.id);
+                    return certificate;
+                  })
+              .collect(toList()));
+
+    return order;
   }
 }

@@ -1,21 +1,13 @@
 package com.epam.esm.bahlei.restbasic.controller.dto;
 
 public class RefDTO {
-  private long id;
-  private String displayName;
+  public long id;
+  public String displayName;
 
   public RefDTO() {}
 
   public RefDTO(long id, String displayName) {
     this.id = id;
     this.displayName = displayName;
-  }
-
-  public long getId() {
-    return id;
-  }
-
-  public String getDisplayName() {
-    return displayName;
   }
 }
