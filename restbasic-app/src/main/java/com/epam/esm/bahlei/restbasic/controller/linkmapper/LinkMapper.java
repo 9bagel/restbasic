@@ -36,11 +36,20 @@ public class LinkMapper {
   }
 
   public void mapLinks(GiftCertificateDTO certificateDTO) {
+    certificateDTO.add(
+            linkTo(methodOn(CertificateController.class).getCertificate(certificateDTO.id))
+                    .withSelfRel());
+
+    if (certificateDTO.tags != null && !certificateDTO.tags.isEmpty()) {
+
+      mapLinks(certificateDTO.tags);
+    }
+
+    if (SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
+      return;
+    }
     JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    certificateDTO.add(
-        linkTo(methodOn(CertificateController.class).getCertificate(certificateDTO.id))
-            .withSelfRel());
 
     if (user.getAuthorities().contains(new SimpleGrantedAuthority(ADMIN.toString()))) {
       certificateDTO.add(
@@ -59,11 +68,6 @@ public class LinkMapper {
                       .patchCertificate(certificateDTO, certificateDTO.id))
               .withRel("update")));
     }
-
-    if (certificateDTO.tags != null && !certificateDTO.tags.isEmpty()) {
-
-      mapLinks(certificateDTO.tags);
-    }
   }
 
   public void mapLinks(UserDTO userDTO) {
@@ -79,7 +83,7 @@ public class LinkMapper {
             .withSelfRel());
 
     orderDTO.add(
-            linkTo(methodOn(UserController.class).createOrder(orderDTO.userId, new OrderDTO()))
-                    .withRel("add"));
+        linkTo(methodOn(UserController.class).createOrder(orderDTO.userId, new OrderDTO()))
+            .withRel("add"));
   }
 }
