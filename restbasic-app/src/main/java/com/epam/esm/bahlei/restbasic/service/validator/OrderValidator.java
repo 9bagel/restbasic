@@ -44,7 +44,7 @@ public class OrderValidator {
 
   private void validateUserId(long userId, List<String> errors) {
     if (!userDAO.get(userId).isPresent()) {
-      errors.add("Wrong user ID");
+      errors.add("User doesn't exist");
     }
   }
 
