@@ -22,8 +22,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class LinkMapper {
 
   public void mapLinks(TagDTO tagDTO) {
-    JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     tagDTO.add(linkTo(methodOn(TagController.class).getTag(tagDTO.id)).withSelfRel());
+
+    if (SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
+      return;
+    }
+    JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     if (user.getAuthorities().contains(new SimpleGrantedAuthority(ADMIN.toString()))) {
       tagDTO.add(linkTo(methodOn(TagController.class).deleteTag(tagDTO.id)).withRel("delete"));
@@ -37,8 +41,8 @@ public class LinkMapper {
 
   public void mapLinks(GiftCertificateDTO certificateDTO) {
     certificateDTO.add(
-            linkTo(methodOn(CertificateController.class).getCertificate(certificateDTO.id))
-                    .withSelfRel());
+        linkTo(methodOn(CertificateController.class).getCertificate(certificateDTO.id))
+            .withSelfRel());
 
     if (certificateDTO.tags != null && !certificateDTO.tags.isEmpty()) {
 
@@ -49,7 +53,6 @@ public class LinkMapper {
       return;
     }
     JwtUser user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
 
     if (user.getAuthorities().contains(new SimpleGrantedAuthority(ADMIN.toString()))) {
       certificateDTO.add(
