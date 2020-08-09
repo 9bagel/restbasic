@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@Transactional
 class TagServiceImplTest {
   @Mock private TagValidator validator;
   @Mock private TagDAO tagDAO;

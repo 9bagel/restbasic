@@ -18,7 +18,7 @@ public class GiftCertificate implements Auditable {
       name = "certificate_generator",
       sequenceName = "certificates_id_seq",
       allocationSize = 1)
-  private Long id;
+  private long id;
 
   @Column(name = "name")
   private String name;
@@ -52,11 +52,11 @@ public class GiftCertificate implements Auditable {
     this.duration = duration;
   }
 
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 

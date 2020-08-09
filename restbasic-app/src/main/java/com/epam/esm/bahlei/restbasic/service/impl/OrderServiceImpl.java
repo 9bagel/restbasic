@@ -7,15 +7,11 @@ import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Order;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
-import com.epam.esm.bahlei.restbasic.security.jwt.JwtUser;
 import com.epam.esm.bahlei.restbasic.service.OrderService;
 import com.epam.esm.bahlei.restbasic.service.supplies.AuthoritiesChecker;
 import com.epam.esm.bahlei.restbasic.service.validator.OrderValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static com.epam.esm.bahlei.restbasic.model.Role.ADMIN;
 import static java.util.stream.Collectors.toList;
 
 @Service
