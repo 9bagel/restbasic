@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +57,8 @@ class GiftCertificateServiceImplTest {
   @Test
   void update_InvalidCertificate_Error() {
     GiftCertificate certificate = getValidCertificate();
+    certificate.setName("      ");
+    when(validator.validate(certificate)).thenReturn(singletonList("error"));
 
     assertThrows(ValidationException.class, () -> certificateService.update(certificate));
   }

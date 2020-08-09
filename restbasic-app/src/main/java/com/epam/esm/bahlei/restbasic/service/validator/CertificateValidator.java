@@ -2,14 +2,13 @@ package com.epam.esm.bahlei.restbasic.service.validator;
 
 import com.epam.esm.bahlei.restbasic.dao.GiftCertificateDAO;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
-import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 public class CertificateValidator {
@@ -34,7 +33,7 @@ public class CertificateValidator {
   }
 
   private void validateName(String name, List<String> errorMessages) {
-    if (isNullOrEmpty(name)) {
+    if (isBlank(name)) {
       errorMessages.add("Certificate name should not be empty");
       return;
     }
@@ -44,7 +43,7 @@ public class CertificateValidator {
   }
 
   private void validateDescription(String description, List<String> errorMessages) {
-    if (isNullOrEmpty(description)) {
+    if (isBlank(description)) {
       errorMessages.add("Certificate description should not be empty");
       return;
     }
