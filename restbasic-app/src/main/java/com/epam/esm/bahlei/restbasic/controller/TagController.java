@@ -39,7 +39,7 @@ public class TagController {
    *
    * @param tagId an id of a tag
    */
-  @PreAuthorize("hasAuthority('USER')")
+  @PreAuthorize("permitAll()")
   @GetMapping("/tags/{tagId}")
   public ResponseEntity<?> getTag(@PathVariable long tagId) {
     Optional<Tag> optional = tagService.get(tagId);
@@ -52,7 +52,7 @@ public class TagController {
   }
 
   /** Returns a list of Tags Path [GET /api/tags/] */
-  @PreAuthorize("hasAuthority('USER')")
+  @PreAuthorize("permitAll()")
   @GetMapping("/tags")
   public ResponseEntity<?> getAll(
       @RequestParam(required = false, defaultValue = "1") int page,

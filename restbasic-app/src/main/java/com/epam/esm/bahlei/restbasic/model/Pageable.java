@@ -7,8 +7,8 @@ public class Pageable {
   private final int page;
 
   public Pageable(int page, int size) {
-    this.size = max(size, 1);
-    this.page = page > 0 ? page : 1;
+    this.size = max(min(size, 1000), 1);
+    this.page = max(min(page, 1000), 1);
   }
 
   public int getOffset() {

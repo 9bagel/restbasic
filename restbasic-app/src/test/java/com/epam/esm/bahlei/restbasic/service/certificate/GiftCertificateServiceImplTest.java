@@ -14,9 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +44,6 @@ class GiftCertificateServiceImplTest {
   @Test
   void get_ValidId_OK() {
     Optional<GiftCertificate> expected = Optional.of(getValidCertificate());
-    List<Tag> tags = getValidTags();
     when(certificateDAO.get(1)).thenReturn(expected);
 
     Optional<GiftCertificate> actual = certificateService.get(1);

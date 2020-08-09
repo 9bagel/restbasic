@@ -61,13 +61,6 @@ public class CertificateRestExceptionHandler {
     return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
   }
 
-//  @ExceptionHandler
-//  public ResponseEntity<ErrorResponse> handleException(DataAccessException exc) {
-//    ErrorResponse error = new ErrorResponse("Wrong parameters");
-//
-//    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-//  }
-
   @ExceptionHandler
   public ResponseEntity<ErrorResponse> handleException(MethodArgumentTypeMismatchException exc) {
     ErrorResponse error = new ErrorResponse("Wrong parameter value");
@@ -79,7 +72,7 @@ public class CertificateRestExceptionHandler {
   public ResponseEntity<ErrorResponse> handleException(AccessDeniedException exc) {
     ErrorResponse error = new ErrorResponse("Access is denied");
 
-    return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler
