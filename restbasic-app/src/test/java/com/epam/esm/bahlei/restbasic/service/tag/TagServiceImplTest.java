@@ -34,7 +34,7 @@ class TagServiceImplTest {
   }
 
   @Test
-  void save_InValidTag_OK() {
+  void save_InValidTag_Error() {
     Tag tag = getValidTag();
     tag.setName("invalidName");
     when(validator.validate(tag)).thenReturn(singletonList("error"));

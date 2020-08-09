@@ -2,7 +2,6 @@ package com.epam.esm.bahlei.restbasic.service.validator;
 
 import com.epam.esm.bahlei.restbasic.dao.UserDAO;
 import com.epam.esm.bahlei.restbasic.model.User;
-import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

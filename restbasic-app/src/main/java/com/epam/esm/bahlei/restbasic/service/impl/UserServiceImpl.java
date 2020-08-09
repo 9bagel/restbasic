@@ -8,6 +8,7 @@ import com.epam.esm.bahlei.restbasic.service.UserService;
 import com.epam.esm.bahlei.restbasic.service.supplies.AuthoritiesChecker;
 import com.epam.esm.bahlei.restbasic.service.validator.UserValidator;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
+import com.google.common.collect.ImmutableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,11 @@ public class UserServiceImpl implements UserService {
   private final AuthoritiesChecker authoritiesChecker;
 
   @Autowired
-  public UserServiceImpl(UserDAO userDAO, BCryptPasswordEncoder encoder, UserValidator validator, AuthoritiesChecker authoritiesChecker) {
+  public UserServiceImpl(
+      UserDAO userDAO,
+      BCryptPasswordEncoder encoder,
+      UserValidator validator,
+      AuthoritiesChecker authoritiesChecker) {
     this.userDAO = userDAO;
     this.encoder = encoder;
     this.validator = validator;
@@ -39,6 +44,10 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Optional<User> get(long userId) {
+    if (userId <= 0) {
+      throw new ValidationException(ImmutableList.of("User id cannot be negative or zero"));
+    }
+
     authoritiesChecker.check(userId);
 
     return userDAO.get(userId);
