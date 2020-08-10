@@ -1,10 +1,9 @@
 package com.epam.esm.bahlei.restbasic.handler;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -31,7 +30,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     try {
       filterChain.doFilter(request, response);
-    } catch (UsernameNotFoundException e) {
+    } catch (BadCredentialsException | JwtException e) {
       exceptionResolver.resolveException(request, response, null, e);
     }
   }

@@ -1,9 +1,8 @@
 package com.epam.esm.bahlei.restbasic.security.jwt;
 
 import com.epam.esm.bahlei.restbasic.model.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.epam.esm.bahlei.restbasic.security.exception.TokenExpiredException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -62,12 +61,15 @@ public class JwtTokenService {
     return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
   }
 
-  public boolean validateToken(String token) {
+  public void validateToken(String token) {
     try {
-      Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-      return true;
-    } catch (Exception e) {
-      return false;
+      Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+      Date expirationDate = claimsJws.getBody().getExpiration();
+      if (expirationDate.before(new Date())) {
+        throw new TokenExpiredException("token validity has expired");
+      }
+    } catch (JwtException e) {
+      throw new JwtException("token invalid");
     }
   }
 }

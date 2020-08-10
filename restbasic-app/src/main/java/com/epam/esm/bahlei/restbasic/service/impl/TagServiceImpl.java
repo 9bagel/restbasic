@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
+
 @Service
 public class TagServiceImpl implements TagService {
 
@@ -27,6 +29,9 @@ public class TagServiceImpl implements TagService {
 
   @Override
   public Optional<Tag> get(long tagId) {
+    if (tagId <= 0) {
+      throw new ValidationException(singletonList("Tag id can't be negative or zero"));
+    }
     return tagDAO.get(tagId);
   }
 
@@ -50,6 +55,9 @@ public class TagServiceImpl implements TagService {
   @Override
   @Transactional
   public void delete(long tagId) {
+    if (tagId <= 0) {
+      throw new ValidationException(singletonList("Tag id can't be negative or zero"));
+    }
     tagDAO.delete(tagId);
   }
 }

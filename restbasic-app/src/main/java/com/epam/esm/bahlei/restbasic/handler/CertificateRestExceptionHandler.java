@@ -1,13 +1,15 @@
 package com.epam.esm.bahlei.restbasic.handler;
 
 import com.epam.esm.bahlei.restbasic.controller.dto.response.ErrorResponse;
+import com.epam.esm.bahlei.restbasic.security.exception.TokenExpiredException;
 import com.epam.esm.bahlei.restbasic.service.validator.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonParseException;
-import org.springframework.dao.DataAccessException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -83,9 +85,23 @@ public class CertificateRestExceptionHandler {
   }
 
   @ExceptionHandler(UsernameNotFoundException.class)
-  public ResponseEntity<ErrorResponse> handleException(UsernameNotFoundException exc) {
+  public ResponseEntity<ErrorResponse> handleException(BadCredentialsException exc) {
     ErrorResponse error = new ErrorResponse(exc.getMessage());
 
     return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+  }
+
+  @ExceptionHandler(TokenExpiredException.class)
+  public ResponseEntity<ErrorResponse> handleException(TokenExpiredException exc) {
+    ErrorResponse error = new ErrorResponse(exc.getMessage());
+
+    return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+  }
+
+  @ExceptionHandler(JwtException.class)
+  public ResponseEntity<ErrorResponse> handleException(JwtException exc) {
+    ErrorResponse error = new ErrorResponse(exc.getMessage());
+
+    return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
   }
 }

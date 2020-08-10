@@ -5,6 +5,7 @@ import com.epam.esm.bahlei.restbasic.security.jwt.JwtTokenService;
 import com.epam.esm.bahlei.restbasic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,7 +34,7 @@ public class AuthenticationService {
       authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(username, password));
     } catch (AuthenticationException e) {
-      throw new UsernameNotFoundException("Authentication failed");
+      throw new BadCredentialsException("Authentication failed");
     }
     User user =
         userService
