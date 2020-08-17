@@ -16,8 +16,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TagValidatorTest {
-  @InjectMocks TagValidator tagValidator;
-  @Mock TagDAO tagDAO;
+  @InjectMocks private TagValidator tagValidator;
+  @Mock private TagDAO tagDAO;
   @Test
   void validate_NullName_Error() {
     Tag tag = getValidTag();
