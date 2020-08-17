@@ -22,4 +22,9 @@ subprojects {
             mavenBom("org.springframework.boot:spring-boot-dependencies:2.3.1.RELEASE")
         }
     }
+
+    test {
+        useJUnitPlatform()
+        maxHeapSize = '1G'
+    }
 }
