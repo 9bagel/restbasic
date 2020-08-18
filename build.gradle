@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '2.3.3.RELEASE'
     id "org.sonarqube" version "2.7"
     id 'jacoco'
+    id 'war'
 }
 
 subprojects {
@@ -14,6 +15,7 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'org.sonarqube'
     apply plugin: 'jacoco'
+    apply plugin: 'war'
 
     repositories {
         mavenCentral()
