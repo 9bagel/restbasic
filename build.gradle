@@ -1,9 +1,7 @@
 plugins {
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'org.springframework.boot' version '2.3.3.RELEASE'
     id "org.sonarqube" version "2.7"
     id 'jacoco'
-    id 'war'
 }
 
 subprojects {
@@ -12,13 +10,8 @@ subprojects {
 
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'org.springframework.boot'
     apply plugin: 'org.sonarqube'
     apply plugin: 'jacoco'
-
-    repositories {
-        mavenCentral()
-    }
 
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-hateoas'
@@ -43,7 +36,8 @@ subprojects {
         }
     }
 }
-
-repositories {
-    mavenCentral()
+allprojects {
+    repositories {
+        mavenCentral()
+    }
 }
