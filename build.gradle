@@ -30,7 +30,6 @@ subprojects {
     }
 
     test {
-        finalizedBy jacocoTestReport
         useJUnitPlatform()
         maxHeapSize = '1G'
     }
