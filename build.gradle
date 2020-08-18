@@ -15,7 +15,6 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'org.sonarqube'
     apply plugin: 'jacoco'
-    apply plugin: 'war'
 
     repositories {
         mavenCentral()
@@ -43,4 +42,8 @@ subprojects {
             html.enabled false
         }
     }
+}
+
+repositories {
+    mavenCentral()
 }
