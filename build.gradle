@@ -30,6 +30,7 @@ subprojects {
     }
 
     test {
+        finalizedBy jacocoTestReport
         useJUnitPlatform()
         maxHeapSize = '1G'
     }
@@ -37,6 +38,7 @@ subprojects {
     jacocoTestReport {
         reports {
             xml.enabled true
+            html.enabled false
         }
     }
 }
