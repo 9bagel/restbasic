@@ -7,18 +7,16 @@ import com.epam.esm.bahlei.restbasic.model.Pageable;
 import com.epam.esm.bahlei.restbasic.model.Tag;
 import com.epam.esm.bahlei.restbasic.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
@@ -71,8 +69,7 @@ public class TagController {
    */
   @PreAuthorize("hasAuthority('ADMIN')")
   @PostMapping("/tags")
-  public ResponseEntity<?> addTag(
-      @RequestBody TagDTO tagDTO) {
+  public ResponseEntity<?> addTag(@RequestBody TagDTO tagDTO) {
     Tag tag = new Tag(tagDTO.id, tagDTO.name);
 
     tagService.save(tag);
@@ -93,6 +90,4 @@ public class TagController {
     tagService.delete(id);
     return noContent().build();
   }
-
-
 }

@@ -10,6 +10,10 @@ import java.util.StringJoiner;
 
 public class CriteriaToSQL {
 
+  private CriteriaToSQL() {
+    throw new IllegalStateException("Utility class");
+  }
+
   public static String mapSql(Criteria criteria) {
     StringBuilder sql = new StringBuilder();
     List<SortColumn> sortColumns = criteria.sortColumns;

@@ -2,7 +2,6 @@ package com.epam.esm.bahlei.restbasic.controller;
 
 import com.epam.esm.bahlei.restbasic.controller.dto.GiftCertificateDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.OrderDTO;
-import com.epam.esm.bahlei.restbasic.controller.dto.RefDTO;
 import com.epam.esm.bahlei.restbasic.controller.dto.UserDTO;
 import com.epam.esm.bahlei.restbasic.controller.linkmapper.LinkMapper;
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
@@ -125,11 +124,6 @@ public class UserController {
   private UserDTO toUserDTO(User user) {
 
     return new UserDTO(user);
-  }
-
-  private RefDTO toRefDTO(User user) {
-
-    return new RefDTO(user.getId(), user.getFirstName() + " " + user.getLastName());
   }
 
   private OrderDTO toOrderDTO(Order order) {

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -30,7 +29,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
 
     return query.getResultList();
   }
-  // Проверить работу persist
+
   @Override
   public void save(GiftCertificate certificate) {
     GiftCertificate mergedCertificate = entityManager.merge(certificate);

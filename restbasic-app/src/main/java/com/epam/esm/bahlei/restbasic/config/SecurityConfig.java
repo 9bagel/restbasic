@@ -1,7 +1,6 @@
 package com.epam.esm.bahlei.restbasic.config;
 
 import com.epam.esm.bahlei.restbasic.handler.ExceptionHandlerFilter;
-import com.epam.esm.bahlei.restbasic.model.Role;
 import com.epam.esm.bahlei.restbasic.security.jwt.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +19,8 @@ import org.springframework.security.web.access.expression.DefaultWebSecurityExpr
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
-import static com.epam.esm.bahlei.restbasic.model.Role.*;
 import static com.epam.esm.bahlei.restbasic.model.Role.ADMIN;
+import static com.epam.esm.bahlei.restbasic.model.Role.USER;
 
 @Configuration
 @EnableWebSecurity
