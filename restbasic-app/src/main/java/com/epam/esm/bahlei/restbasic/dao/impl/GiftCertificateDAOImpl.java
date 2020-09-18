@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +28,7 @@ public class GiftCertificateDAOImpl implements GiftCertificateDAO {
 
   @Override
   public List<GiftCertificate> getAll(Criteria criteria, Pageable pageable) {
-    TypedQuery<GiftCertificate> query = CriteriaToSQL.buildQuery(entityManager, criteria, pageable);
+    Query query = CriteriaToSQL.buildQuery(entityManager, criteria, pageable);
 
     return query.getResultList();
   }

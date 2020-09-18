@@ -2,8 +2,11 @@ package com.epam.esm.bahlei.restbasic.service.supplies;
 
 import com.epam.esm.bahlei.restbasic.model.GiftCertificate;
 import com.epam.esm.bahlei.restbasic.model.Pageable;
+import com.google.common.base.Strings;
+import org.hibernate.query.NativeQuery;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.StringJoiner;
@@ -30,8 +33,9 @@ public class CriteriaToSQL {
       return;
     }
     String filterSql =
-        "JOIN c.tags t WHERE t.name IN :names "
-            + "GROUP BY (c.id) "
+        "JOIN certificate_tags ct ON c.id = ct.certificate_id "
+            + "JOIN tags t ON t.id = ct.tag_id WHERE t.name IN :names "
+            + "GROUP BY (c.id, ct.id, t.id) "
             + "HAVING COUNT(c.id) >= :size ";
     sql.append(filterSql);
   }
@@ -41,9 +45,9 @@ public class CriteriaToSQL {
       return;
     }
     if (sql.length() > 0) {
-      sql.append("AND c.id in (function('search',:findPhrase) ) ");
+      sql.append("AND c in(select search(:findPhrase))");
     } else {
-      sql.append("WHERE c.id in (function('search',:findPhrase) ) ");
+      sql.append("WHERE c in(select search(:findPhrase))");
     }
   }
 
@@ -53,22 +57,25 @@ public class CriteriaToSQL {
     }
     StringJoiner joiner = new StringJoiner(", ");
     sortColumns.forEach(
-        sortColumn -> joiner.add("c." + sortColumn.columnName + " " + sortColumn.sortOrder));
+        sortColumn -> {
+          joiner.add("c." + sortColumn.columnName + " " + sortColumn.sortOrder);
+        });
 
     sql.append("ORDER BY ").append(joiner.toString());
   }
 
-  public static TypedQuery<GiftCertificate> buildQuery(
+  public static Query buildQuery(
       EntityManager entityManager, Criteria criteria, Pageable pageable) {
 
     String sql = CriteriaToSQL.mapSql(criteria);
-    String wholeSql = "SELECT c FROM GiftCertificate c " + sql;
+    String wholeSql = "SELECT * FROM certificates c " + sql;
 
-    TypedQuery<GiftCertificate> query =
+    Query query =
         entityManager
-            .createQuery(wholeSql,  GiftCertificate.class)
+            .createNativeQuery(wholeSql, GiftCertificate.class)
             .setFirstResult(pageable.getOffset())
             .setMaxResults(pageable.getSize());
+    ;
 
     if (!criteria.tagNames.isEmpty()) {
       query.setParameter("names", criteria.tagNames);
